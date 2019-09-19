@@ -1,0 +1,90 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:customControls="clr-namespace:FootballApp.Controls.buttons">
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource AccentedSquareButtonStyle}"
+           x:Key="CustomAccentedSquareButtonStyle">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush2}"/>
+        <Setter Property="controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocused" Value="True"/>
+                    <Condition Property="IsMouseOver" Value="False"/>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderThickness" Value="2.25"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}"/>
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SquareButtonStyle}"
+           x:Key="CustomNegativeButtonStyle">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
+        <Setter Property="controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocused" Value="True"/>
+                    <Condition Property="IsMouseOver" Value="False"/>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderThickness" Value="2.25"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}"/>
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style TargetType="{x:Type customControls:SquareButton}" 
+           BasedOn="{StaticResource CustomAccentedSquareButtonStyle}" >
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="15 5"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customControls:SquareButton}">
+                    <customControls:SquareButton Style="{StaticResource CustomAccentedSquareButtonStyle}"
+                                                      Command="{TemplateBinding Command}"
+                                                      CommandParameter="{TemplateBinding CommandParameter}"
+                                                      Padding="{TemplateBinding Padding}"
+                                                      x:Name="SquareButton">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{TemplateBinding IconGlyph}"
+                                       FontFamily="{DynamicResource FontAwesome}"
+                                       VerticalAlignment="Center"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       x:Name="ButtonIcon"/>
+                            <TextBlock Text="{TemplateBinding Text}"
+                                       Margin="10 0 0 0"
+                                       x:Name="ButtonText"/>
+                        </StackPanel>
+                    </customControls:SquareButton>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IconGlyph" Value="{x:Null}">
+                            <Setter TargetName="ButtonText" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter TargetName="ButtonText" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="IsNegativeButton" Value="True">
+                            <Setter TargetName="SquareButton" Property="Style" Value="{StaticResource CustomNegativeButtonStyle}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

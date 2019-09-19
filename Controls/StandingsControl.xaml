@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="FootballApp.Controls.StandingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400"
+             DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=StandingsViewModel}">
+    <Grid>
+        <DataGrid ItemsSource="{Binding StandingsList}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  Visibility="{Binding ListOfStandings, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="#" Binding="{Binding rank}"/>
+                <DataGridTextColumn Header="team" Binding="{Binding name}"/>
+                <DataGridTextColumn Header="mp" Binding="{Binding matches}"/>
+                <DataGridTextColumn Header="w" Binding="{Binding won}"/>
+                <DataGridTextColumn Header="d" Binding="{Binding drawn}"/>
+                <DataGridTextColumn Header="l" Binding="{Binding lost}"/>
+                <!--<DataGridTextColumn Header="gf" Binding="{Binding goals_scored}"/>
+                <DataGridTextColumn Header="ga" Binding="{Binding goals_conceded}"/>-->
+                <DataGridTextColumn Header="gd" Binding="{Binding goal_diff}"/>
+                <DataGridTextColumn Header="p" Binding="{Binding points}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Visibility="{Binding NoStandings, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <TextBlock Text="{Binding NoLeagueMessage}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="25"
+                       FontSize="24"
+                       Foreground="{DynamicResource AccentColorBrush3}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="&#xf1e3;"
+                       TextAlignment="Center"
+                       Margin="10"
+                       FontSize="88"
+                       Foreground="{DynamicResource AccentColorBrush3}"
+                       FontFamily="{DynamicResource FontAwesome}"
+                       VerticalAlignment="Center"/>
+            <customControls:SquareButton Command="{Binding BackToLeagueCommand}"
+                                         Width="200"
+                                         Text="Choose League" 
+                                         ToolTip="Choose a League"
+                                         IconGlyph="&#xf0a8;"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

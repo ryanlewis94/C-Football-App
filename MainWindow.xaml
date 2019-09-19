@@ -1,0 +1,35 @@
+﻿<controls:MetroWindow x:Class="FootballApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:uc="clr-namespace:FootballApp.Controls"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
+        Title="Football Scores" Height="600" Width="400" 
+                      TitleCaps="False" 
+                      ResizeMode="NoResize"
+                      GlowBrush="{DynamicResource AccentColorBrush}"
+                      Icon="/Resources/football-2-48.ico">
+
+    <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
+                                               controls:TabControlHelper.IsUnderlined="True"
+                                               controls:TabControlHelper.Transition="Down">
+            <TabItem Header="Countries">
+                <uc:CountryControl/>
+            </TabItem>
+            <TabItem Header="Leagues">
+                <uc:LeagueControl/>
+            </TabItem>
+            <TabItem Header="Matches">
+                <uc:MatchControl/>
+            </TabItem>
+            <TabItem Header="Standings"
+                     IsEnabled="{Binding LeagueSelectedBool}">
+                <uc:StandingsControl/>
+            </TabItem>
+    </controls:MetroAnimatedSingleRowTabControl>
+        
+</controls:MetroWindow>

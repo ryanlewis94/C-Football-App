@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="FootballApp.Controls.CountryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:FootballApp.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400"
+             DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=".75*"></RowDefinition>
+            <RowDefinition Height="9.25*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TextBox controls:TextBoxHelper.ClearTextButton="True"
+                 controls:TextBoxHelper.Watermark="Search..."
+                 FontSize="15"
+                 Margin="5"
+                 Width="300"
+                 Grid.Row="0"
+                 Visibility="{Binding ListOfCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding SortCountriesCommand}"
+                                           CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TextBox}}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+
+        <Grid Grid.Row="1">
+            <DataGrid ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      Visibility="{Binding ListOfCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+                      ItemsSource="{Binding CountryList}"
+                      SelectedItem="{Binding SelectedCountry, Mode=TwoWay}"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      HeadersVisibility="None">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding CountrySelectedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding name}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+                   
+        
+
+            <StackPanel Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                <TextBlock Text="Something went wrong, no countries available!"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="25"
+                           FontSize="24"
+                           Foreground="{DynamicResource AccentColorBrush3}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="&#xf57d;"
+                           Margin="10"
+                           FontSize="64"
+                           Foreground="{DynamicResource AccentColorBrush3}"
+                           FontFamily="{DynamicResource FontAwesome}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
