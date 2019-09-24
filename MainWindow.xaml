@@ -13,8 +13,8 @@
                       ResizeMode="NoResize"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       Icon="/Resources/football-2-48.ico">
-
-    <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
+    <Grid>
+        <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
                                                controls:TabControlHelper.IsUnderlined="True"
                                                controls:TabControlHelper.Transition="Down">
             <TabItem Header="Countries">
@@ -27,9 +27,16 @@
                 <uc:MatchControl/>
             </TabItem>
             <TabItem Header="Standings"
-                     IsEnabled="{Binding LeagueSelectedBool}">
+                     Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>
             </TabItem>
-    </controls:MetroAnimatedSingleRowTabControl>
-        
+        </controls:MetroAnimatedSingleRowTabControl>
+
+        <StackPanel>
+            <uc:ClearButtonControl/>
+        </StackPanel>
+        <Grid>
+            <uc:LoadingOverlayView Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+        </Grid>
+    </Grid>
 </controls:MetroWindow>

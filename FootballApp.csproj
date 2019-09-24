@@ -79,7 +79,14 @@
     <Compile Include="Classes\Data.cs" />
     <Compile Include="Classes\Model.cs" />
     <Compile Include="Classes\Models.cs" />
+    <Compile Include="Controls\buttons\CircularButton.cs" />
     <Compile Include="Controls\buttons\SquareButton.cs" />
+    <Compile Include="Controls\ClearButtonControl.xaml.cs">
+      <DependentUpon>ClearButtonControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadingOverlayView.xaml.cs">
+      <DependentUpon>LoadingOverlayView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StandingsControl.xaml.cs">
       <DependentUpon>StandingsControl.xaml</DependentUpon>
     </Compile>
@@ -104,11 +111,19 @@
     <Compile Include="ViewModels\MatchViewModel.cs" />
     <Compile Include="ViewModels\StandingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Page Include="Controls\ClearButtonControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\CountryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LeagueControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadingOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,7 +180,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\footballPitch.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\football-2-48.ico" />
     <Resource Include="Resources\football-2-48.png" />

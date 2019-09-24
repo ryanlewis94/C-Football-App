@@ -30,6 +30,23 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _leagueSelectedBool, value); }
         }
 
+        private bool _loadingData = true;
+
+        public bool LoadingData
+        {
+            get { return _loadingData; }
+            set { SetProperty(ref _loadingData, value); }
+        }
+
+        private bool _clearButton = true;
+
+        public bool ClearButton
+        {
+            get { return _clearButton; }
+            set { SetProperty(ref _clearButton, value); }
+        }
+
+
         public MainViewModel()
         {
             LoadTabIndex();
@@ -38,12 +55,35 @@ namespace FootballApp.ViewModels
         private void LoadTabIndex()
         {
             Messenger.Default.Register<int>(TabIndex, OnIndexReceived);
-            Messenger.Default.Register<bool>(LeagueSelectedBool, OnStandingsBoolReceived);
+            Messenger.Default.Register<string>(this, OnDataReceived);
         }
 
-        private void OnStandingsBoolReceived(bool leagueBool)
+        private void OnDataReceived(string dataLoaded)
         {
-            LeagueSelectedBool = leagueBool;
+            if(dataLoaded == "loaded")
+            {
+                LoadingData = false;
+            }
+            else if( dataLoaded == "unloaded")
+            {
+                LoadingData = true;
+            }
+            else if(dataLoaded == "selected")
+            {
+                LeagueSelectedBool = true;
+            }
+            else if(dataLoaded == "unselected")
+            {
+                LeagueSelectedBool = false;
+            }
+            //else if(dataLoaded == "cleared")
+            //{
+            //    ClearButton = false;
+            //}
+            //else if(dataLoaded == "uncleared")
+            //{
+            //    ClearButton = true;
+            //}
         }
 
         private void OnIndexReceived(int index)

@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
@@ -18,12 +20,23 @@ namespace FootballApp.ViewModels
         public ICommand BackToLeagueCommand { get; set; }
         public ICommand GoToLiveGamesCommand { get; set; }
 
+        private DispatcherTimer AllTimer { get; set; }
+        private DispatcherTimer SelectedTimer { get; set; }
+
         private List<Match> _liveMatchesList;
 
         public List<Match> LiveMatchesList
         {
             get { return _liveMatchesList; }
             set { SetProperty(ref _liveMatchesList, value); }
+        }
+
+        private List<Match> _filterMatchesList;
+
+        public List<Match> FilterMatchesList
+        {
+            get { return _filterMatchesList; }
+            set { SetProperty(ref _filterMatchesList, value); }
         }
 
         private List<Match> _liveList;
@@ -94,12 +107,55 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _tabIndex, value); }
         }
 
+        private string _loadingData;
+
+        public string LoadingData
+        {
+            get { return _loadingData; }
+            set { SetProperty(ref _loadingData, value); }
+        }
+
+        private League _leagueReceived;
+
+        public League LeagueReceived
+        {
+            get { return _leagueReceived; }
+            set { SetProperty(ref _leagueReceived, value); }
+        }
+
 
         public MatchViewModel()
         {
             repository = new Football();
             LoadMatches();
             LoadCommands();
+            LoadTimers();
+            LeagueReceived = new League();
+        }
+
+        private void LoadTimers()
+        {
+            AllTimer = new DispatcherTimer();
+            AllTimer.Interval = TimeSpan.FromSeconds(60);
+            AllTimer.Tick += AllTimer_Tick;
+            AllTimer.Start();
+            SelectedTimer = new DispatcherTimer();
+            SelectedTimer.Interval = TimeSpan.FromSeconds(1);
+            SelectedTimer.Tick += SelectedTimer_Tick;
+            SelectedTimer.Start();
+        }
+
+        private void SelectedTimer_Tick(object sender, EventArgs e)
+        {
+            if(LeagueReceived.id != 0)
+            {
+                FilterLiveMatches(LeagueReceived.id.ToString());
+            }
+        }
+
+        private void AllTimer_Tick(object sender, EventArgs e)
+        {
+            LoadMatches();
         }
 
         private void LoadCommands()
@@ -141,23 +197,47 @@ namespace FootballApp.ViewModels
             }
         }
 
-        private async void OnLeagueReceived(League league)
+        private void OnLeagueReceived(League league)
         {
-            LiveMatchesList = await repository.LoadLive(league.id.ToString());
-            MatchesTabIndex = 0;
-            LeagueTabName = $"{league.name} Live Matches";
-            NoLeagueMessage = $"No Matches in {league.name}";
-
-            if (LiveMatchesList.Count == 0)
+            LeagueReceived = league;
+            if (league.id != 0)
             {
-                ListOfLiveMatches = false;
-                NoLiveMatches = true;
+                FilterLiveMatches(league.id.ToString());
+                MatchesTabIndex = 0;
+                LeagueTabName = $"{league.name} Live Matches";
+                NoLeagueMessage = $"No Matches in {league.name}";
+
+                if (LiveMatchesList.Count == 0)
+                {
+                    ListOfLiveMatches = false;
+                    NoLiveMatches = true;
+                }
+                else
+                {
+                    ListOfLiveMatches = true;
+                    NoLiveMatches = false;
+                }
             }
             else
             {
-                ListOfLiveMatches = true;
-                NoLiveMatches = false;
+                MatchesTabIndex = 1;
+                LeagueTabName = "";
+                NoLeagueMessage = "";
             }
+        }
+
+        private void FilterLiveMatches(string leagueId)
+        {
+            FilterMatchesList = new List<Match>();
+
+            foreach (Match match in LiveList)
+            {
+                if (match.league_id == leagueId)
+                {
+                    FilterMatchesList.Add(match);
+                }
+            }
+            LiveMatchesList = FilterMatchesList;
         }
     }
 }

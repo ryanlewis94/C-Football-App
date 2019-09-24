@@ -97,12 +97,20 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _leagueSearch, value); }
         }
 
-        private bool _leagueSelectedBool;
+        private string _leagueSelectedBool;
 
-        public bool LeagueSelectedBool
+        public string LeagueSelectedBool
         {
             get { return _leagueSelectedBool; }
             set { SetProperty(ref _leagueSelectedBool, value); }
+        }
+
+        private string _loadingData;
+
+        public string LoadingData
+        {
+            get { return _loadingData; }
+            set { SetProperty(ref _loadingData, value); }
         }
 
         public LeagueViewModel()
@@ -144,10 +152,12 @@ namespace FootballApp.ViewModels
             if (SelectedLeague != null)
             {
                 Messenger.Default.Send(SelectedLeague);
-                LeagueSelectedBool = true;
-                Messenger.Default.Send<bool>(LeagueSelectedBool);
+                LeagueSelectedBool = "selected";
+                Messenger.Default.Send(LeagueSelectedBool);
                 TabIndex = 2;
                 Messenger.Default.Send<int>(TabIndex);
+                LoadingData = "unloaded";
+                Messenger.Default.Send(LoadingData);
             }
         }
 
@@ -165,8 +175,8 @@ namespace FootballApp.ViewModels
 
             Messenger.Default.Register<Country>(this, OnCountryReceived);
 
-            //SelectedLeague = new League();
-            //Messenger.Default.Send(SelectedLeague);
+            LoadingData = "loaded";
+            Messenger.Default.Send(LoadingData);
         }
 
         private void OnCountryReceived(Country country)
@@ -179,6 +189,16 @@ namespace FootballApp.ViewModels
                 LeagueList = MainList;
                 FilterLeagueByCountry(country.id);
                 MemoryList = LeagueList;
+            }
+            else
+            {
+                LeagueList = MainList;
+                MemoryList = MainList;
+                LeagueSelectedBool = "unselected";
+                Messenger.Default.Send(LeagueSelectedBool);
+                SelectedLeague = null;
+                SelectedLeague = new League();
+                Messenger.Default.Send(SelectedLeague);
             }
             LeagueListCountCheck();
         }

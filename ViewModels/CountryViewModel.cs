@@ -18,6 +18,7 @@ namespace FootballApp.ViewModels
 
         public ICommand CountrySelectedCommand { get; set; }
         public ICommand SortCountriesCommand { get; set; }
+        public ICommand ClearSelectionCommand { get; set; }
 
         private List<Country> _memoryList;
 
@@ -73,6 +74,23 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noCountries, value); }
         }
 
+        private string _countrySearch;
+
+        public string CountrySearch
+        {
+            get { return _countrySearch; }
+            set { SetProperty(ref _countrySearch, value); }
+        }
+
+        private bool _clearButton;
+
+        public bool ClearButton
+        {
+            get { return _clearButton; }
+            set { SetProperty(ref _clearButton, value); }
+        }
+
+
         public CountryViewModel()
         {
             repository = new Football();
@@ -84,6 +102,25 @@ namespace FootballApp.ViewModels
         {
             CountrySelectedCommand = new CustomCommand(SelectCountry, CanSelectCountry);
             SortCountriesCommand = new DelegateCommand<string>(SortCountryList, () => true);
+            ClearSelectionCommand = new CustomCommand(ClearSelection, CanClearSelection);
+        }
+
+        private void ClearSelection(object obj)
+        {
+            CountrySearch = "";
+            CountryList = MemoryList;
+            TabIndex = 0;
+            Messenger.Default.Send(TabIndex);
+            SelectedCountry = null;
+            SelectedCountry = new Country();
+            Messenger.Default.Send(SelectedCountry);
+            ClearButton = false;
+            //Messenger.Default.Send(ClearButton);
+        }
+
+        private bool CanClearSelection(object obj)
+        {
+            return SelectedCountry != null;
         }
 
         private void SortCountryList(string countrySearch)
@@ -114,6 +151,7 @@ namespace FootballApp.ViewModels
                 Messenger.Default.Send(SelectedCountry);
                 TabIndex = 1;
                 Messenger.Default.Send<int>(TabIndex);
+                ClearButton = true;
             }
         }
 

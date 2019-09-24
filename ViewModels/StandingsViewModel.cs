@@ -55,6 +55,15 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _tabIndex, value); }
         }
 
+        private string _loadingData;
+
+        public string LoadingData
+        {
+            get { return _loadingData; }
+            set { SetProperty(ref _loadingData, value); }
+        }
+
+
 
         public StandingsViewModel()
         {
@@ -98,6 +107,9 @@ namespace FootballApp.ViewModels
                 ListOfStandings = false;
                 NoStandings = true;
             }
+
+            LoadingData = "loaded";
+            Messenger.Default.Send(LoadingData);
         }
     }
 }
