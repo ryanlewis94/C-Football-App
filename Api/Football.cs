@@ -87,6 +87,24 @@ namespace FootballApp.Api
             }
         }
 
+        public async Task<List<Event>> LoadEvents(string matchId)
+        {
+            string url = $"http://livescore-api.com/api-client/scores/events.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv&id={matchId}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Model @event = await response.Content.ReadAsAsync<Model>();
+
+                    return @event.data.@event;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
 
         public async Task<List<Fixture>> LoadFixture()

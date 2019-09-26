@@ -28,18 +28,14 @@
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation
-                Storyboard.TargetName="MyAnimatedTransform"
-                Storyboard.TargetProperty="(RotateTransform.Angle)"
-                From="0.0" To="7200" Duration="0:1" RepeatBehavior="1000x" />
+                                <DoubleAnimation Storyboard.TargetName="MyAnimatedTransform"
+                                                 Storyboard.TargetProperty="(RotateTransform.Angle)"
+                                                 From="0.0" To="7200" Duration="0:1" RepeatBehavior="1000x" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
                 </Ellipse.Triggers>
-
             </Ellipse>
-
-            <!--<controls:ProgressRing Margin="45" Height="10"/>-->
         </StackPanel>
     </Grid>
 </UserControl>

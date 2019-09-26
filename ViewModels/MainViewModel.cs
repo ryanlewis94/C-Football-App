@@ -14,6 +14,11 @@ namespace FootballApp.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        #region
+
+        /// <summary>
+        /// changes the tab index of the main tab control
+        /// </summary>
         private int _tabIndex;
 
         public int TabIndex
@@ -22,6 +27,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _tabIndex, value); }
         }
 
+        /// <summary>
+        /// bools for visibility converter
+        /// </summary>
         private bool _leagueSelectedBool;
 
         public bool LeagueSelectedBool
@@ -38,26 +46,23 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _loadingData, value); }
         }
 
-        private bool _clearButton = true;
-
-        public bool ClearButton
-        {
-            get { return _clearButton; }
-            set { SetProperty(ref _clearButton, value); }
-        }
-
+        #endregion
 
         public MainViewModel()
         {
-            LoadTabIndex();
+            MainLoad();
         }
 
-        private void LoadTabIndex()
+        private void MainLoad()
         {
             Messenger.Default.Register<int>(TabIndex, OnIndexReceived);
             Messenger.Default.Register<string>(this, OnDataReceived);
         }
 
+        /// <summary>
+        /// depending on what string is received hide or make user controls visible
+        /// </summary>
+        /// <param name="dataLoaded"></param>
         private void OnDataReceived(string dataLoaded)
         {
             if(dataLoaded == "loaded")
@@ -76,16 +81,12 @@ namespace FootballApp.ViewModels
             {
                 LeagueSelectedBool = false;
             }
-            //else if(dataLoaded == "cleared")
-            //{
-            //    ClearButton = false;
-            //}
-            //else if(dataLoaded == "uncleared")
-            //{
-            //    ClearButton = true;
-            //}
         }
 
+        /// <summary>
+        /// change the tab index of the main tab control
+        /// </summary>
+        /// <param name="index"></param>
         private void OnIndexReceived(int index)
         {
             TabIndex = index;

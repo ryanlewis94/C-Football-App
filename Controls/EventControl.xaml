@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="FootballApp.Controls.EventControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400"
+             DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}">
+    <StackPanel>
+        <StackPanel DataContext="{Binding CurrentMatch}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4.5*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="4.5*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding home_name}" 
+                           Grid.Column="0"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding score}"
+                               FontWeight="SemiBold" 
+                               FontSize="20"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding time}" 
+                               FontWeight="Bold"
+                               FontSize="14"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="{Binding away_name}" 
+                           Grid.Column="2"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"/>
+            </Grid>
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+            <ListView Grid.Column="0"
+                      ItemsSource="{Binding HomeEventsList}"
+                      HorizontalAlignment="Left"
+                      MinWidth="190"
+                      MaxWidth="190">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="8*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <Image Source="{Binding event}"
+                                       Height="16"
+                                       Width="16"/>
+                                <TextBlock Text="{Binding time}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding player}"
+                                       Grid.Column="1"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView Grid.Column="1"
+                      ItemsSource="{Binding AwayEventsList}"
+                      HorizontalAlignment="Right"
+                      MinWidth="190"
+                      MaxWidth="190">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="1">
+                                <Image Source="{Binding event}"
+                                       Height="16"
+                                       Width="16"/>
+                                <TextBlock Text="{Binding time}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding player}"
+                                       Grid.Column="0"
+                                       HorizontalAlignment="Left"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </StackPanel>
+</UserControl>

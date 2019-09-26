@@ -14,6 +14,10 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -84,6 +88,9 @@
     <Compile Include="Controls\ClearButtonControl.xaml.cs">
       <DependentUpon>ClearButtonControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EventControl.xaml.cs">
+      <DependentUpon>EventControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LoadingOverlayView.xaml.cs">
       <DependentUpon>LoadingOverlayView.xaml</DependentUpon>
     </Compile>
@@ -106,6 +113,7 @@
     <Compile Include="Utility\Messenger.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
+    <Compile Include="ViewModels\EventsViewModel.cs" />
     <Compile Include="ViewModels\LeagueViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MatchViewModel.cs" />
@@ -116,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\CountryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EventControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,6 +198,15 @@
   <ItemGroup>
     <Resource Include="Resources\football-2-48.ico" />
     <Resource Include="Resources\football-2-48.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\events\Goal.png" />
+    <Resource Include="Resources\events\ownGoal.png" />
+    <Resource Include="Resources\events\Penalty.png" />
+    <Resource Include="Resources\events\Red.png" />
+    <Resource Include="Resources\events\Yellow.png" />
+    <Resource Include="Resources\events\YellowRed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

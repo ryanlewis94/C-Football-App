@@ -22,4 +22,12 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C164C75-CD57-4939-9E8B-46CC04D8EB1B}
 	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://ndc06srvtfssql1:8080/tfs/nwis
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = FootballApp.csproj
+		SccLocalPath1 = .
+	EndGlobalSection
 EndGlobal

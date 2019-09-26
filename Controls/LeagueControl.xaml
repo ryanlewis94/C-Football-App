@@ -15,6 +15,7 @@
             <RowDefinition Height="9.25*"></RowDefinition>
         </Grid.RowDefinitions>
 
+        <!--Search TextBox-->
         <TextBox controls:TextBoxHelper.ClearTextButton="True"
                  controls:TextBoxHelper.Watermark="Search..."
                  Text="{Binding LeagueSearch}"
@@ -30,7 +31,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
+        
         <Grid Grid.Row="1">
+            <!--List of Leagues-->
             <DataGrid Visibility="{Binding ListOfLeagues, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
                       ItemsSource="{Binding LeagueList}"
                       SelectedItem="{Binding SelectedLeague, Mode=TwoWay}"
@@ -46,6 +49,8 @@
                     <DataGridTextColumn Binding="{Binding name}"/>
                 </DataGrid.Columns>
             </DataGrid>
+            
+            <!--Message to the user-->
             <StackPanel Visibility="{Binding NoLeagues, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <TextBlock Text="{Binding CountryName}"
                            TextWrapping="Wrap"

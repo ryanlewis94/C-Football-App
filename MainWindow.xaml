@@ -17,6 +17,7 @@
         <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
                                                controls:TabControlHelper.IsUnderlined="True"
                                                controls:TabControlHelper.Transition="Down">
+            <!--user controls-->
             <TabItem Header="Countries">
                 <uc:CountryControl/>
             </TabItem>
@@ -26,15 +27,20 @@
             <TabItem Header="Matches">
                 <uc:MatchControl/>
             </TabItem>
+            <TabItem Header="Events">
+                <uc:EventControl/>
+            </TabItem>
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>
             </TabItem>
         </controls:MetroAnimatedSingleRowTabControl>
-
+        
+        <!--Clear button overlay-->
         <StackPanel>
             <uc:ClearButtonControl/>
         </StackPanel>
+        <!--Loading overlay-->
         <Grid>
             <uc:LoadingOverlayView Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
         </Grid>

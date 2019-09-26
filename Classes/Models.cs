@@ -64,6 +64,17 @@ namespace FootballApp.Classes
         public string competition_id { get; set; }
     }
 
+    public class Event
+    {
+        public string id { get; set; }
+        public string match_id { get; set; }
+        public string player { get; set; }
+        public string time { get; set; }
+        public string @event { get; set; }
+        public int sort { get; set; }
+        public string home_away { get; set; }
+    }
+
     public class Fixture
     {
         public string id { get; set; }

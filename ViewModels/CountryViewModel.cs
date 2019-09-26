@@ -20,6 +20,11 @@ namespace FootballApp.ViewModels
         public ICommand SortCountriesCommand { get; set; }
         public ICommand ClearSelectionCommand { get; set; }
 
+        #region Properties
+
+        /// <summary>
+        /// Lists for displaying Countries and sorting them when user searches
+        /// </summary>
         private List<Country> _memoryList;
 
         public List<Country> MemoryList
@@ -44,6 +49,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _searchCountryList, value); }
         }
 
+        /// <summary>
+        /// Country that was selected by the user
+        /// </summary>
         private Country _selectedCountry;
 
         public Country SelectedCountry
@@ -52,6 +60,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _selectedCountry, value); }
         }
 
+        /// <summary>
+        /// changes the index of the main tab control
+        /// </summary>
         private int _tabIndex;
 
         public int TabIndex
@@ -60,6 +71,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _tabIndex, value); }
         }
 
+        /// <summary>
+        /// bools for visibility converter 
+        /// </summary>
         private bool _listOfCountries;
         public bool ListOfCountries
         {
@@ -74,14 +88,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noCountries, value); }
         }
 
-        private string _countrySearch;
-
-        public string CountrySearch
-        {
-            get { return _countrySearch; }
-            set { SetProperty(ref _countrySearch, value); }
-        }
-
         private bool _clearButton;
 
         public bool ClearButton
@@ -90,6 +96,43 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _clearButton, value); }
         }
 
+        /// <summary>
+        /// the users search input
+        /// </summary>
+        private string _countrySearch;
+
+        public string CountrySearch
+        {
+            get { return _countrySearch; }
+            set { SetProperty(ref _countrySearch, value); }
+        }
+
+
+        private List<League> _leagueList;
+
+        public List<League> LeagueList
+        {
+            get { return _leagueList; }
+            set { SetProperty(ref _leagueList, value); }
+        }
+
+        //private List<Match> _liveMatchesList;
+
+        //public List<Match> LiveMatchesList
+        //{
+        //    get { return _liveMatchesList; }
+        //    set { SetProperty(ref _liveMatchesList, value); }
+        //}
+
+        private string _loadingData;
+
+        public string LoadingData
+        {
+            get { return _loadingData; }
+            set { SetProperty(ref _loadingData, value); }
+        }
+
+        #endregion
 
         public CountryViewModel()
         {
@@ -105,24 +148,63 @@ namespace FootballApp.ViewModels
             ClearSelectionCommand = new CustomCommand(ClearSelection, CanClearSelection);
         }
 
-        private void ClearSelection(object obj)
+        private async void LoadCountries()
         {
-            CountrySearch = "";
+            //LiveMatchesList = await repository.LoadLive("0");
+            //LeagueList = await repository.LoadLeague();
+            //Messenger.Default.Send<List<League>>(LeagueList);
+            MemoryList = await repository.LoadCountry();
             CountryList = MemoryList;
-            TabIndex = 0;
-            Messenger.Default.Send(TabIndex);
-            SelectedCountry = null;
+
+            if (CountryList.Count == 0)
+            {
+                ListOfCountries = false;
+                NoCountries = true;
+            }
+            else
+            {
+                ListOfCountries = true;
+                NoCountries = false;
+            }
+
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
-            ClearButton = false;
-            //Messenger.Default.Send(ClearButton);
+
+            //SortCountries();
+            //LoadingData = "loaded";
+            //Messenger.Default.Send(LoadingData);
         }
 
-        private bool CanClearSelection(object obj)
-        {
-            return SelectedCountry != null;
-        }
+        //private void SortCountries()
+        //{
+        //    SearchCountryList = new List<Country>();
 
+        //    foreach (Country country in CountryList)
+        //    {
+        //        foreach (League league in LeagueList)
+        //        {
+        //            if (country.id == league.country_id)
+        //            {
+        //                foreach (Match match in LiveMatchesList)
+        //                {
+        //                    if (league.id.ToString() == match.league_id)
+        //                    {
+
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    CountryList = SearchCountryList;
+        //    CountryList = CountryList.Distinct().ToList();
+        //    MemoryList = CountryList;
+        //}
+
+        /// <summary>
+        /// When user searches for a country look for countries that contain the users input
+        /// </summary>
+        /// <param name="countrySearch"></param>
         private void SortCountryList(string countrySearch)
         {
             CountryList = MemoryList;
@@ -144,6 +226,10 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// When user selects a Country
+        /// </summary>
+        /// <param name="obj"></param>
         private void SelectCountry(object obj)
         {
             if (SelectedCountry != null)
@@ -160,24 +246,30 @@ namespace FootballApp.ViewModels
             return CountryList.Count > 0;
         }
 
-        private async void LoadCountries()
+        
+
+        /// <summary>
+        /// clear button resets the app and clears all of the users selections
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ClearSelection(object obj)
         {
-            MemoryList = await repository.LoadCountry();
+            CountrySearch = "";
             CountryList = MemoryList;
 
-            if (CountryList.Count == 0)
-            {
-                ListOfCountries = false;
-                NoCountries = true;
-            }
-            else
-            {
-                ListOfCountries = true;
-                NoCountries = false;
-            }
+            TabIndex = 0;
+            Messenger.Default.Send(TabIndex);
 
+            SelectedCountry = null;
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
+
+            ClearButton = false;
+        }
+
+        private bool CanClearSelection(object obj)
+        {
+            return SelectedCountry != null;
         }
     }
 }

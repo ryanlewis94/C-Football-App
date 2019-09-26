@@ -8,6 +8,7 @@
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=StandingsViewModel}">
     <Grid>
+        <!--League Table-->
         <DataGrid ItemsSource="{Binding StandingsList}"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
@@ -19,12 +20,12 @@
                 <DataGridTextColumn Header="w" Binding="{Binding won}"/>
                 <DataGridTextColumn Header="d" Binding="{Binding drawn}"/>
                 <DataGridTextColumn Header="l" Binding="{Binding lost}"/>
-                <!--<DataGridTextColumn Header="gf" Binding="{Binding goals_scored}"/>
-                <DataGridTextColumn Header="ga" Binding="{Binding goals_conceded}"/>-->
                 <DataGridTextColumn Header="gd" Binding="{Binding goal_diff}"/>
                 <DataGridTextColumn Header="p" Binding="{Binding points}"/>
             </DataGrid.Columns>
         </DataGrid>
+        
+        <!--Message to user-->
         <StackPanel Visibility="{Binding NoStandings, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <TextBlock Text="{Binding NoLeagueMessage}"
                        TextWrapping="Wrap"

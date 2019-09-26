@@ -12,7 +12,7 @@ namespace FootballApp.Classes
         public List<League> league { get; set; }
         public List<Match> match { get; set; }
         public List<Table> table { get; set; }
-
+        public List<Event> @event { get; set; }
 
         public List<Fixture> fixture { get; set; }
     }

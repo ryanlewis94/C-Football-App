@@ -19,6 +19,11 @@ namespace FootballApp.ViewModels
         public ICommand LeagueSelectedCommand { get; set; }
         public ICommand SortLeaguesCommand { get; set; }
 
+        #region Properties
+
+        /// <summary>
+        /// All lists for sorting and filtering the leagues
+        /// </summary>
         private List<League> _mainList;
 
         public List<League> MainList
@@ -51,6 +56,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _searchLeagueList, value); }
         }
 
+        /// <summary>
+        /// Stores the league selected by the user
+        /// </summary>
         private League _selectedLeague;
 
         public League SelectedLeague
@@ -59,6 +67,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _selectedLeague, value); }
         }
 
+        /// <summary>
+        /// changes the index of the main tab control
+        /// </summary>
         private int _tabIndex;
 
         public int TabIndex
@@ -67,6 +78,20 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _tabIndex, value); }
         }
 
+        /// <summary>
+        /// stores the users search input
+        /// </summary>
+        private string _leagueSearch;
+
+        public string LeagueSearch
+        {
+            get { return _leagueSearch; }
+            set { SetProperty(ref _leagueSearch, value); }
+        }
+
+        /// <summary>
+        /// stores the countries name that is selected
+        /// </summary>
         private string _countryName;
 
         public string CountryName
@@ -75,6 +100,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _countryName, value); }
         }
 
+        /// <summary>
+        /// bools for the visibility converter
+        /// </summary>
         private bool _listOfLeagues;
         public bool ListOfLeagues
         {
@@ -87,14 +115,6 @@ namespace FootballApp.ViewModels
         {
             get { return _noLeagues; }
             set { SetProperty(ref _noLeagues, value); }
-        }
-
-        private string _leagueSearch;
-
-        public string LeagueSearch
-        {
-            get { return _leagueSearch; }
-            set { SetProperty(ref _leagueSearch, value); }
         }
 
         private string _leagueSelectedBool;
@@ -113,6 +133,8 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _loadingData, value); }
         }
 
+        #endregion
+
         public LeagueViewModel()
         {
             repository = new Football();
@@ -124,46 +146,6 @@ namespace FootballApp.ViewModels
         {
             LeagueSelectedCommand = new CustomCommand(SelectLeague, CanSelectLeague);
             SortLeaguesCommand = new DelegateCommand<string>(SortLeagueList, () => true);
-        }
-
-        private void SortLeagueList(string leagueSearch)
-        {
-            LeagueList = MemoryList;
-            SearchLeagueList = new List<League>();
-
-            foreach (League league in LeagueList)
-            {
-                if (league.name.Contains(leagueSearch, StringComparison.OrdinalIgnoreCase))
-                {
-                    SearchLeagueList.Add(league);
-                }
-            }
-
-            LeagueList = SearchLeagueList;
-
-            if(LeagueList.Count == 0)
-            {
-                
-            }
-        }
-
-        private void SelectLeague(object obj)
-        {
-            if (SelectedLeague != null)
-            {
-                Messenger.Default.Send(SelectedLeague);
-                LeagueSelectedBool = "selected";
-                Messenger.Default.Send(LeagueSelectedBool);
-                TabIndex = 2;
-                Messenger.Default.Send<int>(TabIndex);
-                LoadingData = "unloaded";
-                Messenger.Default.Send(LoadingData);
-            }
-        }
-
-        private bool CanSelectLeague(object obj)
-        {
-            return LeagueList.Count != 0;
         }
 
         private async void LoadLeagues()
@@ -194,13 +176,35 @@ namespace FootballApp.ViewModels
             {
                 LeagueList = MainList;
                 MemoryList = MainList;
+
                 LeagueSelectedBool = "unselected";
                 Messenger.Default.Send(LeagueSelectedBool);
+
                 SelectedLeague = null;
                 SelectedLeague = new League();
                 Messenger.Default.Send(SelectedLeague);
             }
+
             LeagueListCountCheck();
+        }
+
+        /// <summary>
+        /// filters the league list based on the country that was selected
+        /// </summary>
+        /// <param name="countryid"></param>
+        private void FilterLeagueByCountry(string countryid)
+        {
+            SearchLeagueList = new List<League>();
+
+            foreach (League league in LeagueList)
+            {
+                if (league.country_id == countryid)
+                {
+                    SearchLeagueList.Add(league);
+                }
+            }
+
+            LeagueList = SearchLeagueList.OrderBy(l => l.id).ToList();
         }
 
         private void LeagueListCountCheck()
@@ -217,19 +221,55 @@ namespace FootballApp.ViewModels
             }
         }
 
-        private void FilterLeagueByCountry(string countryid)
+        /// <summary>
+        /// sorts the league list based on the users search input
+        /// </summary>
+        /// <param name="leagueSearch"></param>
+        private void SortLeagueList(string leagueSearch)
         {
+            LeagueList = MemoryList;
             SearchLeagueList = new List<League>();
 
             foreach (League league in LeagueList)
             {
-                if (league.country_id == countryid)
+                if (league.name.Contains(leagueSearch, StringComparison.OrdinalIgnoreCase))
                 {
                     SearchLeagueList.Add(league);
                 }
             }
 
-            LeagueList = SearchLeagueList.OrderBy(l => l.id).ToList();
+            LeagueList = SearchLeagueList;
+
+            if (LeagueList.Count == 0)
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// When the user selects a league
+        /// </summary>
+        /// <param name="obj"></param>
+        private void SelectLeague(object obj)
+        {
+            if (SelectedLeague != null)
+            {
+                Messenger.Default.Send(SelectedLeague);
+
+                LeagueSelectedBool = "selected";
+                Messenger.Default.Send(LeagueSelectedBool);
+
+                TabIndex = 2;
+                Messenger.Default.Send<int>(TabIndex);
+
+                LoadingData = "unloaded";
+                Messenger.Default.Send(LoadingData);
+            }
+        }
+
+        private bool CanSelectLeague(object obj)
+        {
+            return LeagueList.Count != 0;
         }
     }
 }
