@@ -61,6 +61,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayEventsList, value); }
         }
 
+        /// <summary>
+        /// blank event gets inserted to the home or away list
+        /// </summary>
         private Event _blankEvent;
 
         public Event BlankEvent
@@ -79,11 +82,9 @@ namespace FootballApp.ViewModels
             LoadTimers();
         }
 
-        private void LoadEvents()
-        {
-            Messenger.Default.Register<Match>(this, OnMatchReceived);
-        }
-
+        /// <summary>
+        /// sets the timer
+        /// </summary>
         private void LoadTimers()
         {
             Timer = new DispatcherTimer();
@@ -92,14 +93,33 @@ namespace FootballApp.ViewModels
             Timer.Start();
         }
 
+        /// <summary>
+        /// updates the live game and events every 60 seconds
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            OnMatchListReceived(await repository.LoadLive("0"));
+            UpdateMatchList(await repository.LoadLive("0"));
             EventsList = await repository.LoadEvents(CurrentMatch.id);
             SortEvents();
         }
 
-        private void OnMatchListReceived(List<Match> matchList)
+        private void LoadCommands()
+        {
+            CloseMatchCommand = new CustomCommand(CloseMatch, CanCloseMatch);
+        }
+
+        private void LoadEvents()
+        {
+            Messenger.Default.Register<Match>(this, OnMatchReceived);
+        }
+
+        /// <summary>
+        /// updates the user with the latest events and score
+        /// </summary>
+        /// <param name="matchList"></param>
+        private void UpdateMatchList(List<Match> matchList)
         {
             foreach (Match match in matchList)
             {
@@ -110,27 +130,13 @@ namespace FootballApp.ViewModels
             }
         }
 
-        private void LoadCommands()
-        {
-            CloseMatchCommand = new CustomCommand(CloseMatch, CanCloseMatch);
-        }
-
-        private void CloseMatch(object obj)
-        {
-            Messenger.Default.Send("matchClosed");
-            Timer.Stop();
-        }
-
-        private bool CanCloseMatch(object obj)
-        {
-            return CurrentMatch != null;
-        }
-
-        
-
+        /// <summary>
+        /// When a match gets selected
+        /// </summary>
+        /// <param name="match"></param>
         private async void OnMatchReceived(Match match)
         {
-            if(match != null)
+            if (match != null)
             {
                 LoadTimers();
                 CurrentMatch = match;
@@ -138,9 +144,12 @@ namespace FootballApp.ViewModels
                 SortEvents();
                 Messenger.Default.Send("matchOpened");
             }
-            
+
         }
 
+        /// <summary>
+        /// Adds images for the different events and sorts the home and away into different lists
+        /// </summary>
         private void SortEvents()
         {
             HomeEventsList = new List<Event>();
@@ -184,6 +193,23 @@ namespace FootballApp.ViewModels
                     HomeEventsList.Insert(0, BlankEvent);
                 }
             }
+        }
+
+        /// <summary>
+        ///Close button to close the live events screen 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void CloseMatch(object obj)
+        {
+            MessageBox.Show(HomeEventsList.Count.ToString());
+            MessageBox.Show(AwayEventsList.Count.ToString());
+            Messenger.Default.Send("matchClosed");
+            Timer.Stop();
+        }
+
+        private bool CanCloseMatch(object obj)
+        {
+            return CurrentMatch != null;
         }
     }
 }

@@ -216,7 +216,6 @@ namespace FootballApp.ViewModels
         private async void LoadMatches()
         {
             LiveList = await repository.LoadLive("0");
-            Messenger.Default.Send<List<Match>>(LiveList);
 
             Messenger.Default.Register<League>(this, OnLeagueReceived);
             

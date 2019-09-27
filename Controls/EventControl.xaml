@@ -8,12 +8,14 @@
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}">
     <StackPanel>
+        <!--Back Button-->
         <customControls:CircularButton Command="{Binding CloseMatchCommand}"
-                                           ToolTip="Close"
+                                           ToolTip="Back"
                                            IconGlyph="&#xf0a8;"
                                            FontSize="20"
                                            Margin="5"
                                            HorizontalAlignment="Left"/>
+        <!--Home and Away Score Display-->
         <StackPanel DataContext="{Binding CurrentMatch}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -45,12 +47,14 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </StackPanel>
-
+        
+        <!--List of live events-->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
+            <!--Home Events-->
             <ListView Grid.Column="0"
                       ItemsSource="{Binding HomeEventsList}"
                       HorizontalAlignment="Left"
@@ -77,6 +81,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            
+            <!--Away Events-->
             <ListView Grid.Column="1"
                       ItemsSource="{Binding AwayEventsList}"
                       HorizontalAlignment="Right"
