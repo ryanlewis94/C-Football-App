@@ -264,6 +264,7 @@ namespace FootballApp.ViewModels
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
 
+            Messenger.Default.Send("matchClosed");
             ClearButton = false;
         }
 

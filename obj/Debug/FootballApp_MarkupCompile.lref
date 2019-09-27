@@ -2,6 +2,7 @@
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\App.xaml;;
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\ClearButtonControl.xaml;;
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\CountryControl.xaml;;
+FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\EventControl.xaml;;
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\LeagueControl.xaml;;
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\LoadingOverlayView.xaml;;
 FC:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\Controls\MatchControl.xaml;;

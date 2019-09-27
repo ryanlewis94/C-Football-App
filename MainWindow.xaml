@@ -15,8 +15,9 @@
                       Icon="/Resources/football-2-48.ico">
     <Grid>
         <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
-                                               controls:TabControlHelper.IsUnderlined="True"
-                                               controls:TabControlHelper.Transition="Down">
+                                                   controls:TabControlHelper.IsUnderlined="True"
+                                                   controls:TabControlHelper.Transition="Down"
+                                                   Visibility="{Binding MainView, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <!--user controls-->
             <TabItem Header="Countries">
                 <uc:CountryControl/>
@@ -26,9 +27,6 @@
             </TabItem>
             <TabItem Header="Matches">
                 <uc:MatchControl/>
-            </TabItem>
-            <TabItem Header="Events">
-                <uc:EventControl/>
             </TabItem>
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
@@ -41,8 +39,11 @@
             <uc:ClearButtonControl/>
         </StackPanel>
         <!--Loading overlay-->
-        <Grid>
-            <uc:LoadingOverlayView Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+        <Grid Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <uc:LoadingOverlayView/>
+        </Grid>
+        <Grid Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <uc:EventControl/>
         </Grid>
     </Grid>
 </controls:MetroWindow>

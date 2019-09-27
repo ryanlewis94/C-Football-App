@@ -216,6 +216,7 @@ namespace FootballApp.ViewModels
         private async void LoadMatches()
         {
             LiveList = await repository.LoadLive("0");
+            Messenger.Default.Send<List<Match>>(LiveList);
 
             Messenger.Default.Register<League>(this, OnLeagueReceived);
             
@@ -304,7 +305,11 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void SelectMatch(object obj)
         {
-            Messenger.Default.Send(SelectedMatch);
+            if (SelectedMatch != null)
+            {
+                Messenger.Default.Send("unloaded");
+                Messenger.Default.Send(SelectedMatch);
+            }
         }
 
         private bool CanSelectMatch(object obj)

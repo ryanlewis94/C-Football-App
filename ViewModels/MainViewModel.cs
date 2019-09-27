@@ -14,7 +14,7 @@ namespace FootballApp.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        #region
+        #region Properties
 
         /// <summary>
         /// changes the tab index of the main tab control
@@ -46,6 +46,22 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _loadingData, value); }
         }
 
+        private bool _matchData;
+
+        public bool MatchData
+        {
+            get { return _matchData; }
+            set { SetProperty(ref _matchData, value); }
+        }
+
+        private bool _mainView = true;
+
+        public bool MainView
+        {
+            get { return _mainView; }
+            set { SetProperty(ref _mainView, value); }
+        }
+
         #endregion
 
         public MainViewModel()
@@ -65,21 +81,31 @@ namespace FootballApp.ViewModels
         /// <param name="dataLoaded"></param>
         private void OnDataReceived(string dataLoaded)
         {
-            if(dataLoaded == "loaded")
+            switch (dataLoaded)
             {
-                LoadingData = false;
-            }
-            else if( dataLoaded == "unloaded")
-            {
-                LoadingData = true;
-            }
-            else if(dataLoaded == "selected")
-            {
-                LeagueSelectedBool = true;
-            }
-            else if(dataLoaded == "unselected")
-            {
-                LeagueSelectedBool = false;
+                case "loaded":
+                    LoadingData = false;
+                    break;
+                case "unloaded":
+                    LoadingData = true;
+                    break;
+                case "selected":
+                    LeagueSelectedBool = true;
+                    break;
+                case "unselected":
+                    LeagueSelectedBool = false;
+                    break;
+                case "matchOpened":
+                    MatchData = true;
+                    LoadingData = false;
+                    MainView = false;
+                    break;
+                case "matchClosed":
+                    MatchData = false;
+                    MainView = true;
+                    break;
+                default:
+                    break;
             }
         }
 

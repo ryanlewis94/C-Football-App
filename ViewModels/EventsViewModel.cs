@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
@@ -16,7 +17,11 @@ namespace FootballApp.ViewModels
     {
         private IFootball repository;
 
+        public ICommand CloseMatchCommand { get; set; }
+
         #region Properties
+
+        private DispatcherTimer Timer { get; set; }
 
         /// <summary>
         /// Store the selected Match
@@ -70,6 +75,8 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadEvents();
+            LoadCommands();
+            LoadTimers();
         }
 
         private void LoadEvents()
@@ -77,13 +84,59 @@ namespace FootballApp.ViewModels
             Messenger.Default.Register<Match>(this, OnMatchReceived);
         }
 
+        private void LoadTimers()
+        {
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromSeconds(60);
+            Timer.Tick += Timer_Tick;
+            Timer.Start();
+        }
+
+        private async void Timer_Tick(object sender, EventArgs e)
+        {
+            OnMatchListReceived(await repository.LoadLive("0"));
+            EventsList = await repository.LoadEvents(CurrentMatch.id);
+            SortEvents();
+        }
+
+        private void OnMatchListReceived(List<Match> matchList)
+        {
+            foreach (Match match in matchList)
+            {
+                if (match.id == CurrentMatch.id)
+                {
+                    CurrentMatch = match;
+                }
+            }
+        }
+
+        private void LoadCommands()
+        {
+            CloseMatchCommand = new CustomCommand(CloseMatch, CanCloseMatch);
+        }
+
+        private void CloseMatch(object obj)
+        {
+            Messenger.Default.Send("matchClosed");
+            Timer.Stop();
+        }
+
+        private bool CanCloseMatch(object obj)
+        {
+            return CurrentMatch != null;
+        }
+
+        
+
         private async void OnMatchReceived(Match match)
         {
             if(match != null)
             {
+                LoadTimers();
                 CurrentMatch = match;
                 EventsList = await repository.LoadEvents(match.id);
                 SortEvents();
+                Messenger.Default.Send("matchOpened");
             }
             
         }
