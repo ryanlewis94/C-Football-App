@@ -48,12 +48,12 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _leagueList, value); }
         }
 
-        private List<League> _searchLeagueList;
+        private List<League> _searchList;
 
-        public List<League> SearchLeagueList
+        public List<League> SearchList
         {
-            get { return _searchLeagueList; }
-            set { SetProperty(ref _searchLeagueList, value); }
+            get { return _searchList; }
+            set { SetProperty(ref _searchList, value); }
         }
 
         /// <summary>
@@ -100,9 +100,24 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _countryName, value); }
         }
 
+        private string _searchCriteria;
+
+        public string SearchCriteria
+        {
+            get { return _searchCriteria; }
+            set { SetProperty(ref _searchCriteria, value); }
+        }
+
         /// <summary>
         /// bools for the visibility converter
         /// </summary>
+        private bool _leagueSearchBox;
+        public bool LeagueSearchBox
+        {
+            get { return _leagueSearchBox; }
+            set { SetProperty(ref _leagueSearchBox, value); }
+        }
+
         private bool _listOfLeagues;
         public bool ListOfLeagues
         {
@@ -115,6 +130,13 @@ namespace FootballApp.ViewModels
         {
             get { return _noLeagues; }
             set { SetProperty(ref _noLeagues, value); }
+        }
+
+        private bool _noSearchResults;
+        public bool NoSearchResults
+        {
+            get { return _noSearchResults; }
+            set { SetProperty(ref _noSearchResults, value); }
         }
 
         private string _leagueSelectedBool;
@@ -151,8 +173,8 @@ namespace FootballApp.ViewModels
         private async void LoadLeagues()
         {
             MainList = await repository.LoadLeague();
-            MemoryList = MainList;
             LeagueList = MainList;
+            MemoryList = MainList;
             LeagueListCountCheck();
 
             Messenger.Default.Register<Country>(this, OnCountryReceived);
@@ -168,9 +190,7 @@ namespace FootballApp.ViewModels
 
             if (!string.IsNullOrEmpty(country.id))
             {
-                LeagueList = MainList;
                 FilterLeagueByCountry(country.id);
-                MemoryList = LeagueList;
             }
             else
             {
@@ -194,28 +214,31 @@ namespace FootballApp.ViewModels
         /// <param name="countryid"></param>
         private void FilterLeagueByCountry(string countryid)
         {
-            SearchLeagueList = new List<League>();
+            LeagueList = new List<League>();
 
-            foreach (League league in LeagueList)
+            foreach (League league in MainList)
             {
                 if (league.country_id == countryid)
                 {
-                    SearchLeagueList.Add(league);
+                    LeagueList.Add(league);
                 }
             }
 
-            LeagueList = SearchLeagueList.OrderBy(l => l.id).ToList();
+            LeagueList = LeagueList.OrderBy(l => l.id).ToList();
+            MemoryList = LeagueList;
         }
 
         private void LeagueListCountCheck()
         {
             if (LeagueList.Count == 0)
             {
+                LeagueSearchBox = false;
                 ListOfLeagues = false;
                 NoLeagues = true;
             }
             else
             {
+                LeagueSearchBox = true;
                 ListOfLeagues = true;
                 NoLeagues = false;
             }
@@ -227,22 +250,28 @@ namespace FootballApp.ViewModels
         /// <param name="leagueSearch"></param>
         private void SortLeagueList(string leagueSearch)
         {
-            LeagueList = MemoryList;
-            SearchLeagueList = new List<League>();
+            SearchList = new List<League>();
 
-            foreach (League league in LeagueList)
+            foreach (League league in MemoryList)
             {
                 if (league.name.Contains(leagueSearch, StringComparison.OrdinalIgnoreCase))
                 {
-                    SearchLeagueList.Add(league);
+                    SearchList.Add(league);
                 }
             }
 
-            LeagueList = SearchLeagueList;
+            LeagueList = SearchList;
 
             if (LeagueList.Count == 0)
             {
-
+                SearchCriteria = $"No results found with criteria of '{leagueSearch}'";
+                ListOfLeagues = false;
+                NoSearchResults = true;
+            }
+            else
+            {
+                ListOfLeagues = true;
+                NoSearchResults = false;
             }
         }
 

@@ -100,9 +100,12 @@ namespace FootballApp.ViewModels
         /// <param name="e"></param>
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            UpdateMatchList(await repository.LoadLive("0"));
-            EventsList = await repository.LoadEvents(CurrentMatch.id);
-            SortEvents();
+            if (CurrentMatch != null)
+            {
+                UpdateMatchList(await repository.LoadLive("0"));
+                EventsList = await repository.LoadEvents(CurrentMatch.id);
+                SortEvents();
+            }
         }
 
         private void LoadCommands()
@@ -125,7 +128,7 @@ namespace FootballApp.ViewModels
             {
                 if (match.id == CurrentMatch.id)
                 {
-                    CurrentMatch = match;
+                    CurrentMatch = match;                    
                 }
             }
         }

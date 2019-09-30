@@ -22,8 +22,7 @@
                  FontSize="15"
                  Margin="5"
                  Width="300"
-                 Grid.Row="0"
-                 Visibility="{Binding ListOfCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                 Grid.Row="0">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding SortCountriesCommand}"
@@ -55,7 +54,7 @@
                    
             <!--Message to the user-->
             <StackPanel Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-                <TextBlock Text="Something went wrong, no countries available!"
+                <TextBlock Text="{Binding NoSearchResults}"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
                            Margin="25"
@@ -65,7 +64,7 @@
                            VerticalAlignment="Center"/>
                 <TextBlock Text="&#xf57d;"
                            Margin="10"
-                           FontSize="64"
+                           FontSize="88"
                            Foreground="{DynamicResource AccentColorBrush3}"
                            FontFamily="{DynamicResource FontAwesome}"
                            HorizontalAlignment="Center"

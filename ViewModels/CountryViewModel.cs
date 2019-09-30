@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace FootballApp.ViewModels
@@ -41,12 +42,12 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _countryList, value); }
         }
 
-        private List<Country> _searchCountryList;
+        private List<Country> _searchList;
 
-        public List<Country> SearchCountryList
+        public List<Country> SearchList
         {
-            get { return _searchCountryList; }
-            set { SetProperty(ref _searchCountryList, value); }
+            get { return _searchList; }
+            set { SetProperty(ref _searchList, value); }
         }
 
         /// <summary>
@@ -132,6 +133,14 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _loadingData, value); }
         }
 
+        private string _noSearchResults;
+
+        public string NoSearchResults
+        {
+            get { return _noSearchResults; }
+            set { SetProperty(ref _noSearchResults, value); }
+        }
+
         #endregion
 
         public CountryViewModel()
@@ -156,16 +165,7 @@ namespace FootballApp.ViewModels
             MemoryList = await repository.LoadCountry();
             CountryList = MemoryList;
 
-            if (CountryList.Count == 0)
-            {
-                ListOfCountries = false;
-                NoCountries = true;
-            }
-            else
-            {
-                ListOfCountries = true;
-                NoCountries = false;
-            }
+            CountryCountCheck();
 
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
@@ -207,22 +207,32 @@ namespace FootballApp.ViewModels
         /// <param name="countrySearch"></param>
         private void SortCountryList(string countrySearch)
         {
-            CountryList = MemoryList;
-            SearchCountryList = new List<Country>();
+            SearchList = new List<Country>();
 
-            foreach (Country country in CountryList)
+            foreach (Country country in MemoryList)
             {
                 if (country.name.Contains(countrySearch, StringComparison.OrdinalIgnoreCase))
                 {
-                    SearchCountryList.Add(country);
+                    SearchList.Add(country);
                 }
             }
 
-            CountryList = SearchCountryList;
+            CountryList = SearchList;
+            NoSearchResults = $"No results found with criteria of '{countrySearch}'";
+            CountryCountCheck();
+        }
 
+        private void CountryCountCheck()
+        {
             if (CountryList.Count == 0)
             {
-
+                ListOfCountries = false;
+                NoCountries = true;
+            }
+            else
+            {
+                ListOfCountries = true;
+                NoCountries = false;
             }
         }
 

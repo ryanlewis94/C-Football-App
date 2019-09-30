@@ -23,7 +23,7 @@
                  Margin="5"
                  Width="300"
                  Grid.Row="0"
-                 Visibility="{Binding ListOfLeagues, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                 Visibility="{Binding LeagueSearchBox, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding SortLeaguesCommand}"
@@ -61,6 +61,25 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
                 <TextBlock Text="&#xf57d;"
+                           TextAlignment="Center"
+                           Margin="10"
+                           FontSize="88"
+                           Foreground="{DynamicResource AccentColorBrush3}"
+                           FontFamily="{DynamicResource FontAwesome}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding NoSearchResults, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                <TextBlock Text="{Binding SearchCriteria}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="25"
+                           FontSize="24"
+                           Foreground="{DynamicResource AccentColorBrush3}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="&#xf1e3;"
                            TextAlignment="Center"
                            Margin="10"
                            FontSize="88"
