@@ -102,7 +102,7 @@ namespace FootballApp.ViewModels
         {
             if (CurrentMatch != null)
             {
-                UpdateMatchList(await repository.LoadLive("0"));
+                UpdateMatchList(await repository.LoadLive());
                 EventsList = await repository.LoadEvents(CurrentMatch.id);
                 SortEvents();
             }
@@ -145,6 +145,7 @@ namespace FootballApp.ViewModels
                 CurrentMatch = match;
                 EventsList = await repository.LoadEvents(match.id);
                 SortEvents();
+                //displays the match event window
                 Messenger.Default.Send("matchOpened");
             }
 
@@ -206,6 +207,7 @@ namespace FootballApp.ViewModels
         {
             MessageBox.Show(HomeEventsList.Count.ToString());
             MessageBox.Show(AwayEventsList.Count.ToString());
+            //closes the match event window
             Messenger.Default.Send("matchClosed");
             Timer.Stop();
         }

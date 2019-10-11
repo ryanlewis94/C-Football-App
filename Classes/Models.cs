@@ -8,11 +8,13 @@ namespace FootballApp.Classes
 {
     public class Country
     {
+        public string index { get; set; }
         public string id { get; set; }
         public string name { get; set; }
-        public string is_real { get; set; }
-        public string leagues { get; set; }
-        public string scores { get; set; }
+        //public League leagueList { get; set; }
+        public string leagueName { get; set; }
+        public Match matchList { get; set; }
+        public Fixture fixtureList { get; set; }
     }
     public class League
     {
@@ -20,7 +22,19 @@ namespace FootballApp.Classes
         public string name { get; set; }
         public string country_id { get; set; }
         public string scores { get; set; }
+        public Match matchList { get; set; }
+        public Fixture fixtureList { get; set; }
     }
+
+    public class Competition
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public List<Country> countries { get; set; }
+        public List<Country> federations { get; set; }
+    }
+
+
     public class Match
     {
         public string id { get; set; }
@@ -78,15 +92,10 @@ namespace FootballApp.Classes
     public class Fixture
     {
         public string id { get; set; }
-        public string date { get; set; }
         public string time { get; set; }
-        public string round { get; set; }
         public string home_name { get; set; }
         public string away_name { get; set; }
-        public string location { get; set; }
         public string league_id { get; set; }
-        public string home_id { get; set; }
-        public string away_id { get; set; }
         public string competition_id { get; set; }
     }
 }

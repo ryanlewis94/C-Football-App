@@ -13,7 +13,7 @@ namespace FootballApp.Api
         public async Task<List<Country>> LoadCountry()
         {
 
-            string url = "http://livescore-api.com/api-client/countries/list.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv";
+            string url = "http://livescore-api.com/api-client/countries/list.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -32,7 +32,7 @@ namespace FootballApp.Api
 
         public async Task<List<League>> LoadLeague()
         {
-            string url = $"http://livescore-api.com/api-client/leagues/list.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv";
+            string url = $"http://livescore-api.com/api-client/leagues/list.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -49,9 +49,9 @@ namespace FootballApp.Api
             }
         }
 
-        public async Task<List<Match>> LoadLive(string leagueId)
+        public async Task<List<Match>> LoadLive()
         {
-            string url = $"http://livescore-api.com/api-client/scores/live.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv&league={leagueId}";
+            string url = $"http://livescore-api.com/api-client/scores/live.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -70,7 +70,7 @@ namespace FootballApp.Api
 
         public async Task<List<Table>> LoadStandings(string leagueId)
         {
-            string url = $"http://livescore-api.com/api-client/leagues/table.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv&league={leagueId}";
+            string url = $"http://livescore-api.com/api-client/leagues/table.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S&league={leagueId}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -89,7 +89,7 @@ namespace FootballApp.Api
 
         public async Task<List<Event>> LoadEvents(string matchId)
         {
-            string url = $"http://livescore-api.com/api-client/scores/events.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv&id={matchId}";
+            string url = $"http://livescore-api.com/api-client/scores/events.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S&id={matchId}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -107,10 +107,13 @@ namespace FootballApp.Api
         }
 
 
-        public async Task<List<Fixture>> LoadFixture()
+        public async Task<List<Fixture>> LoadFixture(DateTime? date, int pageNo)
         {
+            string[] currentDate = date.ToString().Split(' ');
+            string[] convertedDate = currentDate[0].Split('/');
+            string fixtureDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
 
-            string url = $"http://livescore-api.com/api-client/fixtures/matches.json?key=8uoqtmuaQ1s4bRe4&secret=M2baUvmhpyZunhzvLYVekqpbrRgCJuHv&date=2019-09-21&league=25";
+            string url = $"http://livescore-api.com/api-client/fixtures/matches.json?key=1OCIT6FNkAWmgIRp&secret=41WQJvxTJEY5uDkvrWdk3T7nt4KKNB9S&date={fixtureDate}&page={pageNo}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -118,7 +121,7 @@ namespace FootballApp.Api
                 {
                     Model fixture = await response.Content.ReadAsAsync<Model>();
 
-                    return fixture.data.fixture;
+                    return fixture.data.fixtures;
                 }
                 else
                 {

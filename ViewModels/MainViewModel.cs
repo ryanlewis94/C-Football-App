@@ -83,18 +83,21 @@ namespace FootballApp.ViewModels
         {
             switch (dataLoaded)
             {
+                //Show or hide the loading overlay
                 case "loaded":
                     LoadingData = false;
                     break;
                 case "unloaded":
                     LoadingData = true;
                     break;
+                //Show or hide the league standings tab
                 case "selected":
                     LeagueSelectedBool = true;
                     break;
                 case "unselected":
                     LeagueSelectedBool = false;
                     break;
+                //Show or hide the match event window
                 case "matchOpened":
                     MatchData = true;
                     LoadingData = false;

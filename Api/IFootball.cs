@@ -11,11 +11,11 @@ namespace FootballApp.Api
     {
         Task<List<Country>> LoadCountry();
         Task<List<League>> LoadLeague();
-        Task<List<Match>> LoadLive(string leagueId);
+        Task<List<Match>> LoadLive();
         Task<List<Table>> LoadStandings(string leagueId);
         Task<List<Event>> LoadEvents(string matchId);
 
-        Task<List<Fixture>> LoadFixture();
+        Task<List<Fixture>> LoadFixture(DateTime? date, int pageNo);
 
     }
 }

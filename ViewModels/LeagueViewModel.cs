@@ -68,17 +68,6 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// changes the index of the main tab control
-        /// </summary>
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get { return _tabIndex; }
-            set { SetProperty(ref _tabIndex, value); }
-        }
-
-        /// <summary>
         /// stores the users search input
         /// </summary>
         private string _leagueSearch;
@@ -139,22 +128,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noSearchResults, value); }
         }
 
-        private string _leagueSelectedBool;
-
-        public string LeagueSelectedBool
-        {
-            get { return _leagueSelectedBool; }
-            set { SetProperty(ref _leagueSelectedBool, value); }
-        }
-
-        private string _loadingData;
-
-        public string LoadingData
-        {
-            get { return _loadingData; }
-            set { SetProperty(ref _loadingData, value); }
-        }
-
         #endregion
 
         public LeagueViewModel()
@@ -179,8 +152,8 @@ namespace FootballApp.ViewModels
 
             Messenger.Default.Register<Country>(this, OnCountryReceived);
 
-            LoadingData = "loaded";
-            Messenger.Default.Send(LoadingData);
+            //hides the loading screen
+            //Messenger.Default.Send("loaded");
         }
 
         private void OnCountryReceived(Country country)
@@ -192,13 +165,13 @@ namespace FootballApp.ViewModels
             {
                 FilterLeagueByCountry(country.id);
             }
-            else
+            else //League is deselected
             {
                 LeagueList = MainList;
                 MemoryList = MainList;
 
-                LeagueSelectedBool = "unselected";
-                Messenger.Default.Send(LeagueSelectedBool);
+                //Hides the standings tab when no league is selected
+                Messenger.Default.Send("unselected");
 
                 SelectedLeague = null;
                 SelectedLeague = new League();
@@ -224,10 +197,14 @@ namespace FootballApp.ViewModels
                 }
             }
 
+            //orders the list by id
             LeagueList = LeagueList.OrderBy(l => l.id).ToList();
             MemoryList = LeagueList;
         }
 
+        /// <summary>
+        /// checks if the list is populated
+        /// </summary>
         private void LeagueListCountCheck()
         {
             if (LeagueList.Count == 0)
@@ -262,6 +239,7 @@ namespace FootballApp.ViewModels
 
             LeagueList = SearchList;
 
+            //After user search checks if league list has any records
             if (LeagueList.Count == 0)
             {
                 SearchCriteria = $"No results found with criteria of '{leagueSearch}'";
@@ -285,14 +263,14 @@ namespace FootballApp.ViewModels
             {
                 Messenger.Default.Send(SelectedLeague);
 
-                LeagueSelectedBool = "selected";
-                Messenger.Default.Send(LeagueSelectedBool);
+                //displays the standings for selected league
+                Messenger.Default.Send("selected");
 
-                TabIndex = 2;
-                Messenger.Default.Send<int>(TabIndex);
+                //Tab Index
+                Messenger.Default.Send(2);
 
-                LoadingData = "unloaded";
-                Messenger.Default.Send(LoadingData);
+                //displays loading screen
+                Messenger.Default.Send("unloaded");
             }
         }
 

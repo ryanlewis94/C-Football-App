@@ -19,15 +19,15 @@
                                                    controls:TabControlHelper.Transition="Down"
                                                    Visibility="{Binding MainView, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <!--user controls-->
-            <TabItem Header="Countries">
+            <TabItem Header="LiveScores">
                 <uc:CountryControl/>
             </TabItem>
-            <TabItem Header="Leagues">
+            <!--<TabItem Header="Leagues">
                 <uc:LeagueControl/>
             </TabItem>
             <TabItem Header="Matches">
                 <uc:MatchControl/>
-            </TabItem>
+            </TabItem>-->
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>

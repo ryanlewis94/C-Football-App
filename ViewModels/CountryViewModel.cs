@@ -4,10 +4,12 @@ using FootballApp.Commands;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -21,18 +23,13 @@ namespace FootballApp.ViewModels
         public ICommand SortCountriesCommand { get; set; }
         public ICommand ClearSelectionCommand { get; set; }
 
+        public ICommand MatchSelectedCommand { get; set; }
+
         #region Properties
 
         /// <summary>
         /// Lists for displaying Countries and sorting them when user searches
         /// </summary>
-        private List<Country> _memoryList;
-
-        public List<Country> MemoryList
-        {
-            get { return _memoryList; }
-            set { SetProperty(ref _memoryList, value); }
-        }
 
         private List<Country> _countryList;
 
@@ -42,12 +39,39 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _countryList, value); }
         }
 
-        private List<Country> _searchList;
-
-        public List<Country> SearchList
+        private List<Country> _sortCountryList;
+        public List<Country> SortCountryList
         {
-            get { return _searchList; }
-            set { SetProperty(ref _searchList, value); }
+            get { return _sortCountryList; }
+            set { SetProperty(ref _sortCountryList, value); }
+        }
+
+        private List<League> _allLeagueList;
+        public List<League> AllLeagueList
+        {
+            get { return _allLeagueList; }
+            set { SetProperty(ref _allLeagueList, value); }
+        }
+
+        private List<Match> _matchList;
+        public List<Match> MatchList
+        {
+            get { return _matchList; }
+            set { SetProperty(ref _matchList, value); }
+        }
+
+        private List<Fixture> _fixtureList;
+        public List<Fixture> FixtureList
+        {
+            get { return _fixtureList; }
+            set { SetProperty(ref _fixtureList, value); }
+        }
+
+        private List<Fixture> _fixturePageList;
+        public List<Fixture> FixturePageList
+        {
+            get { return _fixturePageList; }
+            set { SetProperty(ref _fixturePageList, value); }
         }
 
         /// <summary>
@@ -58,18 +82,11 @@ namespace FootballApp.ViewModels
         public Country SelectedCountry
         {
             get { return _selectedCountry; }
-            set { SetProperty(ref _selectedCountry, value); }
-        }
-
-        /// <summary>
-        /// changes the index of the main tab control
-        /// </summary>
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get { return _tabIndex; }
-            set { SetProperty(ref _tabIndex, value); }
+            set 
+            { 
+                SetProperty(ref _selectedCountry, value);
+                CountrySelected(_selectedCountry);
+            }
         }
 
         /// <summary>
@@ -97,34 +114,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _clearButton, value); }
         }
 
-        /// <summary>
-        /// the users search input
-        /// </summary>
-        private string _countrySearch;
-
-        public string CountrySearch
-        {
-            get { return _countrySearch; }
-            set { SetProperty(ref _countrySearch, value); }
-        }
-
-
-        private List<League> _leagueList;
-
-        public List<League> LeagueList
-        {
-            get { return _leagueList; }
-            set { SetProperty(ref _leagueList, value); }
-        }
-
-        //private List<Match> _liveMatchesList;
-
-        //public List<Match> LiveMatchesList
-        //{
-        //    get { return _liveMatchesList; }
-        //    set { SetProperty(ref _liveMatchesList, value); }
-        //}
-
         private string _loadingData;
 
         public string LoadingData
@@ -133,12 +122,16 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _loadingData, value); }
         }
 
-        private string _noSearchResults;
-
-        public string NoSearchResults
+        private DateTime? _dateSelected;
+        public DateTime? DateSelected
         {
-            get { return _noSearchResults; }
-            set { SetProperty(ref _noSearchResults, value); }
+            get { return _dateSelected; }
+            set
+            {
+                SetProperty(ref _dateSelected, value);
+                GetFixtures(_dateSelected);
+                Messenger.Default.Send("unloaded");
+            }
         }
 
         #endregion
@@ -146,80 +139,139 @@ namespace FootballApp.ViewModels
         public CountryViewModel()
         {
             repository = new Football();
-            LoadCountries();
+            //LoadCountries();
             LoadCommands();
         }
 
         private void LoadCommands()
         {
-            CountrySelectedCommand = new CustomCommand(SelectCountry, CanSelectCountry);
-            SortCountriesCommand = new DelegateCommand<string>(SortCountryList, () => true);
             ClearSelectionCommand = new CustomCommand(ClearSelection, CanClearSelection);
+            MatchSelectedCommand = new DelegateCommand<Country>(LiveMatchSelected, () => true);
+        }
+
+        private void LiveMatchSelected(Country countrySelected)
+        {
+            Console.WriteLine(countrySelected.name);
         }
 
         private async void LoadCountries()
         {
-            //LiveMatchesList = await repository.LoadLive("0");
-            //LeagueList = await repository.LoadLeague();
-            //Messenger.Default.Send<List<League>>(LeagueList);
-            MemoryList = await repository.LoadCountry();
-            CountryList = MemoryList;
+            CountryList = await repository.LoadCountry();
+            AllLeagueList = await repository.LoadLeague();
+            AllLeagueList = AllLeagueList.OrderBy(l => l.id).ToList();
+            string[] dateNow = DateTime.Now.ToString().Split(' ');
+            string currentDate = $"{dateNow[0]} 00:00:00";
+            if (DateSelected.ToString() == currentDate)
+            {
+                MatchList = await repository.LoadLive();
+            }
+            else
+            {
+                MatchList = new List<Match>();
+            }
+
+            CreateGroupedList();
 
             CountryCountCheck();
 
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
-
-            //SortCountries();
-            //LoadingData = "loaded";
-            //Messenger.Default.Send(LoadingData);
         }
 
-        //private void SortCountries()
-        //{
-        //    SearchCountryList = new List<Country>();
-
-        //    foreach (Country country in CountryList)
-        //    {
-        //        foreach (League league in LeagueList)
-        //        {
-        //            if (country.id == league.country_id)
-        //            {
-        //                foreach (Match match in LiveMatchesList)
-        //                {
-        //                    if (league.id.ToString() == match.league_id)
-        //                    {
-
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    CountryList = SearchCountryList;
-        //    CountryList = CountryList.Distinct().ToList();
-        //    MemoryList = CountryList;
-        //}
-
-        /// <summary>
-        /// When user searches for a country look for countries that contain the users input
-        /// </summary>
-        /// <param name="countrySearch"></param>
-        private void SortCountryList(string countrySearch)
+        private async void GetFixtures(DateTime? dateSelected)
         {
-            SearchList = new List<Country>();
-
-            foreach (Country country in MemoryList)
+            int i = 0;
+            FixturePageList = new List<Fixture>();
+            do
             {
-                if (country.name.Contains(countrySearch, StringComparison.OrdinalIgnoreCase))
+                i = i + 1;
+
+                FixtureList = await repository.LoadFixture(dateSelected, i);
+                FixturePageList = FixturePageList.Concat(FixtureList).ToList();
+
+            } while (FixtureList.Count == 30);
+            FixtureList = FixturePageList;
+
+            LoadCountries();
+        }
+
+        private void CreateGroupedList()
+        {
+            SortCountryList = new List<Country>();
+
+            foreach (Country country in CountryList)
+            {
+                foreach (League league in AllLeagueList)
                 {
-                    SearchList.Add(country);
+                    if (league.country_id == country.id)
+                    {
+                        foreach (Match match in MatchList)
+                        {
+                            if (match.league_id == league.id.ToString())
+                            {
+                                if (!match.score.Contains("?"))
+                                {
+                                    var countryToAdd = new Country
+                                    {
+                                        index = match.id,
+                                        id = country.id,
+                                        name = country.name,
+                                        leagueName = league.name,
+                                        matchList = match,
+                                        fixtureList = null
+                                    };
+
+                                    SortCountryList.Add(countryToAdd);
+                                }
+                            }
+                        }
+                        foreach (Fixture fixture in FixtureList)
+                        {
+                            if (fixture.league_id == league.id.ToString())
+                            {
+                                string[] splitTime = fixture.time.Split(':');
+                                splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
+
+                                if (splitTime[0].Length < 2)
+                                {
+                                    splitTime[0] = $"0{splitTime[0]}";
+                                }
+
+                                if (splitTime[0] == "24")
+                                {
+                                    splitTime[0] = "00";
+                                }
+
+                                var fixtureToAdd = new Fixture
+                                {
+                                    id = fixture.id,
+                                    time = $"{splitTime[0]}:{splitTime[1]}",
+                                    home_name = fixture.home_name,
+                                    away_name = fixture.away_name,
+                                    league_id = fixture.league_id,
+                                    competition_id = fixture.competition_id
+                                };
+
+                                var countryToAdd = new Country
+                                {
+                                    index = fixture.id,
+                                    id = country.id,
+                                    name = country.name,
+                                    leagueName = league.name,
+                                    matchList = null,
+                                    fixtureList = fixtureToAdd
+                                };
+
+                                SortCountryList.Add(countryToAdd);
+                            }
+
+                        }
+                    }
                 }
             }
-
-            CountryList = SearchList;
-            NoSearchResults = $"No results found with criteria of '{countrySearch}'";
-            CountryCountCheck();
+            SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
+            CountryList = SortCountryList;
+            Messenger.Default.Send("loaded");
         }
 
         private void CountryCountCheck()
@@ -236,27 +288,22 @@ namespace FootballApp.ViewModels
             }
         }
 
-        /// <summary>
-        /// When user selects a Country
-        /// </summary>
-        /// <param name="obj"></param>
-        private void SelectCountry(object obj)
+        private void CountrySelected(Country selectedCountry)
         {
-            if (SelectedCountry != null)
+            if(SelectedCountry != null)
             {
-                Messenger.Default.Send(SelectedCountry);
-                TabIndex = 1;
-                Messenger.Default.Send<int>(TabIndex);
-                ClearButton = true;
+                if (selectedCountry.matchList != null)
+                {
+                    //Display the loading overlay
+                    Messenger.Default.Send("unloaded");
+
+                    Messenger.Default.Send(selectedCountry.matchList);
+                    //SelectedMatch = null;
+                    //SelectedMatch = new Match();
+                }
             }
         }
 
-        private bool CanSelectCountry(object obj)
-        {
-            return CountryList.Count > 0;
-        }
-
-        
 
         /// <summary>
         /// clear button resets the app and clears all of the users selections
@@ -264,16 +311,14 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void ClearSelection(object obj)
         {
-            CountrySearch = "";
-            CountryList = MemoryList;
-
-            TabIndex = 0;
-            Messenger.Default.Send(TabIndex);
+            //Tab Index
+            Messenger.Default.Send(0);
 
             SelectedCountry = null;
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
 
+            //closes the match window if opened
             Messenger.Default.Send("matchClosed");
             ClearButton = false;
         }

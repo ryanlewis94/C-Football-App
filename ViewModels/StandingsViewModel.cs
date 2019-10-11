@@ -47,14 +47,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noStandings, value); }
         }
 
-        private string _loadingData;
-
-        public string LoadingData
-        {
-            get { return _loadingData; }
-            set { SetProperty(ref _loadingData, value); }
-        }
-
         /// <summary>
         /// stores the message if the league selected doesn't contain a table
         /// </summary>
@@ -64,20 +56,7 @@ namespace FootballApp.ViewModels
         {
             get { return _noLeagueMessage; }
             set { SetProperty(ref _noLeagueMessage, value); }
-        }
-
-        /// <summary>
-        /// stores the tab inedx for the main tab control
-        /// </summary>
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get { return _tabIndex; }
-            set { SetProperty(ref _tabIndex, value); }
-        }
-
-        
+        }     
 
         #endregion
 
@@ -102,6 +81,7 @@ namespace FootballApp.ViewModels
         {
             StandingsList = await repository.LoadStandings(league.id.ToString());
             NoLeagueMessage = $"{league.name} is not a league!";
+
             if (StandingsList != null)
             {
                 ListOfStandings = true;
@@ -112,9 +92,8 @@ namespace FootballApp.ViewModels
                 ListOfStandings = false;
                 NoStandings = true;
             }
-
-            LoadingData = "loaded";
-            Messenger.Default.Send(LoadingData);
+            //Hides the loading overlay
+            Messenger.Default.Send("loaded");
         }
 
         /// <summary>
@@ -123,8 +102,8 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void BackToLeague(object obj)
         {
-            TabIndex = 1;
-            Messenger.Default.Send<int>(TabIndex);
+            //Tab Index
+            Messenger.Default.Send(1);
         }
 
         private bool CanBackToLeague(object obj)

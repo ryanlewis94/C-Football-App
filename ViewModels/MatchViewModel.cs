@@ -118,7 +118,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// stores the tab indexes for the main tab and sub tab control
+        /// stores the tab index for the sub tab control
         /// </summary>
         private int _matchesTabIndex = 1;
 
@@ -126,14 +126,6 @@ namespace FootballApp.ViewModels
         {
             get { return _matchesTabIndex; }
             set { SetProperty(ref _matchesTabIndex, value); }
-        }
-
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get { return _tabIndex; }
-            set { SetProperty(ref _tabIndex, value); }
         }
 
         /// <summary>
@@ -215,7 +207,7 @@ namespace FootballApp.ViewModels
 
         private async void LoadMatches()
         {
-            LiveList = await repository.LoadLive("0");
+            LiveList = await repository.LoadLive();
 
             Messenger.Default.Register<League>(this, OnLeagueReceived);
             
@@ -289,8 +281,8 @@ namespace FootballApp.ViewModels
 
         private void BackToLeague(object obj)
         {
-            TabIndex = 1;
-            Messenger.Default.Send<int>(TabIndex);
+            //Tab Index
+            Messenger.Default.Send(1);
         }
 
         private bool CanBackToLeague(object obj)
@@ -306,8 +298,12 @@ namespace FootballApp.ViewModels
         {
             if (SelectedMatch != null)
             {
+                //Display the loading overlay
                 Messenger.Default.Send("unloaded");
+
                 Messenger.Default.Send(SelectedMatch);
+                SelectedMatch = null;
+                SelectedMatch = new Match();
             }
         }
 
