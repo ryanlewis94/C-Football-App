@@ -10,6 +10,7 @@ namespace FootballApp.Classes
     {
         public string index { get; set; }
         public string id { get; set; }
+        public string league_id { get; set; }
         public string name { get; set; }
         //public League leagueList { get; set; }
         public string leagueName { get; set; }
@@ -76,6 +77,7 @@ namespace FootballApp.Classes
         public int won { get; set; }
         public string team_id { get; set; }
         public string competition_id { get; set; }
+        public string State { get; set; }
     }
 
     public class Event
@@ -92,6 +94,7 @@ namespace FootballApp.Classes
     public class Fixture
     {
         public string id { get; set; }
+        public string date { get; set; }
         public string time { get; set; }
         public string home_name { get; set; }
         public string away_name { get; set; }

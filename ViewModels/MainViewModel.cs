@@ -54,14 +54,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _matchData, value); }
         }
 
-        private bool _mainView = true;
-
-        public bool MainView
-        {
-            get { return _mainView; }
-            set { SetProperty(ref _mainView, value); }
-        }
-
         #endregion
 
         public MainViewModel()
@@ -90,22 +82,20 @@ namespace FootballApp.ViewModels
                 case "unloaded":
                     LoadingData = true;
                     break;
-                //Show or hide the league standings tab
-                case "selected":
-                    LeagueSelectedBool = true;
-                    break;
-                case "unselected":
-                    LeagueSelectedBool = false;
-                    break;
                 //Show or hide the match event window
                 case "matchOpened":
                     MatchData = true;
                     LoadingData = false;
-                    MainView = false;
                     break;
                 case "matchClosed":
                     MatchData = false;
-                    MainView = true;
+                    break;
+                //Show or hide the standings tab
+                case "leagueAvailable":
+                    LeagueSelectedBool = true;
+                    break;
+                case "leagueUnavailable":
+                    LeagueSelectedBool = false;
                     break;
                 default:
                     break;

@@ -63,6 +63,8 @@
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" Foreground="White" FontSize="22"/>
+                                                    <TextBlock Text="{Binding ItemCount}" FontSize="14" Foreground="LightGray" FontWeight="Bold" FontStyle="Italic" Margin="10,0,0,0" VerticalAlignment="Bottom" />
+                                                    <TextBlock Text=" Match(es)" FontSize="14" Foreground="LightGray" FontStyle="Italic" VerticalAlignment="Bottom" />
                                                 </StackPanel>
                                             </Expander.Header>
                                             <Expander.Content>
@@ -84,7 +86,9 @@
                                         <Expander IsExpanded="True">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=Name}" FontWeight="SemiBold" Foreground="White" FontSize="16"/>
+                                                    <TextBlock Text="{Binding Path=Name}" 
+                                                               FontWeight="SemiBold" Foreground="White" 
+                                                               FontSize="16"/>
                                                 </StackPanel>
                                             </Expander.Header>
                                             <Expander.Content>

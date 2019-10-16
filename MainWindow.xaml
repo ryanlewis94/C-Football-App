@@ -6,44 +6,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:uc="clr-namespace:FootballApp.Controls"
-        mc:Ignorable="d"
+                      xmlns:sdk="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+                      mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
-        Title="Football Scores" Height="600" Width="400" 
-                      TitleCaps="False" 
-                      ResizeMode="NoResize"
-                      GlowBrush="{DynamicResource AccentColorBrush}"
-                      Icon="/Resources/football-2-48.ico">
+        WindowState="Maximized"
+        WindowStyle="None"
+        Title="Football Scores" 
+        TitleCaps="False"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        Icon="/Resources/football-2-48.ico">
     <Grid>
-        <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".25*" MinWidth="400"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"  MinWidth="600"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <sdk:GridSplitter Grid.Column="1" Width="5" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+        
+        <uc:CountryControl/>
+
+        <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex, Mode=TwoWay}" 
+                                                   Grid.Column="2"
                                                    controls:TabControlHelper.IsUnderlined="True"
                                                    controls:TabControlHelper.Transition="Down"
-                                                   Visibility="{Binding MainView, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-            <!--user controls-->
-            <TabItem Header="LiveScores">
-                <uc:CountryControl/>
+                                                   Padding="0,50,0,0">
+            <TabItem Header="LiveScores"
+                     Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                <Grid>
+                    <uc:EventControl/>
+                </Grid>
             </TabItem>
-            <!--<TabItem Header="Leagues">
-                <uc:LeagueControl/>
-            </TabItem>
-            <TabItem Header="Matches">
-                <uc:MatchControl/>
-            </TabItem>-->
+            
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>
             </TabItem>
         </controls:MetroAnimatedSingleRowTabControl>
         
-        <!--Clear button overlay-->
-        <StackPanel>
-            <uc:ClearButtonControl/>
-        </StackPanel>
         <!--Loading overlay-->
-        <Grid Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+        <Grid Grid.ColumnSpan="3" 
+              Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <uc:LoadingOverlayView/>
         </Grid>
-        <Grid Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-            <uc:EventControl/>
-        </Grid>
+        
+        
     </Grid>
 </controls:MetroWindow>

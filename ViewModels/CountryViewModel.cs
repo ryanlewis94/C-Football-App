@@ -86,6 +86,7 @@ namespace FootballApp.ViewModels
             { 
                 SetProperty(ref _selectedCountry, value);
                 CountrySelected(_selectedCountry);
+                //Console.WriteLine(_selectedCountry.league_id);
             }
         }
 
@@ -215,6 +216,7 @@ namespace FootballApp.ViewModels
                                     {
                                         index = match.id,
                                         id = country.id,
+                                        league_id = league.id.ToString(),
                                         name = country.name,
                                         leagueName = league.name,
                                         matchList = match,
@@ -245,6 +247,7 @@ namespace FootballApp.ViewModels
                                 var fixtureToAdd = new Fixture
                                 {
                                     id = fixture.id,
+                                    date = fixture.date,
                                     time = $"{splitTime[0]}:{splitTime[1]}",
                                     home_name = fixture.home_name,
                                     away_name = fixture.away_name,
@@ -256,6 +259,7 @@ namespace FootballApp.ViewModels
                                 {
                                     index = fixture.id,
                                     id = country.id,
+                                    league_id = league.id.ToString(),
                                     name = country.name,
                                     leagueName = league.name,
                                     matchList = null,
@@ -292,14 +296,11 @@ namespace FootballApp.ViewModels
         {
             if(SelectedCountry != null)
             {
-                if (selectedCountry.matchList != null)
+                //Display the loading overlay
+                if (selectedCountry.matchList != null || selectedCountry.fixtureList != null)
                 {
-                    //Display the loading overlay
                     Messenger.Default.Send("unloaded");
-
-                    Messenger.Default.Send(selectedCountry.matchList);
-                    //SelectedMatch = null;
-                    //SelectedMatch = new Match();
+                    Messenger.Default.Send(selectedCountry);
                 }
             }
         }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -22,16 +23,28 @@ namespace FootballApp.ViewModels
         #region Properties
 
         private DispatcherTimer Timer { get; set; }
+        private DispatcherTimer CountdownTimer { get; set; }
 
-        /// <summary>
-        /// Store the selected Match
-        /// </summary>
-        private Match _currentMatch;
+    /// <summary>
+    /// Store the selected Match
+    /// </summary>
+    private Match _currentMatch;
 
         public Match CurrentMatch
         {
             get { return _currentMatch; }
             set { SetProperty(ref _currentMatch, value); }
+        }
+
+        /// <summary>
+        /// Store the selected Fixture
+        /// </summary>
+        private Fixture _currentFixture;
+
+        public Fixture CurrentFixture
+        {
+            get { return _currentFixture; }
+            set { SetProperty(ref _currentFixture, value); }
         }
 
         /// <summary>
@@ -72,6 +85,37 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _blankEvent, value); }
         }
 
+        /// <summary>
+        /// bools for hiding the fixture or match depending on what is selected
+        /// </summary>
+        private bool _matchSelected;
+        public bool MatchSelected
+        {
+            get { return _matchSelected; }
+            set { SetProperty(ref _matchSelected, value); }
+        }
+
+        private bool _fixtureSelected;
+        public bool FixtureSelected
+        {
+            get { return _fixtureSelected; }
+            set { SetProperty(ref _fixtureSelected, value); }
+        }
+
+        private DateTime _fixtureKickOffTime;
+        public DateTime FixtureKickOffTime
+        {
+            get { return _fixtureKickOffTime; }
+            set { SetProperty(ref _fixtureKickOffTime, value); }
+        }
+
+        private string _countdownTime;
+        public string CountdownTime
+        {
+            get { return _countdownTime; }
+            set { SetProperty(ref _countdownTime, value); }
+        }
+
         #endregion
 
         public EventsViewModel()
@@ -79,15 +123,16 @@ namespace FootballApp.ViewModels
             repository = new Football();
             LoadEvents();
             LoadCommands();
-            LoadTimers();
+            //LoadTimer();
         }
 
         /// <summary>
         /// sets the timer
         /// </summary>
-        private void LoadTimers()
+        private void LoadTimer()
         {
             Timer = new DispatcherTimer();
+            Timer.Stop();
             Timer.Interval = TimeSpan.FromSeconds(60);
             Timer.Tick += Timer_Tick;
             Timer.Start();
@@ -115,7 +160,8 @@ namespace FootballApp.ViewModels
 
         private void LoadEvents()
         {
-            Messenger.Default.Register<Match>(this, OnMatchReceived);
+            Messenger.Default.Register<Country>(this, OnCountryReceived);
+            //Messenger.Default.Register<Country>(this, OnFixtureReceived);
         }
 
         /// <summary>
@@ -134,21 +180,41 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// When a match gets selected
+        /// When a match or fixture gets selected
         /// </summary>
-        /// <param name="match"></param>
-        private async void OnMatchReceived(Match match)
+        /// <param name="country"></param>
+        private async void OnCountryReceived(Country country)
         {
-            if (match != null)
+            if (country.matchList != null)
             {
-                LoadTimers();
-                CurrentMatch = match;
-                EventsList = await repository.LoadEvents(match.id);
+                MatchSelected = true;
+                FixtureSelected = false;
+
+                LoadTimer();
+                CurrentMatch = country.matchList;
+                EventsList = await repository.LoadEvents(country.matchList.id);
                 SortEvents();
-                //displays the match event window
+
                 Messenger.Default.Send("matchOpened");
             }
+            else if (country.fixtureList != null)
+            {
+                MatchSelected = false;
+                FixtureSelected = true;
 
+                FixtureKickOffTime = DateTime.Parse($"{country.fixtureList.date} {country.fixtureList.time}");
+                if (country.fixtureList.time == "00:00" || country.fixtureList.time == "00:30" || country.fixtureList.time == "01:00")
+                {
+                    FixtureKickOffTime = FixtureKickOffTime.AddDays(1);
+                }
+
+                CurrentFixture = country.fixtureList;
+                
+                LoadCountdown();
+
+                Messenger.Default.Send("matchOpened");
+            }
+            Messenger.Default.Send(0);
         }
 
         /// <summary>
@@ -162,42 +228,84 @@ namespace FootballApp.ViewModels
 
             foreach (Event @event in EventsList)
             {
+                int idx = @event.player.LastIndexOf(" ");
+                string playerToAdd;
+                if (idx != -1)
+                {
+                    playerToAdd = $"{@event.player.Substring(idx+1)} {@event.player.Substring(0, idx)}";
+                }
+                else
+                {
+                    playerToAdd = @event.player;
+                }
+
+                string eventImage;
                 switch (@event.@event)
                 {
                     case "GOAL":
-                        @event.@event = "/Resources/events/Goal.png";
+                        eventImage = "/Resources/events/Goal.png";
                         break;
                     case "GOAL_PENALTY":
-                        @event.@event = "/Resources/events/Penalty.png";
+                        eventImage = "/Resources/events/Penalty.png";
                         break;
                     case "OWN_GOAL":
-                        @event.@event = "/Resources/events/ownGoal.png";
+                        eventImage = "/Resources/events/ownGoal.png";
                         break;
                     case "YELLOW_CARD":
-                        @event.@event = "/Resources/events/Yellow.png";
+                        eventImage = "/Resources/events/Yellow.png";
                         break;
                     case "RED_CARD":
-                        @event.@event = "/Resources/events/Red.png";
+                        eventImage = "/Resources/events/Red.png";
                         break;
                     case "YELLOW_RED_CARD":
-                        @event.@event = "/Resources/events/YellowRed.png";
+                        eventImage = "/Resources/events/YellowRed.png";
                         break;
                     default:
+                        eventImage = @event.@event;
                         break;
                 }
 
+                var EventToAdd = new Event
+                {
+                    id = @event.id,
+                    match_id = @event.match_id,
+                    player = playerToAdd,
+                    time = @event.time,
+                    @event = eventImage,
+                    sort = @event.sort,
+                    home_away = @event.home_away
+                };
+
                 if (@event.home_away == "h")
                 {
-                    HomeEventsList.Insert(0, @event);
+                    HomeEventsList.Insert(0, EventToAdd);
                     AwayEventsList.Insert(0, BlankEvent);
                 }
                 else
                 {
-                    AwayEventsList.Insert(0, @event);
+                    AwayEventsList.Insert(0, EventToAdd);
                     HomeEventsList.Insert(0, BlankEvent);
                 }
             }
         }
+
+        private void LoadCountdown()
+        {
+            CountdownTimer = new DispatcherTimer();
+            CountdownTimer.Stop();
+            CountdownTimer.Interval = TimeSpan.FromSeconds(1);
+            CountdownTimer.Tick += CountdownTimer_Tick;
+            TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
+            CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
+            CountdownTimer.Start();
+        }
+
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
+            CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
+        }
+
 
         /// <summary>
         ///Close button to close the live events screen 

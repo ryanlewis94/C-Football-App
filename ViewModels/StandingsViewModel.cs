@@ -15,7 +15,7 @@ namespace FootballApp.ViewModels
     public class StandingsViewModel : ViewModelBase
     {
         private IFootball repository;
-        public ICommand BackToLeagueCommand { get; set; }
+        //public ICommand BackToLeagueCommand { get; set; }
 
         #region Properties
 
@@ -64,51 +64,45 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadStandings();
-            LoadCommands();
-        }
-
-        private void LoadCommands()
-        {
-            BackToLeagueCommand = new CustomCommand(BackToLeague, CanBackToLeague);
         }
 
         private void LoadStandings()
         {
-            Messenger.Default.Register<League>(this, OnLeagueReceived);
+            Messenger.Default.Register<Country>(this, OnLeagueReceived);
         }
 
-        private async void OnLeagueReceived(League league)
+        private async void OnLeagueReceived(Country country)
         {
-            StandingsList = await repository.LoadStandings(league.id.ToString());
-            NoLeagueMessage = $"{league.name} is not a league!";
+            if (!string.IsNullOrEmpty(country.league_id))
+            {
+                Messenger.Default.Send("unloaded");
+                StandingsList = await repository.LoadStandings(country.league_id);
 
-            if (StandingsList != null)
-            {
-                ListOfStandings = true;
-                NoStandings = false;
+                HighlightCurrentTeams(country);
+
+                if (StandingsList != null)
+                {
+                    Messenger.Default.Send("leagueAvailable");
+                }
+                else
+                {
+                    Messenger.Default.Send("leagueUnavailable");
+                }
             }
-            else
-            {
-                ListOfStandings = false;
-                NoStandings = true;
-            }
+            
             //Hides the loading overlay
             Messenger.Default.Send("loaded");
         }
 
-        /// <summary>
-        /// if no league table give user option to go back to league selection
-        /// </summary>
-        /// <param name="obj"></param>
-        private void BackToLeague(object obj)
+        private void HighlightCurrentTeams(Country country)
         {
-            //Tab Index
-            Messenger.Default.Send(1);
-        }
-
-        private bool CanBackToLeague(object obj)
-        {
-            return StandingsList == null;
+            foreach (Table table in StandingsList)
+            {
+                if (table.name == country.fixtureList.home_name || table.name == country.fixtureList.away_name)
+                {
+                    table.State = "selected";
+                }
+            }
         }
     }
 }
