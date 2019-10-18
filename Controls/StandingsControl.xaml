@@ -17,15 +17,18 @@
                       VerticalAlignment="Top"
                       FontSize="18"
                       Padding="20"
-                      AlternatingRowBackground="AliceBlue"
+                      AlternationCount="2"
                       MinColumnWidth="50"
                       MinRowHeight="35">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="IsHitTestVisible" Value="False"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding State}" Value="selected">
-                                <Setter Property="Background" Value="Red"></Setter>
+                            <Trigger Property="AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="AliceBlue"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding State}" Value="true">
+                                <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}"></Setter>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

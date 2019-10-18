@@ -7,8 +7,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:FootballApp.Controls"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="400"
+             mc:Ignorable="d"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
     <UserControl.Resources>
         <CollectionViewSource x:Key="GroupedLeagues"
@@ -100,7 +99,7 @@
                                                                 <Border BorderBrush="Black"
                                                                         BorderThickness="2"
                                                                         Padding="0,10">
-                                                                    <Grid Width="350">
+                                                                    <Grid>
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="4.5*" />
                                                                             <ColumnDefinition Width="1*" />

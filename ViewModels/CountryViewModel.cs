@@ -19,12 +19,6 @@ namespace FootballApp.ViewModels
     {
         private IFootball repository;
 
-        public ICommand CountrySelectedCommand { get; set; }
-        public ICommand SortCountriesCommand { get; set; }
-        public ICommand ClearSelectionCommand { get; set; }
-
-        public ICommand MatchSelectedCommand { get; set; }
-
         #region Properties
 
         /// <summary>
@@ -86,43 +80,12 @@ namespace FootballApp.ViewModels
             { 
                 SetProperty(ref _selectedCountry, value);
                 CountrySelected(_selectedCountry);
-                //Console.WriteLine(_selectedCountry.league_id);
             }
         }
 
         /// <summary>
-        /// bools for visibility converter 
+        /// Date selected from date picker
         /// </summary>
-        private bool _listOfCountries;
-        public bool ListOfCountries
-        {
-            get { return _listOfCountries; }
-            set { SetProperty(ref _listOfCountries, value); }
-        }
-
-        private bool _noCountries;
-        public bool NoCountries
-        {
-            get { return _noCountries; }
-            set { SetProperty(ref _noCountries, value); }
-        }
-
-        private bool _clearButton;
-
-        public bool ClearButton
-        {
-            get { return _clearButton; }
-            set { SetProperty(ref _clearButton, value); }
-        }
-
-        private string _loadingData;
-
-        public string LoadingData
-        {
-            get { return _loadingData; }
-            set { SetProperty(ref _loadingData, value); }
-        }
-
         private DateTime? _dateSelected;
         public DateTime? DateSelected
         {
@@ -140,23 +103,11 @@ namespace FootballApp.ViewModels
         public CountryViewModel()
         {
             repository = new Football();
-            //LoadCountries();
-            LoadCommands();
-        }
-
-        private void LoadCommands()
-        {
-            ClearSelectionCommand = new CustomCommand(ClearSelection, CanClearSelection);
-            MatchSelectedCommand = new DelegateCommand<Country>(LiveMatchSelected, () => true);
-        }
-
-        private void LiveMatchSelected(Country countrySelected)
-        {
-            Console.WriteLine(countrySelected.name);
         }
 
         private async void LoadCountries()
         {
+            Messenger.Default.Register<List<Match>>(this, OnLiveListReceived);
             CountryList = await repository.LoadCountry();
             AllLeagueList = await repository.LoadLeague();
             AllLeagueList = AllLeagueList.OrderBy(l => l.id).ToList();
@@ -173,10 +124,24 @@ namespace FootballApp.ViewModels
 
             CreateGroupedList();
 
-            CountryCountCheck();
-
             SelectedCountry = new Country();
             Messenger.Default.Send(SelectedCountry);
+        }
+
+        private void OnLiveListReceived(List<Match> updatedMatches)
+        {
+            string[] dateNow = DateTime.Now.ToString().Split(' ');
+            string currentDate = $"{dateNow[0]} 00:00:00";
+            if (DateSelected.ToString() == currentDate)
+            {
+                MatchList = updatedMatches;
+            }
+            else
+            {
+                MatchList = new List<Match>();
+            }
+
+            CreateGroupedList();
         }
 
         private async void GetFixtures(DateTime? dateSelected)
@@ -278,55 +243,16 @@ namespace FootballApp.ViewModels
             Messenger.Default.Send("loaded");
         }
 
-        private void CountryCountCheck()
-        {
-            if (CountryList.Count == 0)
-            {
-                ListOfCountries = false;
-                NoCountries = true;
-            }
-            else
-            {
-                ListOfCountries = true;
-                NoCountries = false;
-            }
-        }
-
         private void CountrySelected(Country selectedCountry)
         {
             if(SelectedCountry != null)
             {
-                //Display the loading overlay
                 if (selectedCountry.matchList != null || selectedCountry.fixtureList != null)
                 {
                     Messenger.Default.Send("unloaded");
                     Messenger.Default.Send(selectedCountry);
                 }
             }
-        }
-
-
-        /// <summary>
-        /// clear button resets the app and clears all of the users selections
-        /// </summary>
-        /// <param name="obj"></param>
-        private void ClearSelection(object obj)
-        {
-            //Tab Index
-            Messenger.Default.Send(0);
-
-            SelectedCountry = null;
-            SelectedCountry = new Country();
-            Messenger.Default.Send(SelectedCountry);
-
-            //closes the match window if opened
-            Messenger.Default.Send("matchClosed");
-            ClearButton = false;
-        }
-
-        private bool CanClearSelection(object obj)
-        {
-            return SelectedCountry != null;
         }
     }
 }

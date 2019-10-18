@@ -18,8 +18,6 @@ namespace FootballApp.ViewModels
     {
         private IFootball repository;
 
-        public ICommand CloseMatchCommand { get; set; }
-
         #region Properties
 
         private DispatcherTimer Timer { get; set; }
@@ -122,8 +120,6 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadEvents();
-            LoadCommands();
-            //LoadTimer();
         }
 
         /// <summary>
@@ -153,15 +149,9 @@ namespace FootballApp.ViewModels
             }
         }
 
-        private void LoadCommands()
-        {
-            CloseMatchCommand = new CustomCommand(CloseMatch, CanCloseMatch);
-        }
-
         private void LoadEvents()
         {
             Messenger.Default.Register<Country>(this, OnCountryReceived);
-            //Messenger.Default.Register<Country>(this, OnFixtureReceived);
         }
 
         /// <summary>
@@ -174,7 +164,8 @@ namespace FootballApp.ViewModels
             {
                 if (match.id == CurrentMatch.id)
                 {
-                    CurrentMatch = match;                    
+                    CurrentMatch = match;
+                    Messenger.Default.Send(matchList);
                 }
             }
         }
@@ -304,25 +295,6 @@ namespace FootballApp.ViewModels
         {
             TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
             CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
-        }
-
-
-        /// <summary>
-        ///Close button to close the live events screen 
-        /// </summary>
-        /// <param name="obj"></param>
-        private void CloseMatch(object obj)
-        {
-            MessageBox.Show(HomeEventsList.Count.ToString());
-            MessageBox.Show(AwayEventsList.Count.ToString());
-            //closes the match event window
-            Messenger.Default.Send("matchClosed");
-            Timer.Stop();
-        }
-
-        private bool CanCloseMatch(object obj)
-        {
-            return CurrentMatch != null;
         }
     }
 }

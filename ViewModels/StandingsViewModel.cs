@@ -15,9 +15,6 @@ namespace FootballApp.ViewModels
     public class StandingsViewModel : ViewModelBase
     {
         private IFootball repository;
-        //public ICommand BackToLeagueCommand { get; set; }
-
-        #region Properties
 
         /// <summary>
         /// stores the league standings
@@ -28,37 +25,7 @@ namespace FootballApp.ViewModels
         {
             get { return _standingsList; }
             set { SetProperty(ref _standingsList, value); }
-        }
-
-        /// <summary>
-        /// bools for visibility converter
-        /// </summary>
-        private bool _listOfStandings;
-        public bool ListOfStandings
-        {
-            get { return _listOfStandings; }
-            set { SetProperty(ref _listOfStandings, value); }
-        }
-
-        private bool _noStandings;
-        public bool NoStandings
-        {
-            get { return _noStandings; }
-            set { SetProperty(ref _noStandings, value); }
-        }
-
-        /// <summary>
-        /// stores the message if the league selected doesn't contain a table
-        /// </summary>
-        private string _noLeagueMessage;
-
-        public string NoLeagueMessage
-        {
-            get { return _noLeagueMessage; }
-            set { SetProperty(ref _noLeagueMessage, value); }
-        }     
-
-        #endregion
+        }  
 
         public StandingsViewModel()
         {
@@ -94,13 +61,30 @@ namespace FootballApp.ViewModels
             Messenger.Default.Send("loaded");
         }
 
+        /// <summary>
+        /// highlights the teams playing the match or fixture selected on the league table
+        /// </summary>
+        /// <param name="country"></param>
         private void HighlightCurrentTeams(Country country)
         {
-            foreach (Table table in StandingsList)
+            if (StandingsList != null)
             {
-                if (table.name == country.fixtureList.home_name || table.name == country.fixtureList.away_name)
+                foreach (Table table in StandingsList)
                 {
-                    table.State = "selected";
+                    if (country.fixtureList != null)
+                    {
+                        if (table.name == country.fixtureList.home_name || table.name == country.fixtureList.away_name)
+                        {
+                            table.State = true;
+                        }
+                    }
+                    else if (country.matchList != null)
+                    {
+                        if (table.name == country.matchList.home_name || table.name == country.matchList.away_name)
+                        {
+                            table.State = true;
+                        }
+                    }
                 }
             }
         }

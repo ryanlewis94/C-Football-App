@@ -77,7 +77,7 @@ namespace FootballApp.Classes
         public int won { get; set; }
         public string team_id { get; set; }
         public string competition_id { get; set; }
-        public string State { get; set; }
+        public bool State { get; set; }
     }
 
     public class Event
