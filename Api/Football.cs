@@ -10,10 +10,11 @@ namespace FootballApp.Api
 {
     public class Football : IFootball
     {
+        private ConfigSettings Api = new ConfigSettings();
         public async Task<List<Country>> LoadCountry()
         {
 
-            string url = "http://livescore-api.com/api-client/countries/list.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9";
+            string url = $"http://livescore-api.com/api-client/countries/list.json?key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -32,7 +33,7 @@ namespace FootballApp.Api
 
         public async Task<List<League>> LoadLeague()
         {
-            string url = $"http://livescore-api.com/api-client/leagues/list.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9";
+            string url = $"http://livescore-api.com/api-client/leagues/list.json?key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -51,7 +52,7 @@ namespace FootballApp.Api
 
         public async Task<List<Match>> LoadLive()
         {
-            string url = $"http://livescore-api.com/api-client/scores/live.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9";
+            string url = $"http://livescore-api.com/api-client/scores/live.json?key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -70,7 +71,7 @@ namespace FootballApp.Api
 
         public async Task<List<Table>> LoadStandings(string leagueId)
         {
-            string url = $"http://livescore-api.com/api-client/leagues/table.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9&league={leagueId}";
+            string url = $"http://livescore-api.com/api-client/leagues/table.json?key={Api.Key}&secret={Api.Secret}&league={leagueId}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -89,7 +90,7 @@ namespace FootballApp.Api
 
         public async Task<List<Event>> LoadEvents(string matchId)
         {
-            string url = $"http://livescore-api.com/api-client/scores/events.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9&id={matchId}";
+            string url = $"http://livescore-api.com/api-client/scores/events.json?key={Api.Key}&secret={Api.Secret}&id={matchId}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -113,7 +114,7 @@ namespace FootballApp.Api
             string[] convertedDate = currentDate[0].Split('/');
             string fixtureDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
 
-            string url = $"http://livescore-api.com/api-client/fixtures/matches.json?key=6eBn9PpPI5vjDo72&secret=TGm71eHXRtACT9S0otnxjNm2SRmwgtz9&date={fixtureDate}&page={pageNo}";
+            string url = $"http://livescore-api.com/api-client/fixtures/matches.json?key={Api.Key}&secret={Api.Secret}&date={fixtureDate}&page={pageNo}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
