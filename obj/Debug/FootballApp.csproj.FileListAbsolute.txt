@@ -85,3 +85,4 @@ C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.csproj.Gener
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.csproj.CopyComplete
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.exe
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.pdb
+C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.csprojAssemblyReference.cache
