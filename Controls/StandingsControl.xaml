@@ -8,8 +8,15 @@
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=StandingsViewModel}">
     <Grid>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,-25,0,0">
+            <TextBlock Text="{Binding CurrentCountry.name}" FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding CurrentCountry.leagueName}" FontSize="24" FontWeight="SemiBold"/>
+        </StackPanel>
         <!--League Table-->
-        <Border Background="LightGray" Padding="20">
+        <Border Background="LightGray" Padding="20" Margin="0,25,0,0">
             <DataGrid ItemsSource="{Binding StandingsList}"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"

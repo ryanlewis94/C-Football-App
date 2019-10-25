@@ -12,6 +12,6 @@ namespace FootballApp.Classes
     public class ConfigSettings
     {
         public string Key = ConfigurationManager.AppSettings["apiKey"];
-        public string Secret= ConfigurationManager.AppSettings["apiSecret"];
+        public string Secret = ConfigurationManager.AppSettings["apiSecret"];
     }
 }

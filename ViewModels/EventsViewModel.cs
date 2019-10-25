@@ -22,11 +22,23 @@ namespace FootballApp.ViewModels
 
         private DispatcherTimer Timer { get; set; }
         private DispatcherTimer CountdownTimer { get; set; }
+        private DispatcherTimer UpdateTimer { get; set; }
 
-    /// <summary>
-    /// Store the selected Match
-    /// </summary>
-    private Match _currentMatch;
+        /// <summary>
+        /// Store the selected Country
+        /// </summary>
+        private Country _currentCountry;
+
+        public Country CurrentCountry
+        {
+            get { return _currentCountry; }
+            set { SetProperty(ref _currentCountry, value); }
+        }
+
+        /// <summary>
+        /// Store the selected Match
+        /// </summary>
+        private Match _currentMatch;
 
         public Match CurrentMatch
         {
@@ -114,12 +126,48 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _countdownTime, value); }
         }
 
+        private string _timeUpdated;
+        public string TimeUpdated
+        {
+            get { return _timeUpdated; }
+            set { SetProperty(ref _timeUpdated, value); }
+        }
+
+        private string _timeToNextUpdate;
+        public string TimeToNextUpdate
+        {
+            get { return _timeToNextUpdate; }
+            set { SetProperty(ref _timeToNextUpdate, value); }
+        }
+
+        private int _minute;
+        public int Minute
+        {
+            get { return _minute; }
+            set { SetProperty(ref _minute, value); }
+        }
+
+        private bool _fullTime;
+        public bool FullTime
+        {
+            get { return _fullTime; }
+            set { SetProperty(ref _fullTime, value); }
+        }
+
         #endregion
 
         public EventsViewModel()
         {
             repository = new Football();
             LoadEvents();
+            LoadTimers();
+        }
+
+        private void LoadTimers()
+        {
+            Timer = new DispatcherTimer();
+            CountdownTimer = new DispatcherTimer();
+            UpdateTimer = new DispatcherTimer();
         }
 
         /// <summary>
@@ -127,8 +175,11 @@ namespace FootballApp.ViewModels
         /// </summary>
         private void LoadTimer()
         {
+            if(Timer.IsEnabled)
+            {
+                Timer.Stop();
+            }
             Timer = new DispatcherTimer();
-            Timer.Stop();
             Timer.Interval = TimeSpan.FromSeconds(60);
             Timer.Tick += Timer_Tick;
             Timer.Start();
@@ -144,8 +195,11 @@ namespace FootballApp.ViewModels
             if (CurrentMatch != null)
             {
                 UpdateMatchList(await repository.LoadLive());
-                EventsList = await repository.LoadEvents(CurrentMatch.id);
-                SortEvents();
+                if(CurrentMatch.id != null)
+                {
+                    EventsList = await repository.LoadEvents(CurrentMatch.id);
+                    SortEvents();
+                }
             }
         }
 
@@ -176,34 +230,61 @@ namespace FootballApp.ViewModels
         /// <param name="country"></param>
         private async void OnCountryReceived(Country country)
         {
+            if (!string.IsNullOrEmpty(country.name) && !string.IsNullOrEmpty(country.leagueName))
+            {
+                CurrentCountry = country;
+            }
+            
             if (country.matchList != null)
             {
-                MatchSelected = true;
-                FixtureSelected = false;
+                if (CurrentMatch != country.matchList)
+                {
+                    MatchSelected = true;
+                    FixtureSelected = false;
 
-                LoadTimer();
-                CurrentMatch = country.matchList;
-                EventsList = await repository.LoadEvents(country.matchList.id);
-                SortEvents();
+                    CurrentMatch = country.matchList;
+                    CurrentFixture = null;
 
-                Messenger.Default.Send("matchOpened");
+                    if (country.matchList.time != "FT")
+                    {
+                        LoadTimer();
+                        FullTime = false;
+                    }
+                    else
+                    {
+                        FullTime = true;
+                        Timer.Stop();
+                        UpdateTimer.Stop();
+                        TimeUpdated = "";
+                        TimeToNextUpdate = "";
+                    }
+
+                    EventsList = await repository.LoadEvents(country.matchList.id);
+                    SortEvents();
+
+                    Messenger.Default.Send("matchOpened");
+                }
             }
             else if (country.fixtureList != null)
             {
-                MatchSelected = false;
-                FixtureSelected = true;
-
-                FixtureKickOffTime = DateTime.Parse($"{country.fixtureList.date} {country.fixtureList.time}");
-                if (country.fixtureList.time == "00:00" || country.fixtureList.time == "00:30" || country.fixtureList.time == "01:00")
+                if (CurrentFixture != country.fixtureList)
                 {
-                    FixtureKickOffTime = FixtureKickOffTime.AddDays(1);
+                    MatchSelected = false;
+                    FixtureSelected = true;
+
+                    FixtureKickOffTime = DateTime.Parse($"{country.fixtureList.date} {country.fixtureList.time}");
+                    if (country.fixtureList.time == "00:00" || country.fixtureList.time == "00:30" || country.fixtureList.time == "01:00")
+                    {
+                        FixtureKickOffTime = FixtureKickOffTime.AddDays(1);
+                    }
+
+                    CurrentFixture = country.fixtureList;
+                    CurrentMatch = null;
+
+                    LoadCountdown();
+
+                    Messenger.Default.Send("matchOpened");
                 }
-
-                CurrentFixture = country.fixtureList;
-                
-                LoadCountdown();
-
-                Messenger.Default.Send("matchOpened");
             }
             Messenger.Default.Send(0);
         }
@@ -278,12 +359,23 @@ namespace FootballApp.ViewModels
                     HomeEventsList.Insert(0, BlankEvent);
                 }
             }
+
+            Console.WriteLine(HomeEventsList.Count);
+            Console.WriteLine(AwayEventsList.Count);
+            if (!FullTime)
+            {
+                TimeUpdated = $"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}";
+                LoadUpdateCountdown();
+            }
         }
 
         private void LoadCountdown()
         {
+            if (CountdownTimer.IsEnabled)
+            {
+                CountdownTimer.Stop();
+            }
             CountdownTimer = new DispatcherTimer();
-            CountdownTimer.Stop();
             CountdownTimer.Interval = TimeSpan.FromSeconds(1);
             CountdownTimer.Tick += CountdownTimer_Tick;
             TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
@@ -295,6 +387,30 @@ namespace FootballApp.ViewModels
         {
             TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
             CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
+        }
+
+        private void LoadUpdateCountdown()
+        {
+            if (UpdateTimer.IsEnabled)
+            {
+                UpdateTimer.Stop();
+            }
+            UpdateTimer = new DispatcherTimer();
+            UpdateTimer.Interval = TimeSpan.FromSeconds(1);
+            UpdateTimer.Tick += UpdateTimer_Tick;
+            Minute = 60;
+            TimeToNextUpdate = $"Next update in {Minute.ToString()}'s";
+            UpdateTimer.Start();
+        }
+
+        private void UpdateTimer_Tick(object sender, EventArgs e)
+        {
+            if (Minute != 0)
+            {
+                Minute = Minute - 1;
+            }
+            
+            TimeToNextUpdate = $"Next update in {Minute.ToString()}'s";
         }
     }
 }

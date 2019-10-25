@@ -45,12 +45,6 @@
         <ListView DataContext="{StaticResource GroupedLeagues}" 
                   ItemsSource="{Binding}"
                   Grid.Row="1">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding CountryViewModel.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                                           CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
@@ -94,6 +88,11 @@
                                                 <StackPanel>
                                                     <ListView ItemsSource="{Binding Items}"
                                                               SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
                                                         <ListView.ItemTemplate>
                                                             <DataTemplate>
                                                                 <Border BorderBrush="Black"

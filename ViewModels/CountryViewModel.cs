@@ -20,6 +20,8 @@ namespace FootballApp.ViewModels
     {
         private IFootball repository;
 
+        public ICommand MatchSelectedCommand { get; set; }
+
         #region Properties
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace FootballApp.ViewModels
             set 
             { 
                 SetProperty(ref _selectedCountry, value);
-                CountrySelected(_selectedCountry);
+                //CountrySelected(_selectedCountry);
             }
         }
 
@@ -104,6 +106,12 @@ namespace FootballApp.ViewModels
         public CountryViewModel()
         {
             repository = new Football();
+            LoadCommands();
+        }
+
+        private void LoadCommands()
+        {
+            MatchSelectedCommand = new CustomCommand(SelectMatch, CanSelectMatch);
         }
 
         private async void LoadCountries()
@@ -244,16 +252,22 @@ namespace FootballApp.ViewModels
             Messenger.Default.Send("loaded");
         }
 
-        private void CountrySelected(Country selectedCountry)
+        private void SelectMatch(object obj)
         {
-            if(SelectedCountry != null)
+            if (SelectedCountry != null)
             {
-                if (selectedCountry.matchList != null || selectedCountry.fixtureList != null)
+                if (SelectedCountry.matchList != null || SelectedCountry.fixtureList != null)
                 {
                     Messenger.Default.Send("unloaded");
-                    Messenger.Default.Send(selectedCountry);
+                    Messenger.Default.Send(SelectedCountry);
                 }
             }
+            SelectedCountry = null;
+        }
+
+        private bool CanSelectMatch(object obj)
+        {
+            return CountryList.Count != 0;
         }
     }
 }

@@ -8,6 +8,8 @@
         xmlns:uc="clr-namespace:FootballApp.Controls"
                       xmlns:sdk="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
                       mc:Ignorable="d"
+                      MinWidth="1000"
+                      MinHeight="640"
         DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
         WindowState="Maximized"
         WindowStyle="None"
@@ -24,7 +26,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"  MinWidth="600"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <sdk:GridSplitter Grid.Column="1" Width="3" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+        <sdk:GridSplitter Grid.Column="1" Width="4" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
 
         <uc:CountryControl Grid.Column="0"/>
 

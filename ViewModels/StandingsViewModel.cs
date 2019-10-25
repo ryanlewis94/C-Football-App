@@ -25,7 +25,15 @@ namespace FootballApp.ViewModels
         {
             get { return _standingsList; }
             set { SetProperty(ref _standingsList, value); }
-        }  
+        }
+
+        private Country _currentCountry;
+
+        public Country CurrentCountry
+        {
+            get { return _currentCountry; }
+            set { SetProperty(ref _currentCountry, value); }
+        }
 
         public StandingsViewModel()
         {
@@ -42,19 +50,24 @@ namespace FootballApp.ViewModels
         {
             if (!string.IsNullOrEmpty(country.league_id))
             {
-                Messenger.Default.Send("unloaded");
-                StandingsList = await repository.LoadStandings(country.league_id);
-
-                HighlightCurrentTeams(country);
-
-                if (StandingsList != null)
+                if (CurrentCountry != country)
                 {
-                    Messenger.Default.Send("leagueAvailable");
+                    CurrentCountry = country;
+                    Messenger.Default.Send("unloaded");
+                    StandingsList = await repository.LoadStandings(country.league_id);
+
+                    HighlightCurrentTeams(country);
+
+                    if (StandingsList != null)
+                    {
+                        Messenger.Default.Send("leagueAvailable");
+                    }
+                    else
+                    {
+                        Messenger.Default.Send("leagueUnavailable");
+                    }
                 }
-                else
-                {
-                    Messenger.Default.Send("leagueUnavailable");
-                }
+                
             }
             
             //Hides the loading overlay

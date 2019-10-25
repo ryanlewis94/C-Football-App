@@ -11,6 +11,13 @@
         <StackPanel DataContext="{Binding CurrentMatch}"
                     Margin="0,0,0,10"
                     Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,-25,0,50">
+                <TextBlock Text="{Binding DataContext.CurrentCountry.name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding DataContext.CurrentCountry.leagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+            </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="4.5*" />
@@ -40,11 +47,25 @@
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
             </Grid>
+            <TextBlock Text="{Binding DataContext.TimeUpdated, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                       HorizontalAlignment="Center"
+                       FontSize="12"
+                       Margin="0,5,0,0"/>
+            <TextBlock Text="{Binding DataContext.TimeToNextUpdate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                       HorizontalAlignment="Center"
+                       FontSize="12"/>
         </StackPanel>
 
         <StackPanel DataContext="{Binding CurrentFixture}"
                     Margin="0,0,0,10"
                     Visibility="{Binding DataContext.FixtureSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,-25,0,50">
+                <TextBlock Text="{Binding DataContext.CurrentCountry.name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding DataContext.CurrentCountry.leagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+            </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="4*" />
@@ -84,7 +105,8 @@
         </StackPanel>
 
         <!--List of live events-->
-        <Grid Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}"
+              VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4.5*" />
                 <ColumnDefinition Width="4.5*" />
@@ -93,10 +115,11 @@
             <ListView Grid.Column="0"
                       ItemsSource="{Binding HomeEventsList}"
                       HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
                       IsHitTestVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="8*"/>
@@ -112,6 +135,7 @@
                             <TextBlock Text="{Binding player}"
                                        Grid.Column="1"
                                        HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
                                        FontSize="18"/>
                         </Grid>
                     </DataTemplate>
@@ -122,10 +146,11 @@
             <ListView Grid.Column="1"
                       ItemsSource="{Binding AwayEventsList}"
                       HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
                       IsHitTestVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="8*"/>
                                 <ColumnDefinition Width="2*"/>
