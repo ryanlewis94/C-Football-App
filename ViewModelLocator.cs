@@ -11,8 +11,6 @@ namespace FootballApp
     {
         private static MainViewModel mainViewModel = new MainViewModel();
         private static CountryViewModel countryViewModel = new CountryViewModel();
-        private static LeagueViewModel leagueViewModel = new LeagueViewModel();
-        private static MatchViewModel matchViewModel = new MatchViewModel();
         private static StandingsViewModel standingsViewModel = new StandingsViewModel();
         private static EventsViewModel eventsViewModel = new EventsViewModel();
 
@@ -29,22 +27,6 @@ namespace FootballApp
             get
             {
                 return countryViewModel;
-            }
-        }
-
-        public static LeagueViewModel LeagueViewModel
-        {
-            get
-            {
-                return leagueViewModel;
-            }
-        }
-
-        public static MatchViewModel MatchViewModel
-        {
-            get
-            {
-                return matchViewModel;
             }
         }
 

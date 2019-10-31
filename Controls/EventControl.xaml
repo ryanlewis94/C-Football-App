@@ -8,15 +8,16 @@
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}">
     <StackPanel>
-        <StackPanel DataContext="{Binding CurrentMatch}"
+        <!--Match info-->
+        <StackPanel DataContext="{Binding CurrentCountry}"
                     Margin="0,0,0,10"
                     Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Margin="0,-25,0,50">
-                <TextBlock Text="{Binding DataContext.CurrentCountry.name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
                 <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding DataContext.CurrentCountry.leagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -24,47 +25,50 @@
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="4.5*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding home_name}" 
+                <TextBlock Text="{Binding matchList.home_name}" 
                            Grid.Column="0"
                            FontSize="24"
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding score}"
+                    <TextBlock Text="{Binding matchList.score}"
                                FontWeight="SemiBold" 
                                FontSize="24"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding time}" 
+                    <TextBlock Text="{Binding matchList.time}" 
                                FontWeight="Bold"
                                FontSize="16"
-                               HorizontalAlignment="Center"/>
+                               HorizontalAlignment="Center"
+                               Foreground="Red"/>
                 </StackPanel>
-                <TextBlock Text="{Binding away_name}" 
+                <TextBlock Text="{Binding matchList.away_name}" 
                            Grid.Column="2"
                            FontSize="24"
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
             </Grid>
-            <TextBlock Text="{Binding DataContext.TimeUpdated, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+            <!--Updating info-->
+            <TextBlock Text="{Binding DataContext.TimeToNextUpdate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                        HorizontalAlignment="Center"
                        FontSize="12"
                        Margin="0,5,0,0"/>
-            <TextBlock Text="{Binding DataContext.TimeToNextUpdate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+            <TextBlock Text="{Binding DataContext.TimeUpdated, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                        HorizontalAlignment="Center"
                        FontSize="12"/>
         </StackPanel>
-
-        <StackPanel DataContext="{Binding CurrentFixture}"
+        
+        <!--Fixture info-->
+        <StackPanel DataContext="{Binding CurrentCountry}"
                     Margin="0,0,0,10"
                     Visibility="{Binding DataContext.FixtureSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Margin="0,-25,0,50">
-                <TextBlock Text="{Binding DataContext.CurrentCountry.name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
                 <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding DataContext.CurrentCountry.leagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -72,24 +76,25 @@
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="4*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding home_name}" 
+                <TextBlock Text="{Binding fixtureList.home_name}" 
                            Grid.Column="0"
                            FontSize="24"
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
                 <TextBlock Grid.Column="1" 
-                           Text="{Binding time}" 
+                           Text="{Binding fixtureList.time}" 
                            FontWeight="Bold"
                            FontSize="16"
                            HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding away_name}" 
+                <TextBlock Text="{Binding fixtureList.away_name}" 
                            Grid.Column="2"
                            FontSize="24"
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
             </Grid>
+            <!--Countdown until Kick off-->
             <TextBlock Text="{Binding DataContext.CountdownTime, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                        FontSize="40"
                        FontWeight="Bold"
@@ -105,7 +110,7 @@
         </StackPanel>
 
         <!--List of live events-->
-        <Grid Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}"
+        <Grid Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
               VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4.5*" />
@@ -173,5 +178,18 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
+        <StackPanel Grid.ColumnSpan="2"
+                    Visibility="{Binding NoMatchSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <TextBlock Text="Please Select a Match!"
+                       TextAlignment="Center"
+                       FontSize="40"
+                       Foreground="{DynamicResource AccentColorBrush2}"/>
+            <TextBlock Text="&#xf1e3;"
+                       TextAlignment="Center"
+                       Margin="10"
+                       FontSize="88"
+                       Foreground="{DynamicResource AccentColorBrush2}"
+                       FontFamily="{DynamicResource FontAwesome}"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>

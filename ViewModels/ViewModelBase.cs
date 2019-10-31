@@ -1,11 +1,8 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using FootballApp.Classes;
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FootballApp.ViewModels
 {
@@ -26,6 +23,18 @@ namespace FootballApp.ViewModels
             storage = value;
             this.OnPropertyChanged(propertyName);
             return true;
+        }
+
+
+        /// <summary>
+        /// stores the country selected info
+        /// </summary>
+        private Country _currentCountry;
+
+        public Country CurrentCountry
+        {
+            get { return _currentCountry; }
+            set { SetProperty(ref _currentCountry, value); }
         }
     }
 }

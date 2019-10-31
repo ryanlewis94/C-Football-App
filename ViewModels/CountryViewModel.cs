@@ -4,15 +4,10 @@ using FootballApp.Commands;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
@@ -21,12 +16,24 @@ namespace FootballApp.ViewModels
         private IFootball repository;
 
         public ICommand MatchSelectedCommand { get; set; }
+        public ICommand MatchClickedCommand { get; set; }
+
+        private DispatcherTimer MatchTimer { get; set; }
+        private DispatcherTimer FixtureTimer { get; set; }
 
         #region Properties
 
         /// <summary>
         /// Lists for displaying Countries and sorting them when user searches
         /// </summary>
+
+        private List<Country> _mainList;
+
+        public List<Country> MainList
+        {
+            get { return _mainList; }
+            set { SetProperty(ref _mainList, value); }
+        }
 
         private List<Country> _countryList;
 
@@ -82,7 +89,6 @@ namespace FootballApp.ViewModels
             set 
             { 
                 SetProperty(ref _selectedCountry, value);
-                //CountrySelected(_selectedCountry);
             }
         }
 
@@ -96,8 +102,34 @@ namespace FootballApp.ViewModels
             set
             {
                 SetProperty(ref _dateSelected, value);
-                GetFixtures(_dateSelected);
+                GetFixtures();
                 Messenger.Default.Send("unloaded");
+            }
+        }
+
+        /// <summary>
+        /// checks if the countries and leagues have already beenloaded to reduce calls to api
+        /// </summary>
+        private bool _countriesLoaded = false;
+        public bool CountriesLoaded
+        {
+            get { return _countriesLoaded; }
+            set
+            {
+                SetProperty(ref _countriesLoaded, value);
+            }
+        }
+
+        /// <summary>
+        /// if invoked by timer dont make a matchlist call to reduce api usage
+        /// </summary>
+        private bool _invokedByFixtureTimer = false;
+        public bool InvokedByFixtureTimer
+        {
+            get { return _invokedByFixtureTimer; }
+            set
+            {
+                SetProperty(ref _invokedByFixtureTimer, value);
             }
         }
 
@@ -107,165 +139,321 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadCommands();
+            LoadTimers();
         }
 
         private void LoadCommands()
         {
             MatchSelectedCommand = new CustomCommand(SelectMatch, CanSelectMatch);
+            MatchClickedCommand = new CustomCommand(MatchClicked, CanClickMatch);
         }
 
+        /// <summary>
+        /// starts the timers to update the list of matches and fixtures
+        /// </summary>
+        private void LoadTimers()
+        {
+            MatchTimer = new DispatcherTimer();
+            FixtureTimer = new DispatcherTimer();
+            LoadMatchTimer();
+            LoadFixtureTimer();
+        }
+
+        /// <summary>
+        /// sets the match timer to update every 60 seconds
+        /// </summary>
+        private void LoadMatchTimer()
+        {
+            if (MatchTimer.IsEnabled)
+            {
+                MatchTimer.Stop();
+            }
+            MatchTimer = new DispatcherTimer();
+            MatchTimer.Interval = TimeSpan.FromSeconds(60);
+            MatchTimer.Tick += MatchTimer_Tick;
+            MatchTimer.Start();
+        }
+
+        private void MatchTimer_Tick(object sender, EventArgs e)
+        {
+            CheckDate();
+        }
+
+        /// <summary>
+        /// sets the fixture timer to update every 5 minutes
+        /// </summary>
+        private void LoadFixtureTimer()
+        {
+            if (FixtureTimer.IsEnabled)
+            {
+                FixtureTimer.Stop();
+            }
+            FixtureTimer = new DispatcherTimer();
+            FixtureTimer.Interval = TimeSpan.FromSeconds(300);
+            FixtureTimer.Tick += FixtureTimer_Tick;
+            FixtureTimer.Start();
+        }
+
+        private void FixtureTimer_Tick(object sender, EventArgs e)
+        {
+            InvokedByFixtureTimer = true;
+            GetFixtures();
+        }
+
+        /// <summary>
+        /// loads all the countries leagues and matches ready to sort into the grouped list
+        /// </summary>
         private async void LoadCountries()
         {
-            Messenger.Default.Register<List<Match>>(this, OnLiveListReceived);
-            CountryList = await repository.LoadCountry();
-            AllLeagueList = await repository.LoadLeague();
-            AllLeagueList = AllLeagueList.OrderBy(l => l.id).ToList();
-            string[] dateNow = DateTime.Now.ToString().Split(' ');
-            string currentDate = $"{dateNow[0]} 00:00:00";
-            if (DateSelected.ToString() == currentDate)
+            try
             {
-                MatchList = await repository.LoadLive();
+                CountryList = await repository.LoadCountry();
+                AllLeagueList = await repository.LoadLeague();
+                AllLeagueList = AllLeagueList.OrderBy(l => l.id).ToList();
+                CheckDate();
+                CountriesLoaded = true;
             }
-            else
+            catch (Exception ex)
             {
-                MatchList = new List<Match>();
+                System.Windows.MessageBox.Show(ex.ToString());
             }
-
-            CreateGroupedList();
-
-            SelectedCountry = new Country();
-            Messenger.Default.Send(SelectedCountry);
         }
 
-        private void OnLiveListReceived(List<Match> updatedMatches)
+        /// <summary>
+        /// if the date selected is todays date then load the live matches
+        /// </summary>
+        private async void CheckDate()
         {
-            string[] dateNow = DateTime.Now.ToString().Split(' ');
-            string currentDate = $"{dateNow[0]} 00:00:00";
-            if (DateSelected.ToString() == currentDate)
-            {
-                MatchList = updatedMatches;
-            }
-            else
-            {
-                MatchList = new List<Match>();
-            }
+            try
+            { 
+                string[] dateNow = DateTime.Now.ToString().Split(' ');
+                string currentDate = $"{dateNow[0]} 00:00:00";
 
-            CreateGroupedList();
+                MatchList = (DateSelected.ToString() == currentDate) ? 
+                    await repository.LoadLive() : 
+                    new List<Match>();
+
+                CreateGroupedList();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
         }
 
-        private async void GetFixtures(DateTime? dateSelected)
+        /// <summary>
+        /// gets all the fixtures for the date selected
+        /// </summary>
+        private async void GetFixtures()
         {
-            int i = 0;
-            FixturePageList = new List<Fixture>();
-            do
+            try
             {
-                i = i + 1;
+                int i = 0;
+                FixturePageList = new List<Fixture>();
+                do
+                {
+                    i = i + 1;
 
-                FixtureList = await repository.LoadFixture(dateSelected, i);
-                FixturePageList = FixturePageList.Concat(FixtureList).ToList();
+                    FixtureList = await repository.LoadFixture(DateSelected, i);
+                    FixturePageList = FixturePageList.Concat(FixtureList).ToList();
 
-            } while (FixtureList.Count == 30);
-            FixtureList = FixturePageList;
+                } while (FixtureList.Count == 30);
+                FixtureList = FixturePageList;
 
-            LoadCountries();
+                if (!CountriesLoaded)
+                {
+                    LoadCountries();
+                }
+                else
+                {
+                    //date changed
+                    if (!InvokedByFixtureTimer)
+                    {
+                        CheckDate();
+                    }
+                    //fixture timer
+                    else
+                    {
+                        CreateGroupedList();
+                    }
+                }
+                InvokedByFixtureTimer = false;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
         }
 
+        /// <summary>
+        /// creates a list only with countries that contain games 
+        /// </summary>
         private void CreateGroupedList()
         {
             SortCountryList = new List<Country>();
 
-            foreach (Country country in CountryList)
+            try
             {
-                foreach (League league in AllLeagueList)
+                foreach (Country country in CountryList)
                 {
-                    if (league.country_id == country.id)
+                    foreach (League league in AllLeagueList)
                     {
-                        foreach (Match match in MatchList)
+                        if (league.country_id == country.id)
                         {
-                            if (match.league_id == league.id.ToString())
+                            foreach (Match match in MatchList)
                             {
-                                if (!match.score.Contains("?"))
+                                if (match.league_id == league.id.ToString())
                                 {
+                                    if (!match.score.Contains("?"))
+                                    {
+                                        var countryToAdd = new Country
+                                        {
+                                            index = match.id,
+                                            id = country.id,
+                                            league_id = league.id.ToString(),
+                                            name = country.name,
+                                            leagueName = league.name,
+                                            matchList = match,
+                                            fixtureList = null
+                                        };
+
+                                        SortCountryList.Add(countryToAdd);
+                                    }
+                                }
+                            }
+                            foreach (Fixture fixture in FixtureList)
+                            {
+                                if (fixture.league_id == league.id.ToString())
+                                {
+                                    string[] splitTime = fixture.time.Split(':');
+                                    //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
+
+                                    if (splitTime[0].Length < 2)
+                                    {
+                                        splitTime[0] = $"0{splitTime[0]}";
+                                    }
+
+                                    if (splitTime[0] == "24")
+                                    {
+                                        splitTime[0] = "00";
+                                    }
+
+                                    var fixtureToAdd = new Fixture
+                                    {
+                                        id = fixture.id,
+                                        date = fixture.date,
+                                        time = $"{splitTime[0]}:{splitTime[1]}",
+                                        home_name = fixture.home_name,
+                                        away_name = fixture.away_name,
+                                        league_id = fixture.league_id,
+                                        competition_id = fixture.competition_id
+                                    };
+
                                     var countryToAdd = new Country
                                     {
-                                        index = match.id,
+                                        index = fixture.id,
                                         id = country.id,
                                         league_id = league.id.ToString(),
                                         name = country.name,
                                         leagueName = league.name,
-                                        matchList = match,
-                                        fixtureList = null
+                                        matchList = null,
+                                        fixtureList = fixtureToAdd
                                     };
 
                                     SortCountryList.Add(countryToAdd);
                                 }
+
                             }
                         }
-                        foreach (Fixture fixture in FixtureList)
+                    }
+                }
+                //removes any duplicates 
+                SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
+                MainList = SortCountryList;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
+
+            try
+            {
+                //When recreating the list check if the user had selected a match and keep it selected
+                if (CurrentCountry != null)
+                {
+                    foreach (Country country in MainList)
+                    {
+                        if (CurrentCountry.matchList != null && country.matchList != null)
                         {
-                            if (fixture.league_id == league.id.ToString())
+                            if (CurrentCountry.matchList.id == country.matchList.id)
                             {
-                                string[] splitTime = fixture.time.Split(':');
-                                splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
-
-                                if (splitTime[0].Length < 2)
-                                {
-                                    splitTime[0] = $"0{splitTime[0]}";
-                                }
-
-                                if (splitTime[0] == "24")
-                                {
-                                    splitTime[0] = "00";
-                                }
-
-                                var fixtureToAdd = new Fixture
-                                {
-                                    id = fixture.id,
-                                    date = fixture.date,
-                                    time = $"{splitTime[0]}:{splitTime[1]}",
-                                    home_name = fixture.home_name,
-                                    away_name = fixture.away_name,
-                                    league_id = fixture.league_id,
-                                    competition_id = fixture.competition_id
-                                };
-
-                                var countryToAdd = new Country
-                                {
-                                    index = fixture.id,
-                                    id = country.id,
-                                    league_id = league.id.ToString(),
-                                    name = country.name,
-                                    leagueName = league.name,
-                                    matchList = null,
-                                    fixtureList = fixtureToAdd
-                                };
-
-                                SortCountryList.Add(countryToAdd);
+                                SelectedCountry = country;
+                                CurrentCountry = country;
+                                Messenger.Default.Send(SelectedCountry);
+                                break;
                             }
+                        }
+                        if (CurrentCountry.fixtureList != null && country.fixtureList != null)
+                        {
+                            if (CurrentCountry.fixtureList.id == country.fixtureList.id)
+                            {
+                                SelectedCountry = country;
+                                CurrentCountry = country;
+                                Messenger.Default.Send(SelectedCountry);
+                                break;
+                            }
+                        }
+                    }
+                }
+                Messenger.Default.Send("loaded");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
+        }
 
+        /// <summary>
+        /// When a user selects a match
+        /// </summary>
+        /// <param name="obj"></param>
+        private void SelectMatch(object obj)
+        {
+            try
+            {
+                if (SelectedCountry != null)
+                {
+                    if (SelectedCountry.matchList != null || SelectedCountry.fixtureList != null)
+                    {
+                        if (SelectedCountry != CurrentCountry)
+                        {
+                            Messenger.Default.Send("unloaded");
+                            Messenger.Default.Send(SelectedCountry);
+                            CurrentCountry = SelectedCountry;
                         }
                     }
                 }
             }
-            SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
-            CountryList = SortCountryList;
-            Messenger.Default.Send("loaded");
-        }
-
-        private void SelectMatch(object obj)
-        {
-            if (SelectedCountry != null)
+            catch (Exception ex)
             {
-                if (SelectedCountry.matchList != null || SelectedCountry.fixtureList != null)
-                {
-                    Messenger.Default.Send("unloaded");
-                    Messenger.Default.Send(SelectedCountry);
-                }
+                System.Windows.MessageBox.Show(ex.ToString());
             }
+        }
+        
+        /// <summary>
+        /// This is necessary to cut out multiple selection
+        /// </summary>
+        /// <param name="obj"></param>
+        private void MatchClicked(object obj)
+        {
             SelectedCountry = null;
         }
 
         private bool CanSelectMatch(object obj)
+        {
+            return CountryList.Count != 0;
+        }
+        private bool CanClickMatch(object obj)
         {
             return CountryList.Count != 0;
         }

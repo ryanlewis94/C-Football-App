@@ -85,11 +85,9 @@
     <Compile Include="Classes\Data.cs" />
     <Compile Include="Classes\Model.cs" />
     <Compile Include="Classes\Models.cs" />
+    <Compile Include="Classes\PersistGroupExpandedStateBehavior.cs" />
     <Compile Include="Controls\buttons\CircularButton.cs" />
     <Compile Include="Controls\buttons\SquareButton.cs" />
-    <Compile Include="Controls\ClearButtonControl.xaml.cs">
-      <DependentUpon>ClearButtonControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\EventControl.xaml.cs">
       <DependentUpon>EventControl.xaml</DependentUpon>
     </Compile>
@@ -106,25 +104,13 @@
     <Compile Include="Controls\CountryControl.xaml.cs">
       <DependentUpon>CountryControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LeagueControl.xaml.cs">
-      <DependentUpon>LeagueControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MatchControl.xaml.cs">
-      <DependentUpon>MatchControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utility\Messenger.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\EventsViewModel.cs" />
-    <Compile Include="ViewModels\LeagueViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MatchViewModel.cs" />
     <Compile Include="ViewModels\StandingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Page Include="Controls\ClearButtonControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\CountryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,15 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\LeagueControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\LoadingOverlayView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MatchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

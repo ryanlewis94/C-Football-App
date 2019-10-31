@@ -7,24 +7,27 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:FootballApp.Controls"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:behaviors="clr-namespace:FootballApp.Classes"
              mc:Ignorable="d"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
+    <!--Grouped Collection-->
     <UserControl.Resources>
         <CollectionViewSource x:Key="GroupedLeagues"
                               IsLiveGroupingRequested="True"
-                              Source="{Binding CountryList}">
+                              Source="{Binding MainList}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="name" />
                 <PropertyGroupDescription PropertyName="leagueName" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height=".5*"></RowDefinition>
             <RowDefinition Height="9.5*"></RowDefinition>
         </Grid.RowDefinitions>
-
+        <!--Date Selector-->
         <DatePicker x:Name="myDatePicker" 
                     DisplayDateStart="{x:Static System:DateTime.Now}" 
                     SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}">
@@ -41,7 +44,7 @@
                 </Style>
             </DatePicker.Resources>
         </DatePicker>
-
+        <!--Grouped List-->
         <ListView DataContext="{StaticResource GroupedLeagues}" 
                   ItemsSource="{Binding}"
                   Grid.Row="1">
@@ -52,7 +55,10 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander IsExpanded="False">
+                                        <Expander>
+                                            <i:Interaction.Behaviors>
+                                                <behaviors:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
+                                            </i:Interaction.Behaviors>
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" Foreground="White" FontSize="22"/>
@@ -86,9 +92,13 @@
                                             </Expander.Header>
                                             <Expander.Content>
                                                 <StackPanel>
+                                                    <!--Child List-->
                                                     <ListView ItemsSource="{Binding Items}"
-                                                              SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                                              SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
                                                         <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                                            </i:EventTrigger>
                                                             <i:EventTrigger EventName="SelectionChanged">
                                                                 <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
                                                             </i:EventTrigger>
