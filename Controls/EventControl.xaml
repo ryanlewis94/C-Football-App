@@ -50,7 +50,7 @@
                            HorizontalAlignment="Center"/>
             </Grid>
             <!--Updating info-->
-            <TextBlock Text="{Binding DataContext.TimeToNextUpdate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+            <TextBlock Text=""
                        HorizontalAlignment="Center"
                        FontSize="12"
                        Margin="0,5,0,0"/>
@@ -177,19 +177,74 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            
+            <!--When there are no events to display-->
+            <StackPanel Grid.ColumnSpan="2"
+                        Margin="0,50,0,0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding NoEvents, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                <TextBlock Text="Nothing has happened..."
+                           FontSize="32"
+                           Foreground="{DynamicResource AccentColorBrush2}"/>
+                <TextBlock Text="&#xf1e3;"
+                           Margin="5"
+                           FontSize="32"
+                           Foreground="{DynamicResource AccentColorBrush2}"
+                           FontFamily="{DynamicResource FontAwesome}"/>
+            </StackPanel>
         </Grid>
-        <StackPanel Grid.ColumnSpan="2"
-                    Visibility="{Binding NoMatchSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-            <TextBlock Text="Please Select a Match!"
-                       TextAlignment="Center"
-                       FontSize="40"
-                       Foreground="{DynamicResource AccentColorBrush2}"/>
+        
+        <!--Welcome Screen-->
+        <Grid Visibility="{Binding NoMatchSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="1.5*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
             <TextBlock Text="&#xf1e3;"
+                       Grid.Column="0"
                        TextAlignment="Center"
-                       Margin="10"
-                       FontSize="88"
+                       FontSize="72"
                        Foreground="{DynamicResource AccentColorBrush2}"
                        FontFamily="{DynamicResource FontAwesome}"/>
-        </StackPanel>
+            <TextBlock Text="LiveScores"
+                       Grid.Column="1"
+                       FontWeight="Bold"
+                       TextAlignment="Center"
+                       FontSize="72"
+                       Foreground="{DynamicResource AccentColorBrush2}"/>
+            <TextBlock Text="&#xf1e3;"
+                       Grid.Column="2"
+                       TextAlignment="Center"
+                       FontSize="72"
+                       Foreground="{DynamicResource AccentColorBrush2}"
+                       FontFamily="{DynamicResource FontAwesome}"/>
+
+            <StackPanel Grid.Column="1"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        Margin="0,100,0,0">
+                <TextBlock Text="{Binding Greeting}"
+                           FontSize="48"
+                           Margin="0,0,0,25"
+                           TextAlignment="Center"
+                           Foreground="{DynamicResource AccentColorBrush2}"/>
+                <TextBlock Text="Please select a game from the left to get started!"
+                           FontSize="32"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource AccentColorBrush2}"/>
+            </StackPanel>
+        </Grid>
     </StackPanel>
 </UserControl>

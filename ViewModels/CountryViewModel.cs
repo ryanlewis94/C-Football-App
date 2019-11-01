@@ -5,13 +5,13 @@ using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
-    public class CountryViewModel: ViewModelBase
+    public class CountryViewModel: ViewModelBase, IDisposable
     {
         private IFootball repository;
 
@@ -176,6 +176,7 @@ namespace FootballApp.ViewModels
 
         private void MatchTimer_Tick(object sender, EventArgs e)
         {
+            Messenger.Default.Send("unloaded");
             CheckDate();
         }
 
@@ -196,6 +197,7 @@ namespace FootballApp.ViewModels
 
         private void FixtureTimer_Tick(object sender, EventArgs e)
         {
+            Messenger.Default.Send("unloaded");
             InvokedByFixtureTimer = true;
             GetFixtures();
         }
@@ -456,6 +458,11 @@ namespace FootballApp.ViewModels
         private bool CanClickMatch(object obj)
         {
             return CountryList.Count != 0;
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

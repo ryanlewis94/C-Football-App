@@ -70,6 +70,20 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _fixtureSelected, value); }
         }
 
+        private bool _noMatchSelected = true;
+        public bool NoMatchSelected
+        {
+            get { return _noMatchSelected; }
+            set { SetProperty(ref _noMatchSelected, value); }
+        }
+
+        private bool _noEvents;
+        public bool NoEvents
+        {
+            get { return _noEvents; }
+            set { SetProperty(ref _noEvents, value); }
+        }
+
         /// <summary>
         /// Time of Kick off
         /// </summary>
@@ -110,6 +124,16 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _fullTime, value); }
         }
 
+        /// <summary>
+        /// Sets the greeting depending on the time of day
+        /// </summary>
+        private string _greeting;
+        public string Greeting
+        {
+            get { return _greeting; }
+            set { SetProperty(ref _greeting, value); }
+        }
+
         #endregion
 
         public EventsViewModel()
@@ -126,6 +150,10 @@ namespace FootballApp.ViewModels
 
         private void LoadEvents()
         {
+            if (DateTime.Now < DateTime.Parse("12:00:00")) { Greeting = "Good Morning!"; }
+            else if (DateTime.Now < DateTime.Parse("17:00:00")) { Greeting = "Good Afternoon!"; }
+            else { Greeting = "Good Ebening!"; }
+
             Messenger.Default.Register<Country>(this, OnCountryReceived);
         }
 
@@ -139,6 +167,7 @@ namespace FootballApp.ViewModels
             {
                 if (country != null)
                 {
+                    NoMatchSelected = false;
                     if (country.matchList != null)
                     {
                         CurrentCountry = country;
@@ -256,6 +285,8 @@ namespace FootballApp.ViewModels
                         HomeEventsList.Insert(0, BlankEvent);
                     }
                 }
+
+                NoEvents = (EventsList.Count != 0) ? false : true;
 
                 Console.WriteLine(HomeEventsList.Count);
                 Console.WriteLine(AwayEventsList.Count);

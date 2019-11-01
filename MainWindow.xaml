@@ -13,7 +13,7 @@
         DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
         WindowState="Maximized"
         WindowStyle="None"
-        Title="Football Scores" 
+        Title="LiveScores" 
         TitleCaps="False"
         GlowBrush="{DynamicResource AccentColorBrush}"
         Icon="/Resources/football-2-48.ico">
@@ -37,9 +37,7 @@
                                                    Padding="0,50,0,0">
             <TabItem Header="LiveScores"
                      Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-                <Grid>
-                    <uc:EventControl/>
-                </Grid>
+                <uc:EventControl/>
             </TabItem>
             
             <TabItem Header="Standings"
