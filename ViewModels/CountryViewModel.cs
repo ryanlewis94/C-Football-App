@@ -2,9 +2,11 @@
 using FootballApp.Classes;
 using FootballApp.Commands;
 using FootballApp.Utility;
+using FootballApp.ErrorHandling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Timers;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -14,7 +16,7 @@ namespace FootballApp.ViewModels
     public class CountryViewModel: ViewModelBase, IDisposable
     {
         private IFootball repository;
-
+        
         public ICommand MatchSelectedCommand { get; set; }
         public ICommand MatchClickedCommand { get; set; }
 
@@ -48,6 +50,22 @@ namespace FootballApp.ViewModels
         {
             get { return _sortCountryList; }
             set { SetProperty(ref _sortCountryList, value); }
+        }
+
+        private List<Country> _federationList;
+
+        public List<Country> FederationList
+        {
+            get { return _federationList; }
+            set { SetProperty(ref _federationList, value); }
+        }
+
+        private List<Competition> _competitionList;
+
+        public List<Competition> CompetitionList
+        {
+            get { return _competitionList; }
+            set { SetProperty(ref _competitionList, value); }
         }
 
         private List<League> _allLeagueList;
@@ -134,7 +152,7 @@ namespace FootballApp.ViewModels
         }
 
         #endregion
-
+        
         public CountryViewModel()
         {
             repository = new Football();
@@ -209,15 +227,17 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                FederationList = await repository.LoadFederation();
+                CompetitionList = await repository.LoadCompetition();
+                CompetitionList = CompetitionList.OrderBy(c => c.id).ToList();
                 CountryList = await repository.LoadCountry();
-                AllLeagueList = await repository.LoadLeague();
-                AllLeagueList = AllLeagueList.OrderBy(l => l.id).ToList();
                 CheckDate();
                 CountriesLoaded = true;
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
+                //System.Windows.MessageBox.Show(ex.Message);
             }
         }
 
@@ -239,7 +259,7 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -283,7 +303,7 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -298,84 +318,37 @@ namespace FootballApp.ViewModels
             {
                 foreach (Country country in CountryList)
                 {
-                    foreach (League league in AllLeagueList)
+                    foreach (Competition competition in CompetitionList)
                     {
-                        if (league.country_id == country.id)
+                        if (competition.countries.Count != 0)
                         {
-                            foreach (Match match in MatchList)
+                            if (competition.countries[0].id == country.id)
                             {
-                                if (match.league_id == league.id.ToString())
-                                {
-                                    if (!match.score.Contains("?"))
-                                    {
-                                        var countryToAdd = new Country
-                                        {
-                                            index = match.id,
-                                            id = country.id,
-                                            league_id = league.id.ToString(),
-                                            name = country.name,
-                                            leagueName = league.name,
-                                            matchList = match,
-                                            fixtureList = null
-                                        };
-
-                                        SortCountryList.Add(countryToAdd);
-                                    }
-                                }
-                            }
-                            foreach (Fixture fixture in FixtureList)
-                            {
-                                if (fixture.league_id == league.id.ToString())
-                                {
-                                    string[] splitTime = fixture.time.Split(':');
-                                    //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
-
-                                    if (splitTime[0].Length < 2)
-                                    {
-                                        splitTime[0] = $"0{splitTime[0]}";
-                                    }
-
-                                    if (splitTime[0] == "24")
-                                    {
-                                        splitTime[0] = "00";
-                                    }
-
-                                    var fixtureToAdd = new Fixture
-                                    {
-                                        id = fixture.id,
-                                        date = fixture.date,
-                                        time = $"{splitTime[0]}:{splitTime[1]}",
-                                        home_name = fixture.home_name,
-                                        away_name = fixture.away_name,
-                                        league_id = fixture.league_id,
-                                        competition_id = fixture.competition_id
-                                    };
-
-                                    var countryToAdd = new Country
-                                    {
-                                        index = fixture.id,
-                                        id = country.id,
-                                        league_id = league.id.ToString(),
-                                        name = country.name,
-                                        leagueName = league.name,
-                                        matchList = null,
-                                        fixtureList = fixtureToAdd
-                                    };
-
-                                    SortCountryList.Add(countryToAdd);
-                                }
-
+                                CheckForFixturesAndMatches(country, competition, null);
                             }
                         }
+                        else// if (competition.federations.Count != 0)
+                        {
+                            foreach (Country federation in FederationList)
+                            {
+                                if (competition.federations[0].id == federation.id)
+                                {
+                                    CheckForFixturesAndMatches(null, competition, federation);
+                                }
+                            }
+                        }
+
                     }
                 }
                 //removes any duplicates 
                 SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
+                //order alphabetically by country name 
+                //SortCountryList = SortCountryList.OrderBy(c => c.name).ToList();
                 MainList = SortCountryList;
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
 
             try
@@ -405,13 +378,106 @@ namespace FootballApp.ViewModels
                                 break;
                             }
                         }
+                        //Checks if the fixture has kicked off, and select it if it is
+                        if (CurrentCountry.fixtureList != null && country.matchList != null)
+                        {
+                            if ((CurrentCountry.fixtureList.home_name == country.matchList.home_name) || 
+                                (CurrentCountry.fixtureList.away_name == country.matchList.away_name))
+                            {
+                                SelectedCountry = country;
+                                CurrentCountry = country;
+                                Messenger.Default.Send(SelectedCountry);
+                                break;
+                            }
+                        }
                     }
                 }
                 Messenger.Default.Send("loaded");
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
+            }
+        }
+
+        private void CheckForFixturesAndMatches(Country country, Competition competition, Country federation)
+        {
+            try
+            {
+                foreach (Match match in MatchList)
+                {
+                    if (match.competition_id == competition.id.ToString())
+                    {
+                        if (!match.score.Contains("?"))
+                        {
+                            var countryToAdd = new Country
+                            {
+                                index = match.id,
+                                id = (country != null) ? country.id : federation.id,
+                                league_id =match.league_id,
+                                competition_id = competition.id.ToString(),
+                                name = (country != null) ? country.name : federation.name,
+                                leagueName = competition.name,
+                                matchList = match,
+                                fixtureList = null,
+                                flag = (competition.countries.Count != 0) ? 
+                                    competition.countries[0].flag : null
+                            };
+
+                            SortCountryList.Add(countryToAdd);
+                        }
+                    }
+                }
+                foreach (Fixture fixture in FixtureList)
+                {
+                    if (fixture.competition_id == competition.id.ToString())
+                    {
+                        string[] splitTime = fixture.time.Split(':');
+                        //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
+
+                        if (splitTime[0].Length < 2)
+                        {
+                            splitTime[0] = $"0{splitTime[0]}";
+                        }
+
+                        if (splitTime[0] == "24")
+                        {
+                            splitTime[0] = "00";
+                        }
+
+                        var fixtureToAdd = new Fixture
+                        {
+                            id = fixture.id,
+                            date = fixture.date,
+                            time = $"{splitTime[0]}:{splitTime[1]}",
+                            home_name = fixture.home_name.Replace("amp;", ""),
+                            away_name = fixture.away_name.Replace("amp;", ""),
+                            league_id = fixture.league_id,
+                            competition_id = fixture.competition_id
+                        };
+
+                        var countryToAdd = new Country
+                        {
+                            index = fixture.id,
+                            id = (country != null) ? country.id : federation.id,
+                            league_id = fixture.league_id,
+                            competition_id = competition.id.ToString(),
+                            name = (country != null) ? country.name : federation.name,
+                            leagueName = competition.name,
+                            matchList = null,
+                            fixtureList = fixtureToAdd,
+                            flag = (competition.countries.Count != 0) ?
+                                competition.countries[0].flag : null
+                        };
+
+                        SortCountryList.Add(countryToAdd);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -438,7 +504,7 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
         

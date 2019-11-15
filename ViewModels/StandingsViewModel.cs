@@ -3,6 +3,7 @@ using FootballApp.Classes;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootballApp.ViewModels
 {
@@ -47,16 +48,20 @@ namespace FootballApp.ViewModels
                         CurrentCountry = country;
                         Messenger.Default.Send("unloaded");
                         StandingsList = await repository.LoadStandings(country.league_id);
-
-                        HighlightCurrentTeams(country);
-
                         if (StandingsList != null)
                         {
-                            Messenger.Default.Send("leagueAvailable");
-                        }
-                        else
-                        {
-                            Messenger.Default.Send("leagueUnavailable");
+                            //StandingsList = StandingsList.Where(t => t.league_id == country.league_id).ToList();
+
+                            HighlightCurrentTeams(country);
+
+                            if (StandingsList.Count != 0)
+                            {
+                                Messenger.Default.Send("leagueAvailable");
+                            }
+                            else
+                            {
+                                Messenger.Default.Send("leagueUnavailable");
+                            }
                         }
                     }
                 }
@@ -65,7 +70,8 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                Messenger.Default.Send("leagueUnavailable");
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -100,7 +106,7 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
     }

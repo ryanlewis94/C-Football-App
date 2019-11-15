@@ -91,65 +91,70 @@
                                                 </StackPanel>
                                             </Expander.Header>
                                             <Expander.Content>
-                                                <StackPanel>
-                                                    <!--Child List-->
-                                                    <ListView ItemsSource="{Binding Items}"
-                                                              SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                                                            </i:EventTrigger>
-                                                            <i:EventTrigger EventName="SelectionChanged">
-                                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                        <ListView.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Border BorderBrush="Black"
-                                                                        BorderThickness="2"
-                                                                        Padding="0,10">
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="4.5*" />
-                                                                            <ColumnDefinition Width="1*" />
-                                                                            <ColumnDefinition Width="4.5*" />
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <TextBlock Text="{Binding matchList.home_name}"
+                                                <!--Child List of Matches and Fixtures-->
+                                                <ListView ItemsSource="{Binding Items}"
+                                                          SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
+                                                    <i:Interaction.Behaviors>
+                                                        <behaviors:ScrollParentWhenAtMax />
+                                                    </i:Interaction.Behaviors>
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                                        </i:EventTrigger>
+                                                        <i:EventTrigger EventName="SelectionChanged">
+                                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="Black"
+                                                                    BorderThickness="2"
+                                                                    Padding="0,10">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="4.5*" />
+                                                                        <ColumnDefinition Width="1*" />
+                                                                        <ColumnDefinition Width="4.5*" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Text="{Binding matchList.home_name}"
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="0"
+                                                                               HorizontalAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
+                                                                    <TextBlock Text="{Binding fixtureList.home_name}"
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="0"
+                                                                               HorizontalAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
+                                                                    <StackPanel Grid.Column="1">
+                                                                        <TextBlock Text="{Binding matchList.score}"
                                                                                    FontWeight="SemiBold"
-                                                                                   Grid.Column="0"
                                                                                    HorizontalAlignment="Center" />
-                                                                        <TextBlock Text="{Binding fixtureList.home_name}"
+                                                                        <TextBlock Text="{Binding matchList.time}"
                                                                                    FontWeight="SemiBold"
-                                                                                   Grid.Column="0"
-                                                                                   HorizontalAlignment="Center" />
-                                                                        <StackPanel Grid.Column="1">
-                                                                            <TextBlock Text="{Binding matchList.score}"
-                                                                                       FontWeight="SemiBold"
-                                                                                       HorizontalAlignment="Center" />
-                                                                            <TextBlock Text="{Binding matchList.time}"
-                                                                                       FontWeight="SemiBold"
-                                                                                       HorizontalAlignment="Center"
-                                                                                       Foreground="Red" />
-                                                                        </StackPanel>
-                                                                        <StackPanel Grid.Column="1">
-                                                                            <TextBlock Text="{Binding fixtureList.time}"
-                                                                                       FontWeight="SemiBold"
-                                                                                       HorizontalAlignment="Center" />
-                                                                        </StackPanel>
-                                                                        <TextBlock Text="{Binding matchList.away_name}"
+                                                                                   HorizontalAlignment="Center"
+                                                                                   Foreground="Red" />
+                                                                    </StackPanel>
+                                                                    <StackPanel Grid.Column="1">
+                                                                        <TextBlock Text="{Binding fixtureList.time}"
                                                                                    FontWeight="SemiBold"
-                                                                                   Grid.Column="2"
                                                                                    HorizontalAlignment="Center" />
-                                                                        <TextBlock Text="{Binding fixtureList.away_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   Grid.Column="2"
-                                                                                   HorizontalAlignment="Center" />
-                                                                    </Grid>
-                                                                </Border>
-                                                            </DataTemplate>
-                                                        </ListView.ItemTemplate>
-                                                    </ListView>
-                                                </StackPanel>
+                                                                    </StackPanel>
+                                                                    <TextBlock Text="{Binding matchList.away_name}"
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="2"
+                                                                               HorizontalAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
+                                                                    <TextBlock Text="{Binding fixtureList.away_name}"
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="2"
+                                                                               HorizontalAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
                                             </Expander.Content>
                                         </Expander>
                                     </ControlTemplate>

@@ -206,10 +206,11 @@ namespace FootballApp.ViewModels
                 }
                 Messenger.Default.Send("matchOpened");
                 Messenger.Default.Send(0); //TabIndex
+                LoadEvents();
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -297,7 +298,7 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.ToString());
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -313,15 +314,27 @@ namespace FootballApp.ViewModels
             CountdownTimer = new DispatcherTimer();
             CountdownTimer.Interval = TimeSpan.FromSeconds(1);
             CountdownTimer.Tick += CountdownTimer_Tick;
-            TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
-            CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
-            CountdownTimer.Start();
+            if (FixtureKickOffTime > DateTime.Now)
+            {
+                TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
+                CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
+                CountdownTimer.Start();
+            }
+            else
+            {
+                CountdownTime = "0 days 0 hrs 0 min 0 sec";
+            }
         }
 
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             TimeSpan ts = FixtureKickOffTime.Subtract(DateTime.Now);
+            string[] timeLeft = ts.ToString().Split('.');
             CountdownTime = ts.ToString("d' days 'h' hrs 'm' min 's' sec'");
+            if (timeLeft[0] == "00:00:00")
+            {
+                CountdownTimer.Stop();
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using FootballApp.Classes;
+using FootballApp.ErrorHandling;
 using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 
 namespace FootballApp.ViewModels
@@ -25,6 +27,7 @@ namespace FootballApp.ViewModels
             return true;
         }
 
+        public ErrorHandler errorHandler = new ErrorHandler();
 
         /// <summary>
         /// stores the country selected info

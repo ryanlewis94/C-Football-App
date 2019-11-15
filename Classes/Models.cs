@@ -11,30 +11,27 @@ namespace FootballApp.Classes
         public string index { get; set; }
         public string id { get; set; }
         public string league_id { get; set; }
+        public string competition_id { get; set; }
         public string name { get; set; }
-        //public League leagueList { get; set; }
         public string leagueName { get; set; }
         public Match matchList { get; set; }
         public Fixture fixtureList { get; set; }
+        public string flag { get; set; }
     }
     public class League
     {
         public int id { get; set; }
         public string name { get; set; }
         public string country_id { get; set; }
-        public string scores { get; set; }
-        public Match matchList { get; set; }
-        public Fixture fixtureList { get; set; }
     }
 
     public class Competition
     {
-        public string id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public List<Country> countries { get; set; }
         public List<Country> federations { get; set; }
     }
-
 
     public class Match
     {
