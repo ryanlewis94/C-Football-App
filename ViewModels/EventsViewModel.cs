@@ -3,6 +3,7 @@ using FootballApp.Classes;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
@@ -168,6 +169,8 @@ namespace FootballApp.ViewModels
                 if (country != null)
                 {
                     NoMatchSelected = false;
+                    HomeEventsList?.Clear();
+                    AwayEventsList?.Clear();
                     if (country.matchList != null)
                     {
                         CurrentCountry = country;
@@ -184,7 +187,7 @@ namespace FootballApp.ViewModels
                             FullTime = true;
                             TimeUpdated = "";
                         }
-
+                        
                         EventsList = await repository.LoadEvents(country.matchList.id);
                         SortEvents();
                     }
@@ -221,80 +224,86 @@ namespace FootballApp.ViewModels
         {
             try
             {
-                HomeEventsList = new List<Event>();
-                AwayEventsList = new List<Event>();
-                BlankEvent = new Event();
-
-                foreach (Event @event in EventsList)
+                Thread thread = new Thread(new ThreadStart(delegate ()
                 {
-                    int idx = @event.player.LastIndexOf(" ");
-                    string playerToAdd;
-                    if (idx != -1)
+                    Thread.Sleep(0);
+                    
+                    HomeEventsList = new List<Event>();
+                    AwayEventsList = new List<Event>();
+                    BlankEvent = new Event();
+
+                    foreach (Event @event in EventsList)
                     {
-                        playerToAdd = $"{@event.player.Substring(idx+1)} {@event.player.Substring(0, idx)}";
+                        int idx = @event.player.LastIndexOf(" ");
+                        string playerToAdd;
+                        if (idx != -1)
+                        {
+                            playerToAdd = $"{@event.player.Substring(idx + 1)} {@event.player.Substring(0, idx)}";
+                        }
+                        else
+                        {
+                            playerToAdd = @event.player;
+                        }
+
+                        string eventImage;
+                        switch (@event.@event)
+                        {
+                            case "GOAL":
+                                eventImage = "/Resources/events/Goal.png";
+                                break;
+                            case "GOAL_PENALTY":
+                                eventImage = "/Resources/events/Penalty.png";
+                                break;
+                            case "OWN_GOAL":
+                                eventImage = "/Resources/events/ownGoal.png";
+                                break;
+                            case "YELLOW_CARD":
+                                eventImage = "/Resources/events/Yellow.png";
+                                break;
+                            case "RED_CARD":
+                                eventImage = "/Resources/events/Red.png";
+                                break;
+                            case "YELLOW_RED_CARD":
+                                eventImage = "/Resources/events/YellowRed.png";
+                                break;
+                            default:
+                                eventImage = @event.@event;
+                                break;
+                        }
+
+                        var EventToAdd = new Event
+                        {
+                            id = @event.id,
+                            match_id = @event.match_id,
+                            player = playerToAdd,
+                            time = @event.time,
+                            @event = eventImage,
+                            sort = @event.sort,
+                            home_away = @event.home_away
+                        };
+
+                        if (@event.home_away == "h")
+                        {
+                            HomeEventsList.Insert(0, EventToAdd);
+                            AwayEventsList.Insert(0, BlankEvent);
+                        }
+                        else
+                        {
+                            AwayEventsList.Insert(0, EventToAdd);
+                            HomeEventsList.Insert(0, BlankEvent);
+                        }
                     }
-                    else
-                    {
-                        playerToAdd = @event.player;
-                    }
 
-                    string eventImage;
-                    switch (@event.@event)
-                    {
-                        case "GOAL":
-                            eventImage = "/Resources/events/Goal.png";
-                            break;
-                        case "GOAL_PENALTY":
-                            eventImage = "/Resources/events/Penalty.png";
-                            break;
-                        case "OWN_GOAL":
-                            eventImage = "/Resources/events/ownGoal.png";
-                            break;
-                        case "YELLOW_CARD":
-                            eventImage = "/Resources/events/Yellow.png";
-                            break;
-                        case "RED_CARD":
-                            eventImage = "/Resources/events/Red.png";
-                            break;
-                        case "YELLOW_RED_CARD":
-                            eventImage = "/Resources/events/YellowRed.png";
-                            break;
-                        default:
-                            eventImage = @event.@event;
-                            break;
-                    }
+                    NoEvents = (EventsList.Count != 0) ? false : true;
 
-                    var EventToAdd = new Event
-                    {
-                        id = @event.id,
-                        match_id = @event.match_id,
-                        player = playerToAdd,
-                        time = @event.time,
-                        @event = eventImage,
-                        sort = @event.sort,
-                        home_away = @event.home_away
-                    };
+                    Console.WriteLine(HomeEventsList.Count);
+                    Console.WriteLine(AwayEventsList.Count);
 
-                    if (@event.home_away == "h")
-                    {
-                        HomeEventsList.Insert(0, EventToAdd);
-                        AwayEventsList.Insert(0, BlankEvent);
-                    }
-                    else
-                    {
-                        AwayEventsList.Insert(0, EventToAdd);
-                        HomeEventsList.Insert(0, BlankEvent);
-                    }
-                }
-
-                NoEvents = (EventsList.Count != 0) ? false : true;
-
-                Console.WriteLine(HomeEventsList.Count);
-                Console.WriteLine(AwayEventsList.Count);
-
-                TimeUpdated = (!FullTime) ?
-                    $"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}" :
-                    "";
+                    TimeUpdated = (!FullTime) ?
+                        $"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}" :
+                        "";
+                }));
+                thread.Start();
             }
             catch (Exception ex)
             {

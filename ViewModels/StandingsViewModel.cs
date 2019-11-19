@@ -70,8 +70,15 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                Messenger.Default.Send("leagueUnavailable");
-                errorHandler.CheckErrorMessage(ex);
+                if (ex.Message != "BadRequest")
+                {
+                    errorHandler.CheckErrorMessage(ex);
+                }
+                else
+                {
+                    Messenger.Default.Send("leagueUnavailable");
+                    Messenger.Default.Send("loaded");
+                }   
             }
         }
 
