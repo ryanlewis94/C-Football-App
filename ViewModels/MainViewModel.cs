@@ -75,7 +75,6 @@ namespace FootballApp.ViewModels
                 //Show or hide the match event window
                 case "matchOpened":
                     MatchData = true;
-                    LoadingData = false;
                     break;
                 case "matchClosed":
                     MatchData = false;

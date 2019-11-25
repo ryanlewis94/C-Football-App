@@ -2,10 +2,6 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FootballApp.ErrorHandling
@@ -13,6 +9,7 @@ namespace FootballApp.ErrorHandling
     public class ErrorHandler
     {
         public MetroWindow metroWindow = (MetroWindow)Application.Current.MainWindow;
+
         public async void CheckErrorMessage(Exception exception)
         {
             switch (exception.Message)
@@ -41,6 +38,10 @@ namespace FootballApp.ErrorHandling
                     break;
                 case "An error occurred while sending the request.":
                     await metroWindow.ShowMessageAsync($"Error", "No Internet Connection");
+                    break;
+                case "429":
+                    await metroWindow.ShowMessageAsync($"Error 429 Too Many Requests", "You have sent too many requests, come back later and try again. The app will now close");
+                    Application.Current.Shutdown();
                     break;
                 default:
                     await metroWindow.ShowMessageAsync($"Error: {exception.Message}", exception.ToString());

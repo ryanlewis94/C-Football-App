@@ -3,7 +3,6 @@ using FootballApp.Classes;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootballApp.ViewModels
 {
@@ -66,7 +65,7 @@ namespace FootballApp.ViewModels
                     }
                 }
                 //Hides the loading overlay
-                Messenger.Default.Send("loaded");
+                //Messenger.Default.Send("loaded");
             }
             catch (Exception ex)
             {
@@ -78,7 +77,11 @@ namespace FootballApp.ViewModels
                 {
                     Messenger.Default.Send("leagueUnavailable");
                     Messenger.Default.Send("loaded");
-                }   
+                }
+            }
+            finally
+            {
+                Messenger.Default.Send("loaded");
             }
         }
 
@@ -94,6 +97,7 @@ namespace FootballApp.ViewModels
                 {
                     foreach (Table table in StandingsList)
                     {
+                        table.name = table.name.Replace("amp;", "");
                         if (country.fixtureList != null)
                         {
                             if (table.name == country.fixtureList.home_name || table.name == country.fixtureList.away_name)

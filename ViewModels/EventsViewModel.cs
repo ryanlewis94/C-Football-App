@@ -187,7 +187,7 @@ namespace FootballApp.ViewModels
                             FullTime = true;
                             TimeUpdated = "";
                         }
-                        
+
                         EventsList = await repository.LoadEvents(country.matchList.id);
                         SortEvents();
                     }
@@ -207,13 +207,14 @@ namespace FootballApp.ViewModels
                         LoadCountdown();
                     }
                 }
-                Messenger.Default.Send("matchOpened");
-                Messenger.Default.Send(0); //TabIndex
-                LoadEvents();
             }
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
+            }
+            finally
+            {
+                Messenger.Default.Send("matchOpened");
             }
         }
 
@@ -308,6 +309,10 @@ namespace FootballApp.ViewModels
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
+            }
+            finally
+            {
+                Messenger.Default.Send("loaded");
             }
         }
 

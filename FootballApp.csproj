@@ -136,6 +136,7 @@
     <Compile Include="Classes\behaviors\PersistGroupExpandedStateBehavior.cs" />
     <Compile Include="Classes\behaviors\ScrollParentWhenAtMax.cs" />
     <Compile Include="Controls\buttons\CircularButton.cs" />
+    <Compile Include="Controls\buttons\PlainIconButton.cs" />
     <Compile Include="Controls\buttons\SquareButton.cs" />
     <Compile Include="Controls\EventControl.xaml.cs">
       <DependentUpon>EventControl.xaml</DependentUpon>

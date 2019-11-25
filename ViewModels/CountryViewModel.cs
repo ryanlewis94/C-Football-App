@@ -2,18 +2,15 @@
 using FootballApp.Classes;
 using FootballApp.Commands;
 using FootballApp.Utility;
-using FootballApp.ErrorHandling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Timers;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
-    public class CountryViewModel: ViewModelBase, IDisposable
+    public class CountryViewModel: ViewModelBase
     {
         private IFootball repository;
         
@@ -35,6 +32,22 @@ namespace FootballApp.ViewModels
         {
             get { return _mainList; }
             set { SetProperty(ref _mainList, value); }
+        }
+
+        private List<Country> _originalList;
+
+        public List<Country> OriginalList
+        {
+            get { return _originalList; }
+            set { SetProperty(ref _originalList, value); }
+        }
+
+        private List<Country> _searchCountryList;
+
+        public List<Country> SearchCountryList
+        {
+            get { return _searchCountryList; }
+            set { SetProperty(ref _searchCountryList, value); }
         }
 
         private List<Country> _countryList;
@@ -151,8 +164,61 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// checks if still processing request
+        /// </summary>
+        private bool _isProcessing = false;
+        public bool IsProcessing
+        {
+            get { return _isProcessing; }
+            set
+            {
+                SetProperty(ref _isProcessing, value);
+            }
+        }
+
+        /// <summary>
+        /// checks if country list is empty
+        /// </summary>
+        private bool _noCountries = false;
+        public bool NoCountries
+        {
+            get { return _noCountries; }
+            set
+            {
+                SetProperty(ref _noCountries, value);
+            }
+        }
+
+        /// <summary>
+        /// Message when no results are found
+        /// </summary>
+        private string _noResults;
+        public string NoResults
+        {
+            get { return _noResults; }
+            set
+            {
+                SetProperty(ref _noResults, value);
+            }
+        }
+
+        /// <summary>
+        /// Search String
+        /// </summary>
+        private string _searchText;
+        public string SearchText
+        {
+            get { return _searchText; }
+            set
+            {
+                SetProperty(ref _searchText, value);
+                Search(_searchText);
+            }
+        }
+
         #endregion
-        
+
         public CountryViewModel()
         {
             repository = new Football();
@@ -162,8 +228,14 @@ namespace FootballApp.ViewModels
 
         private void LoadCommands()
         {
+            Messenger.Default.Register<string>(this, FinishedProcessing);
             MatchSelectedCommand = new CustomCommand(SelectMatch, CanSelectMatch);
             MatchClickedCommand = new CustomCommand(MatchClicked, CanClickMatch);
+        }
+
+        private void FinishedProcessing(string obj)
+        {
+            if (obj == "loaded") IsProcessing = false;
         }
 
         /// <summary>
@@ -344,7 +416,9 @@ namespace FootballApp.ViewModels
                 SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
                 //order alphabetically by country name 
                 //SortCountryList = SortCountryList.OrderBy(c => c.name).ToList();
+                OriginalList = SortCountryList;
                 MainList = SortCountryList;
+                if (SearchText != null) Search(SearchText);
             }
             catch (Exception ex)
             {
@@ -410,6 +484,9 @@ namespace FootballApp.ViewModels
                     {
                         if (!match.score.Contains("?"))
                         {
+                            match.home_name = match.home_name.Replace("amp;", "");
+                            match.away_name = match.away_name.Replace("amp;", "");
+
                             var countryToAdd = new Country
                             {
                                 index = match.id,
@@ -487,6 +564,7 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void SelectMatch(object obj)
         {
+            if (IsProcessing) return;
             try
             {
                 if (SelectedCountry != null)
@@ -495,6 +573,7 @@ namespace FootballApp.ViewModels
                     {
                         if (SelectedCountry != CurrentCountry)
                         {
+                            IsProcessing = true;
                             Messenger.Default.Send("unloaded");
                             Messenger.Default.Send(SelectedCountry);
                             CurrentCountry = SelectedCountry;
@@ -505,6 +584,10 @@ namespace FootballApp.ViewModels
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
+            }
+            finally
+            {
+                Messenger.Default.Send(0); //TabIndex
             }
         }
         
@@ -519,16 +602,55 @@ namespace FootballApp.ViewModels
 
         private bool CanSelectMatch(object obj)
         {
-            return CountryList.Count != 0;
+            return MainList.Count != 0;
         }
         private bool CanClickMatch(object obj)
         {
-            return CountryList.Count != 0;
+            return MainList.Count != 0;
         }
 
-        public void Dispose()
+        private void Search(string searchText)
         {
-            
+            SearchCountryList = new List<Country>();
+            System.Text.RegularExpressions.Regex initials = new System.Text.RegularExpressions.Regex(@"(\b[a-zA-Z])[a-zA-Z]* ?");
+
+            foreach (Country country in OriginalList)
+            { 
+                if (country.matchList?.id != null)
+                {
+                    string hometeam = initials.Replace(country.matchList.home_name, "$1");
+                    string awayteam = initials.Replace(country.matchList.away_name, "$1");
+
+                    if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.matchList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.matchList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        SearchCountryList.Add(country);
+                    }
+                }
+                if (country.fixtureList?.id != null)
+                {
+                    string hometeam = initials.Replace(country.fixtureList.home_name, "$1");
+                    string awayteam = initials.Replace(country.fixtureList.away_name, "$1");
+
+                    if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.fixtureList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    country.fixtureList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        SearchCountryList.Add(country);
+                    }
+                }
+            }
+
+            MainList = SearchCountryList;
+            NoResults = $"Sorry we couldn't find anything matching \"{searchText}\"";
+            NoCountries = (MainList.Count != 0) ? false : true;
         }
     }
 }

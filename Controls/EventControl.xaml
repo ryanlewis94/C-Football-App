@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}">
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="165"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
         <!--Match info-->
         <StackPanel DataContext="{Binding CurrentCountry}"
                     Margin="0,0,0,10"
@@ -61,6 +64,7 @@
         
         <!--Fixture info-->
         <StackPanel DataContext="{Binding CurrentCountry}"
+                    Grid.RowSpan="2"
                     Margin="0,0,0,10"
                     Visibility="{Binding DataContext.FixtureSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal"
@@ -106,99 +110,101 @@
                        FontWeight="Bold"
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center"/>
-            
-        </StackPanel>
 
-        <!--List of live events-->
-        <Grid Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-              VerticalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4.5*" />
-                <ColumnDefinition Width="4.5*" />
-            </Grid.ColumnDefinitions>
-            <!--Home Events-->
-            <ListView Grid.Column="0"
-                      ItemsSource="{Binding HomeEventsList}"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      IsHitTestVisible="False">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid VerticalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="8*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <Image Source="{Binding event}"
-                                       Height="26"
-                                       Width="26"/>
-                                <TextBlock Text="{Binding time}"
-                                           HorizontalAlignment="Center"
-                                           FontSize="16"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding player}"
-                                       Grid.Column="1"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
-            <!--Away Events-->
-            <ListView Grid.Column="1"
-                      ItemsSource="{Binding AwayEventsList}"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      IsHitTestVisible="False">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid VerticalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1">
-                                <Image Source="{Binding event}"
-                                       Height="26"
-                                       Width="26"/>
-                                <TextBlock Text="{Binding time}"
-                                           HorizontalAlignment="Center"
-                                           FontSize="16"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding player}"
-                                       Grid.Column="0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
-            <!--When there are no events to display-->
-            <StackPanel Grid.ColumnSpan="2"
-                        Margin="0,50,0,0"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Visibility="{Binding NoEvents, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-                <TextBlock Text="Nothing has happened..."
-                           FontSize="32"
-                           Foreground="{DynamicResource AccentColorBrush2}"/>
-                <TextBlock Text="&#xf1e3;"
-                           Margin="5"
-                           FontSize="32"
-                           Foreground="{DynamicResource AccentColorBrush2}"
-                           FontFamily="{DynamicResource FontAwesome}"/>
-            </StackPanel>
-        </Grid>
+        </StackPanel>
         
+        <Border BorderBrush="Black"
+                BorderThickness="0,1,0,0"
+                Grid.Row="1"
+                Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <!--List of live events-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4.5*" />
+                        <ColumnDefinition Width="4.5*" />
+                    </Grid.ColumnDefinitions>
+                    <!--Home Events-->
+                    <ListView Grid.Column="0"
+                              ItemsSource="{Binding HomeEventsList}"
+                              IsHitTestVisible="False"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="8*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <Image Source="{Binding event}"
+                                               Height="25"
+                                               Width="25"/>
+                                        <TextBlock Text="{Binding time}"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="16"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding player}"
+                                               Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               FontSize="18"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!--Away Events-->
+                    <ListView Grid.Column="1"
+                              ItemsSource="{Binding AwayEventsList}"
+                              IsHitTestVisible="False"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="8*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="1">
+                                        <Image Source="{Binding event}"
+                                               Height="25"
+                                               Width="25"/>
+                                        <TextBlock Text="{Binding time}"
+                                               HorizontalAlignment="Center"
+                                               FontSize="16"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding player}"
+                                               Grid.Column="0"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               FontSize="18"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!--When there are no events to display-->
+                    <StackPanel Grid.ColumnSpan="2"
+                                Margin="0,50,0,0"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Visibility="{Binding NoEvents, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                        <TextBlock Text="Nothing has happened..."
+                                   FontSize="32"
+                                   Foreground="{DynamicResource AccentColorBrush2}"/>
+                        <TextBlock Text="&#xf1e3;"
+                                   Margin="5"
+                                   FontSize="32"
+                                   Foreground="{DynamicResource AccentColorBrush2}"
+                                   FontFamily="{DynamicResource FontAwesome}"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
         <!--Welcome Screen-->
         <Grid Visibility="{Binding NoMatchSelected, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch">
+              Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition Width="7*" />
@@ -206,9 +212,8 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="8.5*" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="&#xf1e3;"
@@ -246,5 +251,5 @@
                            Foreground="{DynamicResource AccentColorBrush2}"/>
             </StackPanel>
         </Grid>
-    </StackPanel>
+    </Grid>
 </UserControl>

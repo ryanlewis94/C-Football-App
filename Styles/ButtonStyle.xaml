@@ -203,4 +203,64 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <Style TargetType="{x:Type customControls:PlainIconButton}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="IsInteractive" Value="True"/>
+        <Setter Property="IconBrush" Value="{DynamicResource AccentBaseColorBrush}"/>
+        <Setter Property="IsWhiteBackgroundRequired" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customControls:PlainIconButton}">
+                    <Grid>
+                        <Ellipse Fill="White"
+                                 Width="15" Height="15"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center"
+                                 Visibility="{TemplateBinding IsWhiteBackgroundRequired, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{TemplateBinding IconGlyph}"
+                                   Foreground="{TemplateBinding IconBrush}"
+                                   FontFamily="{DynamicResource FontAwesome}" 
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Opacity="{TemplateBinding Opacity}"
+                                   x:Name="Glyph" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsInteractive" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Opacity" TargetName="Glyph" Value="0.8" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsInteractive" Value="True" />
+                                <Condition Property="IsMouseOver" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Opacity" TargetName="Glyph" Value="0.6" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsInteractive" Value="True" />
+                                <Condition Property="IsPressed" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Opacity" TargetName="Glyph" Value="1" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

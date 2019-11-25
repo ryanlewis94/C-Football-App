@@ -1,10 +1,7 @@
 ﻿using FootballApp.Classes;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FootballApp.Api
@@ -142,8 +139,9 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model @event = stream.ReadAndDeserializeFromJson<Model>();
-
+                    
                     return @event.data.@event;
+                    
                 }
                 else
                 {

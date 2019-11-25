@@ -5,11 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
              xmlns:local="clr-namespace:FootballApp.Controls"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:behaviors="clr-namespace:FootballApp.Classes"
              mc:Ignorable="d"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
+    <!--added Enter key binding for selecting a match-->
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding MatchSelectedCommand}" 
+		            Key="Return" />
+    </UserControl.InputBindings>
+    
     <!--Grouped Collection-->
     <UserControl.Resources>
         <CollectionViewSource x:Key="GroupedLeagues"
@@ -24,26 +31,43 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height=".5*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
             <RowDefinition Height="9.5*"></RowDefinition>
         </Grid.RowDefinitions>
-        <!--Date Selector-->
-        <DatePicker x:Name="myDatePicker" 
-                    DisplayDateStart="{x:Static System:DateTime.Now}" 
-                    SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}">
-            <DatePicker.Resources>
-                <Style TargetType="DatePickerTextBox">
-                    <Setter Property="IsReadOnly"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7.5*"></ColumnDefinition>
+                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--Search Box-->
+            <TextBox VerticalAlignment="Center"
+                     Text="{Binding SearchText}"
+                     TextChanged="TextBox_TextChanged"
+                     FontSize="18"
+                     BorderThickness="0"
+                     controls:TextBoxHelper.Watermark="Search..."
+                     controls:TextBoxHelper.ClearTextButton="True">
+            </TextBox>
+            <!--Date Selector-->
+            <DatePicker x:Name="myDatePicker" 
+                        DisplayDateStart="{x:Static System:DateTime.Now}" 
+                        SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
+                        HorizontalAlignment="Right" Grid.Column="1">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly"
                             Value="True" />
-                    <Setter Property="HorizontalAlignment"
+                        <Setter Property="HorizontalAlignment"
                             Value="Center" />
-                    <Setter Property="VerticalAlignment"
+                        <Setter Property="VerticalAlignment"
                             Value="Center" />
-                    <Setter Property="FontWeight"
+                        <Setter Property="FontWeight"
                             Value="Bold"/>
-                </Style>
-            </DatePicker.Resources>
-        </DatePicker>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
+        </Grid>
+        
         <!--Grouped List-->
         <ListView DataContext="{StaticResource GroupedLeagues}" 
                   ItemsSource="{Binding}"
@@ -93,6 +117,8 @@
                                             <Expander.Content>
                                                 <!--Child List of Matches and Fixtures-->
                                                 <ListView ItemsSource="{Binding Items}"
+                                                          SelectionMode="Single"
+                                                          BorderThickness="0"
                                                           SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
                                                     <i:Interaction.Behaviors>
                                                         <behaviors:ScrollParentWhenAtMax />
@@ -101,14 +127,15 @@
                                                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
                                                         </i:EventTrigger>
-                                                        <i:EventTrigger EventName="SelectionChanged">
+                                                        <i:EventTrigger EventName="MouseDoubleClick">
                                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Black"
-                                                                    BorderThickness="2"
+                                                                    BorderThickness="1.5"
+                                                                    CornerRadius="5"
                                                                     Padding="0,10">
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
@@ -137,19 +164,19 @@
                                                                     </StackPanel>
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding fixtureList.time}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                       FontWeight="SemiBold"
+                                                                                       HorizontalAlignment="Center" />
                                                                     </StackPanel>
                                                                     <TextBlock Text="{Binding matchList.away_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="2"
-                                                                               HorizontalAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
+                                                                                   FontWeight="SemiBold"
+                                                                                   Grid.Column="2"
+                                                                                   HorizontalAlignment="Center" 
+                                                                                   TextWrapping="Wrap"/>
                                                                     <TextBlock Text="{Binding fixtureList.away_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="2"
-                                                                               HorizontalAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
+                                                                                   FontWeight="SemiBold"
+                                                                                   Grid.Column="2"
+                                                                                   HorizontalAlignment="Center" 
+                                                                                   TextWrapping="Wrap"/>
                                                                 </Grid>
                                                             </Border>
                                                         </DataTemplate>
@@ -165,6 +192,20 @@
                 </GroupStyle>
             </ListView.GroupStyle>
         </ListView>
-
+        <!--When there are no events to display-->
+        <StackPanel Grid.Row="1" 
+                    Margin="0,50,0,0"
+                    Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+            <TextBlock Text="No Results Found!"
+                       TextAlignment="Center"
+                       FontSize="32"
+                       Foreground="{DynamicResource AccentColorBrush2}"/>
+            <TextBlock Text="{Binding NoResults}"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Margin="10"
+                       FontSize="18"
+                       Foreground="{DynamicResource AccentColorBrush2}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -8,7 +8,7 @@
         xmlns:uc="clr-namespace:FootballApp.Controls"
                       xmlns:sdk="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
                       mc:Ignorable="d"
-                      MinWidth="1000"
+                      MinWidth="1080"
                       MinHeight="640"
         DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
         WindowState="Maximized"
