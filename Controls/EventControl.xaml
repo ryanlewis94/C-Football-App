@@ -19,47 +19,53 @@
                         HorizontalAlignment="Center"
                         Margin="0,-25,0,50">
                 <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
-                <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4.5*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="4.5*" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="4*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding matchList.home_name}" 
-                           Grid.Column="0"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"/>
+                <Border BorderBrush="Black"
+                        BorderThickness="0,0,1,0">
+                    <TextBlock Text="{Binding matchList.home_name}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding matchList.score}"
                                FontWeight="SemiBold" 
                                FontSize="24"
-                               HorizontalAlignment="Center"/>
+                               TextAlignment="Center"/>
                     <TextBlock Text="{Binding matchList.time}" 
                                FontWeight="Bold"
                                FontSize="16"
-                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
                                Foreground="Red"/>
                 </StackPanel>
-                <TextBlock Text="{Binding matchList.away_name}" 
-                           Grid.Column="2"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"/>
+
+                <Border BorderBrush="Black"
+                        BorderThickness="1,0,0,0"
+                        Grid.Column="2">
+                    <TextBlock Text="{Binding matchList.away_name}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
             </Grid>
             <!--Updating info-->
-            <TextBlock Text=""
-                       HorizontalAlignment="Center"
-                       FontSize="12"
-                       Margin="0,5,0,0"/>
             <TextBlock Text="{Binding DataContext.TimeUpdated, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                       HorizontalAlignment="Center"
-                       FontSize="12"/>
+                       TextAlignment="Center"
+                       FontSize="12"
+                       Margin="0,25,0,0"/>
         </StackPanel>
         
         <!--Fixture info-->
@@ -71,58 +77,142 @@
                         HorizontalAlignment="Center"
                         Margin="0,-25,0,50">
                 <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
-                <TextBlock Text=" / " FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
             </StackPanel>
-            <Grid>
+            <Grid Margin="0,0,0,25">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="4*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding fixtureList.home_name}" 
-                           Grid.Column="0"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"/>
+                <Border BorderBrush="Black"
+                        BorderThickness="0,0,1,0">
+                    <TextBlock Text="{Binding fixtureList.home_name}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
                 <TextBlock Grid.Column="1" 
                            Text="{Binding fixtureList.time}" 
                            FontWeight="Bold"
                            FontSize="16"
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding fixtureList.away_name}" 
-                           Grid.Column="2"
-                           FontSize="24"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"/>
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <Border BorderBrush="Black"
+                        BorderThickness="1,0,0,0"
+                        Grid.Column="2">
+                    <TextBlock Text="{Binding fixtureList.away_name}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
             </Grid>
+            <!--Odds-->
+            <Border Visibility="{Binding DataContext.OddsAvailable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+                    BorderBrush="{DynamicResource AccentColorBrush}" 
+                    BorderThickness="1"
+                    Background="{DynamicResource AccentColorBrush4}"
+                    HorizontalAlignment="Center"
+                    CornerRadius="25,0,25,0"
+                    Padding="10"
+                    Margin="0,0,0,25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.ColumnSpan="3"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            BorderThickness="0,0,0,1">
+                        <TextBlock Text="Betting Odds"
+                                   TextAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,5"/>
+                    </Border>
+                    
+                    <StackPanel Width="75" Grid.Row="2">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="0,0,1,1">
+                            <TextBlock Text="1"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.HomeOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1"
+                                Grid.Row="2"
+                                Width="75">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="0,0,0,1">
+                            <TextBlock Text="X"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.DrawOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2"
+                                Grid.Row="2"
+                                Width="75">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="1,0,0,1">
+                            <TextBlock Text="2"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.AwayOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
             <!--Countdown until Kick off-->
-            <TextBlock Text="{Binding DataContext.CountdownTime, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                       FontSize="40"
-                       FontWeight="Bold"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"
-                       Margin="50"/>
-            <TextBlock Text="Until Kick Off"
-                       FontSize="28"
-                       FontWeight="Bold"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
-
+            <Border BorderBrush="Black" 
+                    BorderThickness="0,2,0,0">
+                <StackPanel>
+                    <TextBlock Text="{Binding DataContext.CountdownTime, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="25"/>
+                    <TextBlock Text="Until Kick Off"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
         
         <Border BorderBrush="Black"
-                BorderThickness="0,1,0,0"
+                BorderThickness="0,2,0,0"
                 Grid.Row="1"
                 Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
             <!--List of live events-->
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4.5*" />
-                        <ColumnDefinition Width="4.5*" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="4*" />
                     </Grid.ColumnDefinitions>
                     <!--Home Events-->
                     <ListView Grid.Column="0"
@@ -136,26 +226,46 @@
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="8*"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
+                                    <StackPanel>
                                         <Image Source="{Binding event}"
                                                Height="25"
                                                Width="25"/>
                                         <TextBlock Text="{Binding time}"
-                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
                                                    FontSize="16"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding player}"
-                                               Grid.Column="1"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               FontSize="18"/>
+                                        <TextBlock Text="{Binding player}"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="18"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <!--Away Events-->
+                    <!--HT Events-->
                     <ListView Grid.Column="1"
+                              ItemsSource="{Binding TimeList}"
+                              IsHitTestVisible="False"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,5">
+                                    <TextBlock Text="{Binding player}"
+                                               TextAlignment="Center"
+                                               FontSize="16"/>
+                                    <TextBlock Text="{Binding time}"
+                                               TextAlignment="Center"
+                                               FontSize="16"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!--Away Events-->
+                    <ListView Grid.Column="2"
                               ItemsSource="{Binding AwayEventsList}"
                               IsHitTestVisible="False"
                               BorderThickness="0">
@@ -171,13 +281,14 @@
                                                Height="25"
                                                Width="25"/>
                                         <TextBlock Text="{Binding time}"
-                                               HorizontalAlignment="Center"
-                                               FontSize="16"/>
+                                                   TextAlignment="Center"
+                                                   FontSize="16"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding player}"
                                                Grid.Column="0"
                                                VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
                                                FontSize="18"/>
                                 </Grid>
                             </DataTemplate>
@@ -185,7 +296,7 @@
                     </ListView>
 
                     <!--When there are no events to display-->
-                    <StackPanel Grid.ColumnSpan="2"
+                    <StackPanel Grid.ColumnSpan="3"
                                 Margin="0,50,0,0"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center"
@@ -237,7 +348,6 @@
 
             <StackPanel Grid.Column="1"
                         Grid.Row="1"
-                        HorizontalAlignment="Center"
                         Margin="0,100,0,0">
                 <TextBlock Text="{Binding Greeting}"
                            FontSize="48"

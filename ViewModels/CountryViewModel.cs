@@ -611,46 +611,55 @@ namespace FootballApp.ViewModels
 
         private void Search(string searchText)
         {
-            SearchCountryList = new List<Country>();
-            System.Text.RegularExpressions.Regex initials = new System.Text.RegularExpressions.Regex(@"(\b[a-zA-Z])[a-zA-Z]* ?");
-
-            foreach (Country country in OriginalList)
-            { 
-                if (country.matchList?.id != null)
+            try
+            {
+                if (searchText != null)
                 {
-                    string hometeam = initials.Replace(country.matchList.home_name, "$1");
-                    string awayteam = initials.Replace(country.matchList.away_name, "$1");
+                    SearchCountryList = new List<Country>();
+                    System.Text.RegularExpressions.Regex initials = new System.Text.RegularExpressions.Regex(@"(\b[a-zA-Z])[a-zA-Z]* ?");
 
-                    if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.matchList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.matchList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    foreach (Country country in OriginalList)
                     {
-                        SearchCountryList.Add(country);
-                    }
-                }
-                if (country.fixtureList?.id != null)
-                {
-                    string hometeam = initials.Replace(country.fixtureList.home_name, "$1");
-                    string awayteam = initials.Replace(country.fixtureList.away_name, "$1");
+                        if (country.matchList?.id != null)
+                        {
+                            string hometeam = initials.Replace(country.matchList.home_name, "$1");
+                            string awayteam = initials.Replace(country.matchList.away_name, "$1");
 
-                    if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.fixtureList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    country.fixtureList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                    awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
-                    {
-                        SearchCountryList.Add(country);
+                            if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.matchList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.matchList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                            {
+                                SearchCountryList.Add(country);
+                            }
+                        }
+                        if (country.fixtureList?.id != null)
+                        {
+                            string hometeam = initials.Replace(country.fixtureList.home_name, "$1");
+                            string awayteam = initials.Replace(country.fixtureList.away_name, "$1");
+
+                            if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.fixtureList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            country.fixtureList.away_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            hometeam.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            awayteam.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                            {
+                                SearchCountryList.Add(country);
+                            }
+                        }
                     }
+                    MainList = SearchCountryList;
+                    NoResults = $"Sorry we couldn't find anything matching \"{searchText}\"";
+                    NoCountries = (MainList.Count != 0) ? false : true;
                 }
             }
-
-            MainList = SearchCountryList;
-            NoResults = $"Sorry we couldn't find anything matching \"{searchText}\"";
-            NoCountries = (MainList.Count != 0) ? false : true;
+            catch (Exception ex)
+            {
+                errorHandler.CheckErrorMessage(ex);
+            }
         }
     }
 }

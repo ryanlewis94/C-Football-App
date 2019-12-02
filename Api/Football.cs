@@ -21,7 +21,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model country = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return country.data.country;
+                    return country?.data?.country;
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model federation = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return federation.data.federation;
+                    return federation?.data?.federation;
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model league = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return league.data.league;
+                    return league?.data?.league;
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model competition = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return competition.data.competition;
+                    return competition?.data?.competition;
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
                     
-                    return match.data.match;
+                    return match?.data?.match;
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace FootballApp.Api
 
         public async Task<List<Table>> LoadStandings(string leagueId)
         {
-            string url = $"https://livescore-api.com/api-client/leagues/table.json?key={Api.Key}&secret={Api.Secret}&league={leagueId}";
+            string url = $"https://livescore-api.com/api-client/leagues/table.json?key={Api.Key}&secret={Api.Secret}&competition_id={leagueId}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -120,7 +120,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model table = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return table.data.table;
+                    return table?.data?.table;
                 }
                 else
                 {
@@ -140,7 +140,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model @event = stream.ReadAndDeserializeFromJson<Model>();
                     
-                    return @event.data.@event;
+                    return @event?.data?.@event;
                     
                 }
                 else
@@ -166,7 +166,7 @@ namespace FootballApp.Api
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model fixture = stream.ReadAndDeserializeFromJson<Model>();
 
-                    return fixture.data.fixtures;
+                    return fixture?.data?.fixtures;
                 }
                 else
                 {

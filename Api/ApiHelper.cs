@@ -18,7 +18,7 @@ namespace FootballApp.Api
             ApiClient.DefaultRequestHeaders.Accept.Clear();
             ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             ApiClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            ApiClient.Timeout = new TimeSpan(0, 0, 10);
+            ApiClient.Timeout = new TimeSpan(0, 0, 15);
         }
     }
 }

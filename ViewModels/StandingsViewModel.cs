@@ -3,6 +3,7 @@ using FootballApp.Classes;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootballApp.ViewModels
 {
@@ -46,10 +47,32 @@ namespace FootballApp.ViewModels
                     {
                         CurrentCountry = country;
                         Messenger.Default.Send("unloaded");
-                        StandingsList = await repository.LoadStandings(country.league_id);
+                        StandingsList = await repository.LoadStandings(country.competition_id);
                         if (StandingsList != null)
                         {
-                            //StandingsList = StandingsList.Where(t => t.league_id == country.league_id).ToList();
+                            string leagueCheck = "";
+                            bool groupedLeague = false;
+                            foreach(Table team in StandingsList)
+                            {
+                                if (string.IsNullOrWhiteSpace(leagueCheck))
+                                {
+                                    leagueCheck = team.league_id;
+                                }
+
+                                if (leagueCheck == team.league_id)
+                                {
+                                    groupedLeague = false;
+                                }
+                                else
+                                {
+                                    groupedLeague = true;
+                                    break;
+                                }
+                            }
+
+                            StandingsList = (groupedLeague) ?
+                            StandingsList.Where(t => t.league_id == country.league_id).ToList() :
+                            StandingsList;
 
                             HighlightCurrentTeams(country);
 
@@ -64,8 +87,6 @@ namespace FootballApp.ViewModels
                         }
                     }
                 }
-                //Hides the loading overlay
-                //Messenger.Default.Send("loaded");
             }
             catch (Exception ex)
             {
@@ -76,7 +97,6 @@ namespace FootballApp.ViewModels
                 else
                 {
                     Messenger.Default.Send("leagueUnavailable");
-                    Messenger.Default.Send("loaded");
                 }
             }
             finally

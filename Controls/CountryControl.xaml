@@ -36,13 +36,14 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7.5*"></ColumnDefinition>
-                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="125"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <!--Search Box-->
             <TextBox VerticalAlignment="Center"
                      Text="{Binding SearchText}"
                      TextChanged="TextBox_TextChanged"
+                     MaxLength="100"
                      FontSize="18"
                      BorderThickness="0"
                      controls:TextBoxHelper.Watermark="Search..."
@@ -57,8 +58,6 @@
                     <Style TargetType="DatePickerTextBox">
                         <Setter Property="IsReadOnly"
                             Value="True" />
-                        <Setter Property="HorizontalAlignment"
-                            Value="Center" />
                         <Setter Property="VerticalAlignment"
                             Value="Center" />
                         <Setter Property="FontWeight"
@@ -146,36 +145,36 @@
                                                                     <TextBlock Text="{Binding matchList.home_name}"
                                                                                FontWeight="SemiBold"
                                                                                Grid.Column="0"
-                                                                               HorizontalAlignment="Center" 
+                                                                               TextAlignment="Center" 
                                                                                TextWrapping="Wrap"/>
                                                                     <TextBlock Text="{Binding fixtureList.home_name}"
                                                                                FontWeight="SemiBold"
                                                                                Grid.Column="0"
-                                                                               HorizontalAlignment="Center" 
+                                                                               TextAlignment="Center" 
                                                                                TextWrapping="Wrap"/>
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding matchList.score}"
                                                                                    FontWeight="SemiBold"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                   TextAlignment="Center" />
                                                                         <TextBlock Text="{Binding matchList.time}"
                                                                                    FontWeight="SemiBold"
-                                                                                   HorizontalAlignment="Center"
+                                                                                   TextAlignment="Center"
                                                                                    Foreground="Red" />
                                                                     </StackPanel>
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding fixtureList.time}"
                                                                                        FontWeight="SemiBold"
-                                                                                       HorizontalAlignment="Center" />
+                                                                                       TextAlignment="Center" />
                                                                     </StackPanel>
                                                                     <TextBlock Text="{Binding matchList.away_name}"
                                                                                    FontWeight="SemiBold"
                                                                                    Grid.Column="2"
-                                                                                   HorizontalAlignment="Center" 
+                                                                                   TextAlignment="Center" 
                                                                                    TextWrapping="Wrap"/>
                                                                     <TextBlock Text="{Binding fixtureList.away_name}"
                                                                                    FontWeight="SemiBold"
                                                                                    Grid.Column="2"
-                                                                                   HorizontalAlignment="Center" 
+                                                                                   TextAlignment="Center" 
                                                                                    TextWrapping="Wrap"/>
                                                                 </Grid>
                                                             </Border>
