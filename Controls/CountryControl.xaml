@@ -50,8 +50,7 @@
                      controls:TextBoxHelper.ClearTextButton="True">
             </TextBox>
             <!--Date Selector-->
-            <DatePicker x:Name="myDatePicker" 
-                        DisplayDateStart="{x:Static System:DateTime.Now}" 
+            <DatePicker x:Name="myDatePicker"
                         SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
                         HorizontalAlignment="Right" Grid.Column="1">
                 <DatePicker.Resources>

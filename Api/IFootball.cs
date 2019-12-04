@@ -15,10 +15,12 @@ namespace FootballApp.Api
         Task<List<League>> LoadLeague();
         Task<List<Competition>> LoadCompetition();
         Task<List<Match>> LoadLive();
+        Task<List<Match>> LoadPast(DateTime? date, int pageNo);
         Task<List<Table>> LoadStandings(string leagueId);
         Task<List<Event>> LoadEvents(string matchId);
 
         Task<List<Fixture>> LoadFixture(DateTime? date, int pageNo);
-
+        Task<Data> LoadTeamsH2H(string homeId, string awayId);
+        Task<Data> LoadStats(string matchId);
     }
 }

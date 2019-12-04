@@ -95,6 +95,13 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _matchList, value); }
         }
 
+        private List<Match> _pastMatchList;
+        public List<Match> PastMatchList
+        {
+            get { return _pastMatchList; }
+            set { SetProperty(ref _pastMatchList, value); }
+        }
+
         private List<Fixture> _fixtureList;
         public List<Fixture> FixtureList
         {
@@ -326,7 +333,9 @@ namespace FootballApp.ViewModels
                 MatchList = (DateSelected.ToString() == currentDate) ? 
                     await repository.LoadLive() : 
                     new List<Match>();
-
+                MatchList = (PastMatchList?.Count != 0) ?
+                    MatchList.Concat(PastMatchList).ToList() :
+                    MatchList;
                 CreateGroupedList();
             }
             catch (Exception ex)
@@ -353,6 +362,18 @@ namespace FootballApp.ViewModels
 
                 } while (FixtureList.Count == 30);
                 FixtureList = FixturePageList;
+
+                i = 0;
+                var prevMatches = new List<Match>();
+                do
+                {
+                    i = i + 1;
+
+                    PastMatchList = await repository.LoadPast(DateSelected, i);
+                    prevMatches = prevMatches.Concat(PastMatchList).ToList();
+
+                } while (PastMatchList.Count == 30);
+                PastMatchList = prevMatches;
 
                 if (!CountriesLoaded)
                 {
@@ -527,6 +548,8 @@ namespace FootballApp.ViewModels
                             id = fixture.id,
                             date = fixture.date,
                             time = $"{splitTime[0]}:{splitTime[1]}",
+                            home_id = fixture.home_id,
+                            away_id = fixture.away_id,
                             home_name = fixture.home_name.Replace("amp;", ""),
                             away_name = fixture.away_name.Replace("amp;", ""),
                             league_id = fixture.league_id,

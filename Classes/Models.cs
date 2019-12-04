@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace FootballApp.Classes
 {
@@ -36,6 +37,7 @@ namespace FootballApp.Classes
     public class Match
     {
         public string id { get; set; }
+        public string date { get; set; }
         public string home_name { get; set; }
         public string away_name { get; set; }
         public string score { get; set; }
@@ -93,9 +95,38 @@ namespace FootballApp.Classes
         public string id { get; set; }
         public string date { get; set; }
         public string time { get; set; }
+        public string home_id { get; set; }
+        public string away_id { get; set; }
         public string home_name { get; set; }
         public string away_name { get; set; }
         public string league_id { get; set; }
         public string competition_id { get; set; }
+    }
+
+    public class Team
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string stadium { get; set; }
+        public string location { get; set; }
+        public List<string> overall_form { get; set; }
+        public List<string> h2h_form { get; set; }
+    }
+
+    public class LastMatch
+    {
+        public string id { get; set; }
+        public string date { get; set; }
+        public string home_name { get; set; }
+        public string away_name { get; set; }
+        public string score { get; set; }
+        public string scheduled { get; set; }
+        public SolidColorBrush color { get; set; }
+    }
+
+    public class Form
+    {
+        public string form { get; set; }
+        public SolidColorBrush color { get; set; }
     }
 }

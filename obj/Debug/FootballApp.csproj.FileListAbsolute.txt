@@ -66,3 +66,13 @@ C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Buffers.xml
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Memory.xml
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Numerics.Vectors.xml
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.dll
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.Wpf.dll
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.pdb
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.xml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.Wpf.pdb
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.Wpf.xml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Threading.Tasks.Extensions.xml
