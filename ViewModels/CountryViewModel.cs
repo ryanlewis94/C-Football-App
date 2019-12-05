@@ -25,7 +25,6 @@ namespace FootballApp.ViewModels
         /// <summary>
         /// Lists for displaying Countries and sorting them when user searches
         /// </summary>
-
         private List<Country> _mainList;
 
         public List<Country> MainList
@@ -79,13 +78,6 @@ namespace FootballApp.ViewModels
         {
             get { return _competitionList; }
             set { SetProperty(ref _competitionList, value); }
-        }
-
-        private List<League> _allLeagueList;
-        public List<League> AllLeagueList
-        {
-            get { return _allLeagueList; }
-            set { SetProperty(ref _allLeagueList, value); }
         }
 
         private List<Match> _matchList;
@@ -146,7 +138,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// checks if the countries and leagues have already beenloaded to reduce calls to api
+        /// checks if the countries and leagues have already been loaded to reduce calls to api
         /// </summary>
         private bool _countriesLoaded = false;
         public bool CountriesLoaded
@@ -240,6 +232,10 @@ namespace FootballApp.ViewModels
             MatchClickedCommand = new CustomCommand(MatchClicked, CanClickMatch);
         }
 
+        /// <summary>
+        /// checks if match is still processing
+        /// </summary>
+        /// <param name="obj"></param>
         private void FinishedProcessing(string obj)
         {
             if (obj == "loaded") IsProcessing = false;
@@ -316,12 +312,11 @@ namespace FootballApp.ViewModels
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
-                //System.Windows.MessageBox.Show(ex.Message);
             }
         }
 
         /// <summary>
-        /// if the date selected is todays date then load the live matches
+        /// if the date selected is todays date then load the live matches and at to the matches already played
         /// </summary>
         private async void CheckDate()
         {
@@ -351,6 +346,7 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                //Load the fixtures from multiple pages
                 int i = 0;
                 FixturePageList = new List<Fixture>();
                 do
@@ -363,6 +359,7 @@ namespace FootballApp.ViewModels
                 } while (FixtureList.Count == 30);
                 FixtureList = FixturePageList;
 
+                //Load the past matches from multiple pages
                 i = 0;
                 var prevMatches = new List<Match>();
                 do
@@ -375,6 +372,7 @@ namespace FootballApp.ViewModels
                 } while (PastMatchList.Count == 30);
                 PastMatchList = prevMatches;
 
+                //if countries haven't been loaded before
                 if (!CountriesLoaded)
                 {
                     LoadCountries();
@@ -495,6 +493,12 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// sorts the matches and fixtures into the countries 
+        /// </summary>
+        /// <param name="country"></param>
+        /// <param name="competition"></param>
+        /// <param name="federation"></param>
         private void CheckForFixturesAndMatches(Country country, Competition competition, Country federation)
         {
             try
@@ -632,6 +636,10 @@ namespace FootballApp.ViewModels
             return MainList.Count != 0;
         }
 
+        /// <summary>
+        /// sorts the list by the users search (includes abreviations of club names)
+        /// </summary>
+        /// <param name="searchText"></param>
         private void Search(string searchText)
         {
             try

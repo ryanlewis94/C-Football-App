@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
-             xmlns:local="clr-namespace:FootballApp.Controls"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:behaviors="clr-namespace:FootballApp.Classes"
              mc:Ignorable="d"
@@ -56,11 +54,11 @@
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
                         <Setter Property="IsReadOnly"
-                            Value="True" />
+                                Value="True" />
                         <Setter Property="VerticalAlignment"
-                            Value="Center" />
+                                Value="Center" />
                         <Setter Property="FontWeight"
-                            Value="Bold"/>
+                                Value="Bold"/>
                     </Style>
                 </DatePicker.Resources>
             </DatePicker>
@@ -162,19 +160,19 @@
                                                                     </StackPanel>
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding fixtureList.time}"
-                                                                                       FontWeight="SemiBold"
-                                                                                       TextAlignment="Center" />
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextAlignment="Center" />
                                                                     </StackPanel>
                                                                     <TextBlock Text="{Binding matchList.away_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   Grid.Column="2"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="Wrap"/>
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="2"
+                                                                               TextAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
                                                                     <TextBlock Text="{Binding fixtureList.away_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   Grid.Column="2"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="Wrap"/>
+                                                                               FontWeight="SemiBold"
+                                                                               Grid.Column="2"
+                                                                               TextAlignment="Center" 
+                                                                               TextWrapping="Wrap"/>
                                                                 </Grid>
                                                             </Border>
                                                         </DataTemplate>

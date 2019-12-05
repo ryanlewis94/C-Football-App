@@ -28,13 +28,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _head2Head, value); }
         }
 
-        private Data _stats;
-        public Data Stats
-        {
-            get { return _stats; }
-            set { SetProperty(ref _stats, value); }
-        }
-
         /// <summary>
         /// Lists for storing events
         /// </summary>
@@ -123,6 +116,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noMatchSelected, value); }
         }
 
+        /// <summary>
+        /// when there are no events to show equal false
+        /// </summary>
         private bool _noEvents;
         public bool NoEvents
         {
@@ -204,6 +200,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayOdds, value); }
         }
 
+        /// <summary>
+        /// if no odds available hide
+        /// </summary>
         private bool _oddsAvailable;
         public bool OddsAvailable
         {
@@ -211,17 +210,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _oddsAvailable, value); }
         }
 
-        private float homeWins;
-        private float homeDraws;
-        private float homeLosses;
-        private float homeMatches;
-
-        private float awayWins;
-        private float awayDraws;
-        private float awayLosses;
-        private float awayMatches;
-
-
+        /// <summary>
+        /// Lists for storing the form of the home and away teams
+        /// </summary>
         private List<Form> _homeForm;
         public List<Form> HomeForm
         {
@@ -250,6 +241,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayFormList, value); }
         }
 
+        /// <summary>
+        /// Lists for storing the last 6 matches of the home and away team
+        /// </summary>
         private List<LastMatch> _homeMatches;
         public List<LastMatch> HomeMatches
         {
@@ -278,6 +272,19 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayMatchList, value); }
         }
 
+        /// <summary>
+        /// stores the match Stats
+        /// </summary>
+        private Data _stats;
+        public Data Stats
+        {
+            get { return _stats; }
+            set { SetProperty(ref _stats, value); }
+        }
+
+        /// <summary>
+        /// stores the stats for display in chart
+        /// </summary>
         private SeriesCollection _statsCollection;
         public SeriesCollection StatsCollection
         {
@@ -285,6 +292,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _statsCollection, value); }
         }
 
+        /// <summary>
+        /// labels for the stats chart
+        /// </summary>
         private List<string> _labels;
         public List<string> Labels
         {
@@ -292,6 +302,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _labels, value); }
         }
 
+        /// <summary>
+        /// max value and height of the stats chart
+        /// </summary>
         private int _maxValue;
         public int MaxValue
         {
@@ -306,6 +319,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _height, value); }
         }
 
+        /// <summary>
+        /// bools for visibility of the last 6 matches and the stats chart 
+        /// </summary>
         private bool _noStats;
         public bool NoStats
         {
@@ -334,67 +350,16 @@ namespace FootballApp.ViewModels
             CountdownTimer = new DispatcherTimer();
         }
 
+        /// <summary>
+        /// Sets the Greeting message depending on the current time of day
+        /// </summary>
         private void LoadEvents()
         {
             if (DateTime.Now < DateTime.Parse("12:00:00")) { Greeting = "Good Morning!"; }
-            else if (DateTime.Now < DateTime.Parse("17:00:00")) { Greeting = "Good Afternoon!"; }
-            else { Greeting = "Good Ebening!"; }
+            else if (DateTime.Now < DateTime.Parse("16:00:00")) { Greeting = "Good Afternoon!"; }
+            else { Greeting = "Good Evening!"; }
 
             Messenger.Default.Register<Country>(this, OnCountryReceived);
-        }
-
-        private void GetOdds(List<Table> leagueTable)
-        {
-            try
-            {
-                if (leagueTable.Count != 0)
-                {
-                    foreach (Table team in leagueTable)
-                    {
-                        if (team.name == CurrentCountry.fixtureList.home_name)
-                        {
-                            homeWins = team.won;
-                            homeDraws = team.drawn;
-                            homeLosses = team.lost;
-                            homeMatches = team.matches;
-                        }
-                        if (team.name == CurrentCountry.fixtureList?.away_name)
-                        {
-                            awayWins = team.won;
-                            awayDraws = team.drawn;
-                            awayLosses = team.lost;
-                            awayMatches = team.matches;
-                        }
-                    }
-                    HomeOdds = (100 / (100 * ((homeWins + awayLosses) / homeMatches))).ToString("#.##");
-                    AwayOdds = (100 / (100 * ((awayWins + homeLosses) / awayMatches))).ToString("#.##");
-                    DrawOdds = (100 / (100 * ((homeDraws + awayDraws) / homeMatches))).ToString("#.##");
-
-                    HomeOdds = (HomeOdds[0].ToString() == ".") ? $"0{HomeOdds}" : HomeOdds;
-                    AwayOdds = (AwayOdds[0].ToString() == ".") ? $"0{AwayOdds}" : AwayOdds;
-                    DrawOdds = (DrawOdds[0].ToString() == ".") ? $"0{DrawOdds}" : DrawOdds;
-
-                    HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{HomeOdds}.0" : HomeOdds;
-                    AwayOdds = (!AwayOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{AwayOdds}.0" : AwayOdds;
-                    DrawOdds = (!DrawOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{DrawOdds}.0" : DrawOdds;
-
-                    OddsAvailable = true;
-                }
-                else
-                {
-                    HomeOdds = null;
-                    AwayOdds = null;
-                    DrawOdds = null;
-                    OddsAvailable = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                errorHandler.CheckErrorMessage(ex);
-            }
         }
 
         /// <summary>
@@ -500,18 +465,11 @@ namespace FootballApp.ViewModels
 
                         try
                         {
-                            GetOdds(await repository.LoadStandings(country.competition_id));
+                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
                         }
                         catch (Exception ex)
                         {
-                            if  (ex.Message == "BadRequest")
-                            {
-                                GetOdds(null);
-                            }
-                            else
-                            {
-                                errorHandler.CheckErrorMessage(ex);
-                            }
+                            errorHandler.CheckErrorMessage(ex);
                         }
                     }
                 }
@@ -656,6 +614,112 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// Calculate the Odds from the past matches of the last 4 months
+        /// </summary>
+        /// <param name="homeList"></param>
+        /// <param name="awayList"></param>
+        private void GetOdds(List<Match> homeList, List<Match> awayList)
+        {
+            try
+            {
+                float homeWins = 0;
+                float homeDraws = 0;
+                float homeLosses = 0;
+                float homeMatches = 0;
+
+                float awayWins = 0;
+                float awayDraws = 0;
+                float awayLosses = 0;
+                float awayMatches = 0;
+
+                float matches = 0;
+
+                if (homeList.Count != 0 || awayList.Count != 0)
+                {
+                    foreach (Match homeMatch in homeList)
+                    {
+                        if (homeMatch.home_name == CurrentCountry.fixtureList.home_name)
+                        {
+                            var homeGoals = int.Parse(homeMatch.score.Split('-')[0]);
+                            var awayGoals = int.Parse(homeMatch.score.Split('-')[1]);
+
+                            if (homeGoals > awayGoals)
+                            {
+                                homeWins += 1;
+                            }
+                            if (homeGoals < awayGoals)
+                            {
+                                homeLosses += 1;
+                            }
+                            if (homeGoals == awayGoals)
+                            {
+                                homeDraws += 1;
+                            }
+                            homeMatches += 1;
+                        }
+                    }
+
+                    foreach (Match awayMatch in awayList)
+                    {
+                        if (awayMatch.away_name == CurrentCountry.fixtureList.away_name)
+                        {
+                            var homeGoals = int.Parse(awayMatch.score.Split('-')[0]);
+                            var awayGoals = int.Parse(awayMatch.score.Split('-')[1]);
+
+                            if (awayGoals > homeGoals)
+                            {
+                                awayWins += 1;
+                            }
+                            if (awayGoals < homeGoals)
+                            {
+                                awayLosses += 1;
+                            }
+                            if (awayGoals == homeGoals)
+                            {
+                                awayDraws += 1;
+                            }
+                            awayMatches += 1;
+                        }
+                    }
+                    matches = homeMatches + awayMatches;
+
+                    HomeOdds = (100 / (100 * ((homeWins + awayLosses) / matches))).ToString("#.##");
+                    AwayOdds = (100 / (100 * ((awayWins + homeLosses) / matches))).ToString("#.##");
+                    DrawOdds = (100 / (100 * ((homeDraws + awayDraws) / matches))).ToString("#.##");
+
+                    HomeOdds = (HomeOdds[0].ToString() == ".") ? $"0{HomeOdds}" : HomeOdds;
+                    AwayOdds = (AwayOdds[0].ToString() == ".") ? $"0{AwayOdds}" : AwayOdds;
+                    DrawOdds = (DrawOdds[0].ToString() == ".") ? $"0{DrawOdds}" : DrawOdds;
+
+                    HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                        $"{HomeOdds}.0" : HomeOdds;
+                    AwayOdds = (!AwayOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                        $"{AwayOdds}.0" : AwayOdds;
+                    DrawOdds = (!DrawOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                        $"{DrawOdds}.0" : DrawOdds;
+
+                    OddsAvailable = true;
+                }
+                else
+                {
+                    HomeOdds = null;
+                    AwayOdds = null;
+                    DrawOdds = null;
+                    OddsAvailable = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                errorHandler.CheckErrorMessage(ex);
+            }
+        }
+
+        /// <summary>
+        /// sorts the match form to add a colour depending on win loss or draw
+        /// </summary>
+        /// <param name="overall_form1"></param>
+        /// <param name="overall_form2"></param>
         private void CheckForm(List<string> overall_form1, List<string> overall_form2)
         {
 
@@ -705,6 +769,13 @@ namespace FootballApp.ViewModels
             AwayForm = AwayFormList;
         }
 
+        /// <summary>
+        /// sorts the last 6 matches to add colour depending on win loss or draw
+        /// </summary>
+        /// <param name="lastMatches1"></param>
+        /// <param name="lastMatches2"></param>
+        /// <param name="homeName"></param>
+        /// <param name="awayName"></param>
         private void CheckLastSix(List<LastMatch> lastMatches1, List<LastMatch> lastMatches2, string homeName, string awayName)
         {
             foreach (LastMatch match in lastMatches1)
@@ -792,6 +863,10 @@ namespace FootballApp.ViewModels
             AwayMatches = AwayMatchList;
         }
 
+        /// <summary>
+        /// sorts the stats into a seriescollection so that it can be displayed in a graph
+        /// </summary>
+        /// <param name="stats"></param>
         private void SortStats(Data stats)
         {
             var collection = new SeriesCollection();

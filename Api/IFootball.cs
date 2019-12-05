@@ -16,6 +16,7 @@ namespace FootballApp.Api
         Task<List<Competition>> LoadCompetition();
         Task<List<Match>> LoadLive();
         Task<List<Match>> LoadPast(DateTime? date, int pageNo);
+        Task<List<Match>> LoadPastForTeam(string teamId);
         Task<List<Table>> LoadStandings(string leagueId);
         Task<List<Event>> LoadEvents(string matchId);
 

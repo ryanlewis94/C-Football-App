@@ -199,6 +199,29 @@ namespace FootballApp.Api
             }
         }
 
+        public async Task<List<Match>> LoadPastForTeam(string teamId)
+        {
+            string[] date = ((DateTime.Today.AddMonths(-4).ToString()).Split(' ')[0]).Split('/');
+            string dateFrom = $"{date[2]}-{date[1]}-{date[0]}";
+
+            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&team={teamId}&from={dateFrom}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    Model match = stream.ReadAndDeserializeFromJson<Model>();
+
+                    return match?.data?.match;
+                }
+                else
+                {
+                    throw new Exception(response.StatusCode.ToString());
+                }
+            }
+        }
+
         public async Task<Data> LoadTeamsH2H(string homeId, string awayId)
         {
             string url = $"https://live-score-api.com/api-client/teams/head2head.json?team1_id={homeId}&team2_id={awayId}&key={Api.Key}&secret={Api.Secret}";
