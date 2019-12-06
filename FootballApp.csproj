@@ -153,11 +153,20 @@
     <Compile Include="Controls\EventControl.xaml.cs">
       <DependentUpon>EventControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FixtureInfo.xaml.cs">
+      <DependentUpon>FixtureInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LoadingOverlayView.xaml.cs">
       <DependentUpon>LoadingOverlayView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MatchInfo.xaml.cs">
+      <DependentUpon>MatchInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StandingsControl.xaml.cs">
       <DependentUpon>StandingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WelcomeControl.xaml.cs">
+      <DependentUpon>WelcomeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorHandling\ErrorHandler.cs" />
     <Compile Include="Utility\StringCaseIgnore.cs" />
@@ -182,11 +191,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\FixtureInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LoadingOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\MatchInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StandingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\WelcomeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

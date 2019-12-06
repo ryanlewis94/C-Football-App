@@ -76,3 +76,9 @@ C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.Wpf.pdb
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\LiveCharts.Wpf.xml
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\MatchInfo.baml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\MatchInfo.g.cs
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\FixtureInfo.baml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\FixtureInfo.g.cs
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\WelcomeControl.baml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\WelcomeControl.g.cs

@@ -132,6 +132,8 @@ namespace FootballApp.ViewModels
             set
             {
                 SetProperty(ref _dateSelected, value);
+                IsProcessing = true;
+                InvokedByDateSelection = true;
                 GetFixtures();
                 Messenger.Default.Send("unloaded");
             }
@@ -147,6 +149,19 @@ namespace FootballApp.ViewModels
             set
             {
                 SetProperty(ref _countriesLoaded, value);
+            }
+        }
+
+        /// <summary>
+        /// checks if a match has been selected 
+        /// </summary>
+        private bool _invokedByDateSelection;
+        public bool InvokedByDateSelection
+        {
+            get { return _invokedByDateSelection; }
+            set
+            {
+                SetProperty(ref _invokedByDateSelection, value);
             }
         }
 
@@ -270,6 +285,7 @@ namespace FootballApp.ViewModels
         private void MatchTimer_Tick(object sender, EventArgs e)
         {
             Messenger.Default.Send("unloaded");
+            InvokedByDateSelection = false;
             CheckDate();
         }
 
@@ -291,6 +307,7 @@ namespace FootballApp.ViewModels
         private void FixtureTimer_Tick(object sender, EventArgs e)
         {
             Messenger.Default.Send("unloaded");
+            InvokedByDateSelection = false;
             InvokedByFixtureTimer = true;
             GetFixtures();
         }
@@ -437,18 +454,29 @@ namespace FootballApp.ViewModels
                 //SortCountryList = SortCountryList.OrderBy(c => c.name).ToList();
                 OriginalList = SortCountryList;
                 MainList = SortCountryList;
+
+                //when list reloads keeps it sorted to the users search input
                 if (SearchText != null) Search(SearchText);
             }
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
             }
+            finally
+            {
+                if (InvokedByDateSelection)
+                {
+                    Messenger.Default.Send("loaded");
+                }
+            }
 
             try
             {
+                if (IsProcessing) return;
                 //When recreating the list check if the user had selected a match and keep it selected
                 if (CurrentCountry != null)
                 {
+                    var countryBefore = CurrentCountry;
                     foreach (Country country in MainList)
                     {
                         if (CurrentCountry.matchList != null && country.matchList != null)
@@ -457,6 +485,7 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
@@ -467,6 +496,7 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
@@ -479,18 +509,35 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
                         }
                     }
+                    if(CurrentCountry == countryBefore)
+                    {
+                        SelectedCountry = CurrentCountry;
+                        IsProcessing = true;
+                        Messenger.Default.Send(SelectedCountry);
+                    }
                 }
-                Messenger.Default.Send("loaded");
+                else
+                {
+                    InvokedByDateSelection = true;
+                }
             }
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
             }
+            //finally
+            //{
+            //    if (InvokedByDateSelection)
+            //    {
+            //        Messenger.Default.Send("loaded");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -601,6 +648,7 @@ namespace FootballApp.ViewModels
                         if (SelectedCountry != CurrentCountry)
                         {
                             IsProcessing = true;
+                            InvokedByDateSelection = false;
                             Messenger.Default.Send("unloaded");
                             Messenger.Default.Send(SelectedCountry);
                             CurrentCountry = SelectedCountry;

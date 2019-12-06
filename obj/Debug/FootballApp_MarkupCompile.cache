@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\App.xaml
-6386319191
+9-581065254
 
-34352623674
+37-418089346
 144-882772976
-Controls\CountryControl.xaml;Controls\EventControl.xaml;Controls\LoadingOverlayView.xaml;Controls\StandingsControl.xaml;MainWindow.xaml;Styles\ButtonStyle.xaml;
+Controls\CountryControl.xaml;Controls\EventControl.xaml;Controls\FixtureInfo.xaml;Controls\LoadingOverlayView.xaml;Controls\MatchInfo.xaml;Controls\StandingsControl.xaml;Controls\WelcomeControl.xaml;MainWindow.xaml;Styles\ButtonStyle.xaml;
 
 False
 

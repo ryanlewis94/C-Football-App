@@ -1,0 +1,296 @@
+﻿<UserControl x:Class="FootballApp.Controls.FixtureInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}"
+             mc:Ignorable="d">
+    <!--Fixture info-->
+    <StackPanel DataContext="{Binding CurrentCountry}"
+                Margin="0,0,0,10"
+                Visibility="{Binding DataContext.FixtureSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,40">
+            <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
+        </StackPanel>
+        <Grid Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3.75*" />
+                <ColumnDefinition Width="2.5*" />
+                <ColumnDefinition Width="3.75*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border BorderBrush="Black"
+                    BorderThickness="0,0,1,0">
+                <TextBlock Text="{Binding fixtureList.home_name}"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Grid.Column="1" 
+                       Text="{Binding fixtureList.time}" 
+                       FontWeight="Bold"
+                       FontSize="16"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <Border BorderBrush="Black"
+                    BorderThickness="1,0,0,0"
+                    Grid.Column="2">
+                <TextBlock Text="{Binding fixtureList.away_name}"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <!--Current Form-->
+            <StackPanel Grid.Row="1"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch">
+                <ListBox IsHitTestVisible="False"
+                         HorizontalAlignment="Center"
+                         Margin="0,15"
+                         ItemsSource="{Binding DataContext.HomeForm, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" 
+                                    BorderThickness="1" 
+                                    CornerRadius="2">
+                                <TextBlock Text="{Binding form}"
+                                           FontWeight="Bold"
+                                           TextAlignment="Center"
+                                           Width="30"
+                                           Padding="0,5"
+                                           Background="{Binding color}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Expander Header="View Last 6 Games"
+                          Background="WhiteSmoke"
+                          BorderBrush="Gray" 
+                          Margin="5,0,5,0"
+                          IsExpanded="{Binding IsExpanded, ElementName=FixtureAwayExpander}"
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListView ItemsSource="{Binding DataContext.HomeMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                              IsHitTestVisible="False"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" 
+                                        BorderThickness="1" 
+                                        Background="{Binding color}" 
+                                        CornerRadius="5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="4*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding home_name}"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1"
+                                                    HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding date}" TextAlignment="Center" FontSize="10"/>
+                                            <TextBlock Text="{Binding score}" TextAlignment="Center" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding scheduled}" TextAlignment="Center" FontSize="10"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding away_name}"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Grid.Column="2"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Expander>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1"
+                        Grid.Column="2"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch">
+                <ListBox Margin="0,15"
+                         HorizontalAlignment="Center"
+                         IsHitTestVisible="False"
+                         ItemsSource="{Binding DataContext.AwayForm, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" 
+                                    BorderThickness="1" 
+                                    CornerRadius="2">
+                                <TextBlock Text="{Binding form}"
+                                           FontWeight="Bold"
+                                           TextAlignment="Center"
+                                           Width="30"
+                                           Padding="0,5"
+                                           Background="{Binding color}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Expander x:Name="FixtureAwayExpander" 
+                          Header="View Last 6 Games" 
+                          Background="WhiteSmoke" 
+                          BorderBrush="Gray" 
+                          Margin="5,0,5,0"
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListView ItemsSource="{Binding DataContext.AwayMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                              IsHitTestVisible="False"
+                              BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" 
+                                        BorderThickness="1" 
+                                        Background="{Binding color}" 
+                                        CornerRadius="5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="4*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding home_name}"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1"
+                                                    HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding date}" TextAlignment="Center" FontSize="10"/>
+                                            <TextBlock Text="{Binding score}" TextAlignment="Center" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding scheduled}" TextAlignment="Center" FontSize="10"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding away_name}"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="SemiBold"
+                                                   Grid.Column="2"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Expander>
+            </StackPanel>
+            <!--Odds-->
+            <Border Visibility="{Binding DataContext.OddsAvailable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+                    BorderBrush="{DynamicResource AccentColorBrush}" 
+                    BorderThickness="1"
+                    Background="{DynamicResource AccentColorBrush4}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    CornerRadius="25,0,25,0"
+                    Padding="10"
+                    Margin="0,25,0,0"
+                    Grid.Column="1"
+                    Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.ColumnSpan="3"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            BorderThickness="0,0,0,1">
+                        <TextBlock Text="Betting Odds"
+                                   TextAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,5"/>
+                    </Border>
+
+                    <StackPanel Width="50" Grid.Row="2">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="0,0,1,1">
+                            <TextBlock Text="1"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.HomeOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1"
+                                Grid.Row="2"
+                                Width="50">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="0,0,0,1">
+                            <TextBlock Text="X"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.DrawOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2"
+                                Grid.Row="2"
+                                Width="50">
+                        <Border BorderBrush="{DynamicResource AccentColorBrush}"
+                                Background="{DynamicResource AccentColorBrush4}"
+                                BorderThickness="1,0,0,1">
+                            <TextBlock Text="2"
+                                       TextAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding DataContext.AwayOdds, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+        <!--Countdown until Kick off-->
+        <Border BorderBrush="Black" 
+                BorderThickness="0,2,0,0">
+            <StackPanel>
+                <TextBlock Text="{Binding DataContext.CountdownTime, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                           FontSize="40"
+                           FontWeight="Bold"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="25"/>
+                <TextBlock Text="Until Kick Off"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

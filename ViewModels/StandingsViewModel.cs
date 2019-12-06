@@ -99,10 +99,6 @@ namespace FootballApp.ViewModels
                     Messenger.Default.Send("leagueUnavailable");
                 }
             }
-            finally
-            {
-                Messenger.Default.Send("loaded");
-            }
         }
 
         /// <summary>

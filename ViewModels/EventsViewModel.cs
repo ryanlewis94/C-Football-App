@@ -28,17 +28,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _head2Head, value); }
         }
 
-        /// <summary>
-        /// Lists for storing events
-        /// </summary>
-        private List<Event> _eventsList;
-
-        public List<Event> EventsList
-        {
-            get { return _eventsList; }
-            set { SetProperty(ref _eventsList, value); }
-        }
-
         private List<Event> _homeEventsList;
 
         public List<Event> HomeEventsList
@@ -54,42 +43,6 @@ namespace FootballApp.ViewModels
         {
             get { return _awayEventsList; }
             set { SetProperty(ref _awayEventsList, value); }
-        }
-
-        private List<Event> _homeList;
-
-        public List<Event> HomeList
-        {
-            get { return _homeList; }
-            set { SetProperty(ref _homeList, value); }
-        }
-
-
-        private List<Event> _awayList;
-
-        public List<Event> AwayList
-        {
-            get { return _awayList; }
-            set { SetProperty(ref _awayList, value); }
-        }
-
-        private List<Event> _timeList;
-
-        public List<Event> TimeList
-        {
-            get { return _timeList; }
-            set { SetProperty(ref _timeList, value); }
-        }
-
-        /// <summary>
-        /// blank event gets inserted to the home or away list
-        /// </summary>
-        private Event _blankEvent;
-
-        public Event BlankEvent
-        {
-            get { return _blankEvent; }
-            set { SetProperty(ref _blankEvent, value); }
         }
 
         /// <summary>
@@ -429,8 +382,7 @@ namespace FootballApp.ViewModels
                             SortStats(Stats);
                         }
 
-                        EventsList = await repository.LoadEvents(country.matchList.id);
-                        SortEvents();
+                        SortEvents(await repository.LoadEvents(country.matchList.id));
                     }
                     else if (country.fixtureList != null)
                     {
@@ -487,22 +439,20 @@ namespace FootballApp.ViewModels
         /// <summary>
         /// Adds images for the different events and sorts the home and away into different lists
         /// </summary>
-        private void SortEvents()
+        private void SortEvents(List<Event> eventsList)
         {
             try
             {
-                HomeList = new List<Event>();
-                AwayList = new List<Event>();
-                TimeList = new List<Event>();
-                BlankEvent = new Event();
+                var HomeList = new List<Event>();
+                var AwayList = new List<Event>();
+                var BlankEvent = new Event();
 
-                if (EventsList != null)
+                if (eventsList != null)
                 {
-                    if (EventsList?.Count != 0)
+                    if (eventsList?.Count != 0)
                     {
-                        NoEvents = false;
 
-                        foreach (Event @event in EventsList)
+                        foreach (Event @event in eventsList)
                         {
                             int idx = @event.player.LastIndexOf(" ");
                             string playerToAdd;
@@ -556,48 +506,29 @@ namespace FootballApp.ViewModels
                             {
                                 HomeList.Insert(0, EventToAdd);
                                 AwayList.Insert(0, BlankEvent);
-                                TimeList.Insert(0, BlankEvent);
                             }
                             else
                             {
                                 AwayList.Insert(0, EventToAdd);
                                 HomeList.Insert(0, BlankEvent);
-                                TimeList.Insert(0, BlankEvent);
                             }
-
-                            //if (!string.IsNullOrWhiteSpace(CurrentCountry.matchList.ht_score))
-                            //{
-                            //    var htEvent = new Event
-                            //    {
-                            //        id = "",
-                            //        match_id = @event.match_id,
-                            //        player = CurrentCountry.matchList.ht_score,
-                            //        time = "HT",
-                            //        @event = "",
-                            //        sort = @event.sort,
-                            //        home_away = ""
-                            //    };
-
-                            //    HomeEventsList.Insert(0, BlankEvent);
-                            //    AwayEventsList.Insert(0, BlankEvent);
-                            //    TimeList.Insert(0, htEvent);
-                            //} 
                         }
                         HomeEventsList = HomeList;
                         AwayEventsList = AwayList;
+                        NoEvents = false;
                     }
                     else
                     {
-                        NoEvents = true;
                         HomeEventsList = new List<Event>();
                         AwayEventsList = new List<Event>();
+                        NoEvents = true;
                     }
                 }
                 else
                 {
-                    NoEvents = true;
                     HomeEventsList = new List<Event>();
                     AwayEventsList = new List<Event>();
+                    NoEvents = true;
                 }
 
                 TimeUpdated = (!FullTime) ?
@@ -692,12 +623,21 @@ namespace FootballApp.ViewModels
                     AwayOdds = (AwayOdds[0].ToString() == ".") ? $"0{AwayOdds}" : AwayOdds;
                     DrawOdds = (DrawOdds[0].ToString() == ".") ? $"0{DrawOdds}" : DrawOdds;
 
-                    HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                    if (HomeOdds != "∞")
+                    {
+                        HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
                         $"{HomeOdds}.0" : HomeOdds;
-                    AwayOdds = (!AwayOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{AwayOdds}.0" : AwayOdds;
-                    DrawOdds = (!DrawOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                    }
+                    if (DrawOdds != "∞")
+                    {
+                        DrawOdds = (!DrawOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
                         $"{DrawOdds}.0" : DrawOdds;
+                    }
+                    if (AwayOdds != "∞")
+                    {
+                        AwayOdds = (!AwayOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
+                        $"{AwayOdds}.0" : AwayOdds;
+                    }
 
                     OddsAvailable = true;
                 }
@@ -713,6 +653,10 @@ namespace FootballApp.ViewModels
             {
                 errorHandler.CheckErrorMessage(ex);
             }
+            finally
+            {
+                Messenger.Default.Send("loaded");
+            }
         }
 
         /// <summary>
@@ -722,51 +666,57 @@ namespace FootballApp.ViewModels
         /// <param name="overall_form2"></param>
         private void CheckForm(List<string> overall_form1, List<string> overall_form2)
         {
-
-            foreach (string form in overall_form1)
+            try
             {
-                var formColour = new SolidColorBrush(Colors.AliceBlue);
-
-                if (form == "W")
+                foreach (string form in overall_form1)
                 {
-                    formColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                    var formColour = new SolidColorBrush(Colors.AliceBlue);
 
+                    if (form == "W")
+                    {
+                        formColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+
+                    }
+                    else if (form == "L")
+                    {
+                        formColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+
+                    }
+
+                    HomeFormList.Insert(0, new Form
+                    {
+                        form = form,
+                        color = formColour
+                    });
                 }
-                else if (form == "L")
-                {
-                    formColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
 
+                foreach (string form in overall_form2)
+                {
+                    var formColour = new SolidColorBrush(Colors.AliceBlue);
+
+                    if (form == "W")
+                    {
+                        formColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                    }
+                    else if (form == "L")
+                    {
+                        formColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                    }
+
+                    AwayFormList.Insert(0, new Form
+                    {
+                        form = form,
+                        color = formColour
+                    });
                 }
 
-                HomeFormList.Insert(0, new Form
-                {
-                    form = form,
-                    color = formColour
-                });
+                HomeForm = HomeFormList;
+                AwayForm = AwayFormList;
             }
-
-            foreach (string form in overall_form2)
+            catch (Exception ex)
             {
-                var formColour = new SolidColorBrush(Colors.AliceBlue);
-
-                if (form == "W")
-                {
-                    formColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                }
-                else if (form == "L")
-                {
-                    formColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                }
-
-                AwayFormList.Insert(0, new Form
-                {
-                    form = form,
-                    color = formColour
-                });
+                errorHandler.CheckErrorMessage(ex);
             }
-
-            HomeForm = HomeFormList;
-            AwayForm = AwayFormList;
         }
 
         /// <summary>
@@ -778,89 +728,104 @@ namespace FootballApp.ViewModels
         /// <param name="awayName"></param>
         private void CheckLastSix(List<LastMatch> lastMatches1, List<LastMatch> lastMatches2, string homeName, string awayName)
         {
-            foreach (LastMatch match in lastMatches1)
+            try
             {
-                var homeGoals = int.Parse(match.score.Split('-')[0]);
-                var awayGoals = int.Parse(match.score.Split('-')[1]);
-                var matchColour = new SolidColorBrush(Colors.AliceBlue);
+                foreach (LastMatch match in lastMatches1)
+                {
+                    var matchColour = new SolidColorBrush(Colors.AliceBlue);
 
-                if (match.home_name == homeName)
-                {
-                    if (homeGoals > awayGoals)
+                    if (match.score != "? - ?")
                     {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                        var homeGoals = int.Parse(match.score.Split('-')[0]);
+                        var awayGoals = int.Parse(match.score.Split('-')[1]);
+
+                        if (match.home_name == homeName)
+                        {
+                            if (homeGoals > awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                            }
+                            else if (homeGoals < awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                            }
+                        }
+                        else if (match.away_name == homeName)
+                        {
+                            if (homeGoals > awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                            }
+                            else if (homeGoals < awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                            }
+                        }
                     }
-                    else if (homeGoals < awayGoals)
+
+                    HomeMatchList.Add(new LastMatch
                     {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                    }
-                }
-                else if (match.away_name == homeName)
-                {
-                    if (homeGoals > awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                    }
-                    else if (homeGoals < awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                    }
+                        id = match.id,
+                        date = match.date,
+                        home_name = match.home_name,
+                        away_name = match.away_name,
+                        score = match.score,
+                        scheduled = match.scheduled,
+                        color = matchColour
+                    });
                 }
 
-                HomeMatchList.Add(new LastMatch
+                foreach (LastMatch match in lastMatches2)
                 {
-                    id = match.id,
-                    date = match.date,
-                    home_name = match.home_name,
-                    away_name = match.away_name,
-                    score = match.score,
-                    scheduled = match.scheduled,
-                    color = matchColour
-                });
+                    var matchColour = new SolidColorBrush(Colors.AliceBlue);
+
+                    if (match.score != "? - ?")
+                    {
+                        var homeGoals = int.Parse(match.score.Split('-')[0]);
+                        var awayGoals = int.Parse(match.score.Split('-')[1]);
+
+                        if (match.home_name == awayName)
+                        {
+                            if (homeGoals > awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                            }
+                            else if (homeGoals < awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                            }
+                        }
+                        else if (match.away_name == awayName)
+                        {
+                            if (homeGoals > awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                            }
+                            else if (homeGoals < awayGoals)
+                            {
+                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                            }
+                        }
+                    }
+
+                    AwayMatchList.Add(new LastMatch
+                    {
+                        id = match.id,
+                        date = match.date,
+                        home_name = match.home_name,
+                        away_name = match.away_name,
+                        score = match.score,
+                        scheduled = match.scheduled,
+                        color = matchColour
+                    });
+                }
+                HomeMatches = HomeMatchList;
+                AwayMatches = AwayMatchList;
             }
-
-            foreach (LastMatch match in lastMatches2)
+            catch (Exception ex)
             {
-                var homeGoals = int.Parse(match.score.Split('-')[0]);
-                var awayGoals = int.Parse(match.score.Split('-')[1]);
-                var matchColour = new SolidColorBrush(Colors.AliceBlue);
-
-                if (match.home_name == awayName)
-                {
-                    if (homeGoals > awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                    }
-                    else if (homeGoals < awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                    }
-                }
-                else if (match.away_name == awayName)
-                {
-                    if (homeGoals > awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                    }
-                    else if (homeGoals < awayGoals)
-                    {
-                        matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                    }
-                }
-
-                AwayMatchList.Add(new LastMatch
-                {
-                    id = match.id,
-                    date = match.date,
-                    home_name = match.home_name,
-                    away_name = match.away_name,
-                    score = match.score,
-                    scheduled = match.scheduled,
-                    color = matchColour
-                });
+                errorHandler.CheckErrorMessage(ex);
             }
-            HomeMatches = HomeMatchList;
-            AwayMatches = AwayMatchList;
         }
 
         /// <summary>
@@ -869,244 +834,238 @@ namespace FootballApp.ViewModels
         /// <param name="stats"></param>
         private void SortStats(Data stats)
         {
-            var collection = new SeriesCollection();
-            var labels = new List<string>();
+            try
+            {
+                var collection = new SeriesCollection();
+                var labels = new List<string>();
 
-            collection.Add(new StackedRowSeries
-            {
-                Values = new ChartValues<double> { },
-                StackMode = StackMode.Percentage,
-                DataLabels = true
-            });
-            collection.Add(new StackedRowSeries
-            {
-                Values = new ChartValues<double> { },
-                StackMode = StackMode.Percentage,
-                DataLabels = true
-            });
-
-            if (stats.possesion != null)
-            {
-                if (stats.possesion != "0:0")
+                collection.Add(new StackedRowSeries
                 {
-                    collection[0].Values.Insert(0, double.Parse(stats.possesion.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.possesion.Split(':')[1]));
+                    Values = new ChartValues<double> { },
+                    StackMode = StackMode.Percentage,
+                    DataLabels = true
+                });
+                collection.Add(new StackedRowSeries
+                {
+                    Values = new ChartValues<double> { },
+                    StackMode = StackMode.Percentage,
+                    DataLabels = true
+                });
 
-                    labels.Insert(0, "Possession");
+                if (stats.possesion != null)
+                {
+                    if (stats.possesion != "0:0")
+                    {
+                        addStats(collection, stats.possesion);
+
+                        labels.Insert(0, "Possession");
+                    }
+                }
+
+                if (stats.attempts_on_goal != null)
+                {
+                    if (stats.attempts_on_goal != "0:0")
+                    {
+                        addStats(collection, stats.attempts_on_goal);
+
+                        labels.Insert(0, "Total Shots");
+                    }
+                }
+
+                if (stats.shots_on_target != null)
+                {
+                    if (stats.shots_on_target != "0:0")
+                    {
+                        addStats(collection, stats.shots_on_target);
+
+                        labels.Insert(0, "Shots on Target");
+                    }
+                }
+
+                if (stats.shots_off_target != null)
+                {
+                    if (stats.shots_off_target != "0:0")
+                    {
+                        addStats(collection, stats.shots_off_target);
+
+                        labels.Insert(0, "Shots off Target");
+                    }
+                }
+
+                if (stats.shots_blocked != null)
+                {
+                    if (stats.shots_blocked != "0:0")
+                    {
+                        addStats(collection, stats.shots_blocked);
+
+                        labels.Insert(0, "Shots Blocked");
+                    }
+                }
+
+                if (stats.attacks != null)
+                {
+                    if (stats.attacks != "0:0")
+                    {
+                        addStats(collection, stats.attacks);
+
+                        labels.Insert(0, "Attacks");
+                    }
+                }
+
+                if (stats.dangerous_attacks != null)
+                {
+                    if (stats.dangerous_attacks != "0:0")
+                    {
+                        addStats(collection, stats.dangerous_attacks);
+
+                        labels.Insert(0, "Dangerous Attacks");
+                    }
+                }
+
+                if (stats.penalties != null)
+                {
+                    if (stats.penalties != "0:0")
+                    {
+                        addStats(collection, stats.penalties);
+
+                        labels.Insert(0, "Penalties");
+                    }
+                }
+
+                if (stats.corners != null)
+                {
+                    if (stats.corners != "0:0")
+                    {
+                        addStats(collection, stats.corners);
+
+                        labels.Insert(0, "Corners");
+                    }
+                }
+
+                if (stats.free_kicks != null)
+                {
+                    if (stats.free_kicks != "0:0")
+                    {
+                        addStats(collection, stats.free_kicks);
+
+                        labels.Insert(0, "Free Kicks");
+                    }
+                }
+
+                if (stats.goal_kicks != null)
+                {
+                    if (stats.goal_kicks != "0:0")
+                    {
+                        addStats(collection, stats.goal_kicks);
+
+                        labels.Insert(0, "Goal Kicks");
+                    }
+                }
+
+                if (stats.throw_ins != null)
+                {
+                    if (stats.throw_ins != "0:0")
+                    {
+                        addStats(collection, stats.throw_ins);
+
+                        labels.Insert(0, "Throw Ins");
+                    }
+                }
+
+                if (stats.offsides != null)
+                {
+                    if (stats.offsides != "0:0")
+                    {
+                        addStats(collection, stats.offsides);
+
+                        labels.Insert(0, "Offsides");
+                    }
+                }
+
+                if (stats.fauls != null)
+                {
+                    if (stats.fauls != "0:0")
+                    {
+                        addStats(collection, stats.fauls);
+
+                        labels.Insert(0, "Fouls");
+                    }
+                }
+
+                if (stats.yellow_cards != null)
+                {
+                    if (stats.yellow_cards != "0:0")
+                    {
+                        addStats(collection, stats.yellow_cards);
+
+                        labels.Insert(0, "Yellow Cards");
+                    }
+                }
+
+                if (stats.red_cards != null)
+                {
+                    if (stats.red_cards != "0:0")
+                    {
+                        addStats(collection, stats.red_cards);
+
+                        labels.Insert(0, "Red Cards");
+                    }
+                }
+
+                if (stats.saves != null)
+                {
+                    if (stats.saves != "0:0")
+                    {
+                        addStats(collection, stats.saves);
+
+                        labels.Insert(0, "Saves");
+                    }
+                }
+
+                if (stats.substitutions != null)
+                {
+                    if (stats.substitutions != "0:0")
+                    {
+                        addStats(collection, stats.substitutions);
+
+                        labels.Insert(0, "Substitutions");
+                    }
+                }
+
+                if (stats.treatments != null)
+                {
+                    if (stats.treatments != "0:0")
+                    {
+                        addStats(collection, stats.treatments);
+
+                        labels.Insert(0, "Treatments");
+                    }
+                }
+                if (labels.Count == 0)
+                {
+                    NoStats = false;
+                }
+                else
+                {
+                    NoStats = true;
+
+                    MaxValue = labels.Count;
+                    Height = (labels.Count * 50);
+
+                    Labels = labels;
+                    StatsCollection = collection;
                 }
             }
-
-            if (stats.attempts_on_goal != null)
+            catch (Exception ex)
             {
-                if (stats.attempts_on_goal != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.attempts_on_goal.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.attempts_on_goal.Split(':')[1]));
-
-                    labels.Insert(0, "Total Shots");
-                }
+                errorHandler.CheckErrorMessage(ex);
             }
+        }
 
-            if (stats.shots_on_target != null)
-            {
-                if (stats.shots_on_target != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.shots_on_target.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.shots_on_target.Split(':')[1]));
-
-                    labels.Insert(0, "Shots on Target");
-                }
-            }
-
-            if (stats.shots_off_target != null)
-            {
-                if (stats.shots_off_target != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.shots_off_target.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.shots_off_target.Split(':')[1]));
-
-                    labels.Insert(0, "Shots off Target");
-                }
-            }
-
-            if (stats.shots_blocked != null)
-            {
-                if (stats.shots_blocked != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.shots_blocked.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.shots_blocked.Split(':')[1]));
-
-                    labels.Insert(0, "Shots Blocked");
-                }
-            }
-
-            if (stats.attacks != null)
-            {
-                if (stats.attacks != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.attacks.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.attacks.Split(':')[1]));
-
-                    labels.Insert(0, "Attacks");
-                }
-            }
-
-            if (stats.dangerous_attacks != null)
-            {
-                if (stats.dangerous_attacks != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.dangerous_attacks.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.dangerous_attacks.Split(':')[1]));
-
-                    labels.Insert(0, "Dangerous Attacks");
-                }
-            }
-
-            if (stats.penalties != null)
-            {
-                if (stats.penalties != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.penalties.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.penalties.Split(':')[1]));
-
-                    labels.Insert(0, "Penalties");
-                }
-            }
-
-            if (stats.corners != null)
-            {
-                if (stats.corners != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.corners.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.corners.Split(':')[1]));
-
-                    labels.Insert(0, "Corner Kicks");
-                }
-            }
-
-            if (stats.free_kicks != null)
-            {
-                if (stats.free_kicks != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.free_kicks.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.free_kicks.Split(':')[1]));
-
-                    labels.Insert(0, "Free Kicks");
-                }
-            }
-
-            if (stats.goal_kicks != null)
-            {
-                if (stats.goal_kicks != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.goal_kicks.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.goal_kicks.Split(':')[1]));
-
-                    labels.Insert(0, "Goal Kicks");
-                }
-            }
-
-            if (stats.throw_ins != null)
-            {
-                if (stats.throw_ins != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.throw_ins.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.throw_ins.Split(':')[1]));
-
-                    labels.Insert(0, "Throw Ins");
-                }
-            }
-
-            if (stats.offsides != null)
-            {
-                if (stats.offsides != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.offsides.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.offsides.Split(':')[1]));
-
-                    labels.Insert(0, "Offsides");
-                }
-            }
-
-            if (stats.fauls != null)
-            {
-                if (stats.fauls != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.fauls.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.fauls.Split(':')[1]));
-
-                    labels.Insert(0, "Fouls");
-                }
-            }
-
-            if (stats.yellow_cards != null)
-            {
-                if (stats.yellow_cards != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.yellow_cards.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.yellow_cards.Split(':')[1]));
-
-                    labels.Insert(0, "Yellow Cards");
-                }
-            }
-
-            if (stats.red_cards != null)
-            {
-                if (stats.red_cards != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.red_cards.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.red_cards.Split(':')[1]));
-
-                    labels.Insert(0, "Red Cards");
-                }
-            }
-
-            if (stats.saves != null)
-            {
-                if (stats.saves != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.saves.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.saves.Split(':')[1]));
-
-                    labels.Insert(0, "Saves");
-                }
-            }
-
-            if (stats.substitutions != null)
-            {
-                if (stats.substitutions != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.substitutions.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.substitutions.Split(':')[1]));
-
-                    labels.Insert(0, "Substitutions");
-                }
-            }
-
-            if (stats.treatments != null)
-            {
-                if (stats.treatments != "0:0")
-                {
-                    collection[0].Values.Insert(0, double.Parse(stats.treatments.Split(':')[0]));
-                    collection[1].Values.Insert(0, double.Parse(stats.treatments.Split(':')[1]));
-
-                    labels.Insert(0, "Treatments");
-                }
-            }
-            if (labels.Count == 0)
-            {
-                NoStats = false;
-            }
-            else
-            {
-                NoStats = true;
-
-                MaxValue = labels.Count;
-                Height = (labels.Count * 50);
-
-                Labels = labels;
-                StatsCollection = collection;
-            }
+        private void addStats(SeriesCollection collection, string stat)
+        {
+            collection[0].Values.Insert(0, double.Parse(stat.Split(':')[0]));
+            collection[1].Values.Insert(0, double.Parse(stat.Split(':')[1]));
         }
 
         /// <summary>
