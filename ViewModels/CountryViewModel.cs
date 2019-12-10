@@ -464,7 +464,7 @@ namespace FootballApp.ViewModels
             }
             finally
             {
-                if (InvokedByDateSelection)
+                if (InvokedByDateSelection || SelectedCountry == null)
                 {
                     Messenger.Default.Send("loaded");
                 }
@@ -506,7 +506,7 @@ namespace FootballApp.ViewModels
                         //Checks if the fixture has kicked off, and select it if it is
                         if (CurrentCountry.fixtureList != null && country.matchList != null)
                         {
-                            if ((CurrentCountry.fixtureList.home_name == country.matchList.home_name) || 
+                            if ((CurrentCountry.fixtureList.home_name == country.matchList.home_name) && 
                                 (CurrentCountry.fixtureList.away_name == country.matchList.away_name))
                             {
                                 SelectedCountry = country;
@@ -524,20 +524,23 @@ namespace FootballApp.ViewModels
 
                         foreach (Match match in matchList)
                         {
-                            if (CurrentCountry.matchList != null)
+                            if (match.score != "? - ?")
                             {
-                                if (match.id == CurrentCountry.matchList.id)
+                                if (CurrentCountry.matchList != null)
                                 {
-                                    CurrentCountry.matchList = match;
+                                    if (match.id == CurrentCountry.matchList.id)
+                                    {
+                                        CurrentCountry.matchList = match;
+                                    }
                                 }
-                            }
-                            if (CurrentCountry.fixtureList != null)
-                            {
-                                if ((CurrentCountry.fixtureList.home_name == match.home_name) ||
-                                (CurrentCountry.fixtureList.away_name == match.away_name))
+                                if (CurrentCountry.fixtureList != null)
                                 {
-                                    CurrentCountry.matchList = match;
-                                    CurrentCountry.fixtureList = null;
+                                    if ((CurrentCountry.fixtureList.home_name == match.home_name) &&
+                                    (CurrentCountry.fixtureList.away_name == match.away_name))
+                                    {
+                                        CurrentCountry.matchList = match;
+                                        CurrentCountry.fixtureList = null;
+                                    }
                                 }
                             }
                         }

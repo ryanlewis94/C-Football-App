@@ -10,6 +10,8 @@ namespace FootballApp.Api
 {
     public interface IFootball
     {
+        int CountApiCalls();
+
         Task<List<Country>> LoadCountry();
         Task<List<Country>> LoadFederation();
         Task<List<League>> LoadLeague();

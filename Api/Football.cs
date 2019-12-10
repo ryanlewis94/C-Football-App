@@ -8,6 +8,14 @@ namespace FootballApp.Api
 {
     public class Football : IFootball
     {
+        public int i = 0;
+
+        public int CountApiCalls()
+        {
+            Console.WriteLine(i);
+            return i;
+        }
+
         private ConfigSettings Api = new ConfigSettings();
 
         public async Task<List<Country>> LoadCountry()
@@ -20,6 +28,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model country = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return country?.data?.country;
                 }
@@ -40,6 +50,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model federation = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return federation?.data?.federation;
                 }
@@ -60,6 +72,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model league = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return league?.data?.league;
                 }
@@ -79,6 +93,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model competition = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return competition?.data?.competition;
                 }
@@ -99,7 +115,9 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
-                    
+                    i++;
+                    CountApiCalls();
+
                     return match?.data?.match;
                 }
                 else
@@ -119,6 +137,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model table = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return table?.data?.table;
                 }
@@ -139,7 +159,9 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model @event = stream.ReadAndDeserializeFromJson<Model>();
-                    
+                    i++;
+                    CountApiCalls();
+
                     return @event?.data?.@event;
                     
                 }
@@ -165,6 +187,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model fixture = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return fixture?.data?.fixtures;
                 }
@@ -189,6 +213,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return match?.data?.match;
                 }
@@ -212,6 +238,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return match?.data?.match;
                 }
@@ -232,6 +260,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model h2h = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return h2h?.data;
                 }
@@ -252,6 +282,8 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model h2h = stream.ReadAndDeserializeFromJson<Model>();
+                    i++;
+                    CountApiCalls();
 
                     return h2h?.data;
                 }
