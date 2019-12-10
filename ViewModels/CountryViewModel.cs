@@ -418,7 +418,7 @@ namespace FootballApp.ViewModels
         /// <summary>
         /// creates a list only with countries that contain games 
         /// </summary>
-        private void CreateGroupedList()
+        private async void CreateGroupedList()
         {
             SortCountryList = new List<Country>();
 
@@ -477,7 +477,7 @@ namespace FootballApp.ViewModels
                 if (CurrentCountry != null)
                 {
                     var countryBefore = CurrentCountry;
-                    foreach (Country country in MainList)
+                    foreach (Country country in OriginalList)
                     {
                         if (CurrentCountry.matchList != null && country.matchList != null)
                         {
@@ -485,6 +485,7 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                if (InvokedByDateSelection) return;
                                 IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
@@ -496,6 +497,7 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                if (InvokedByDateSelection) return;
                                 IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
@@ -509,6 +511,7 @@ namespace FootballApp.ViewModels
                             {
                                 SelectedCountry = country;
                                 CurrentCountry = country;
+                                if (InvokedByDateSelection) return;
                                 IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
@@ -517,7 +520,29 @@ namespace FootballApp.ViewModels
                     }
                     if(CurrentCountry == countryBefore)
                     {
+                        var matchList = await repository.LoadLive();
+
+                        foreach (Match match in matchList)
+                        {
+                            if (CurrentCountry.matchList != null)
+                            {
+                                if (match.id == CurrentCountry.matchList.id)
+                                {
+                                    CurrentCountry.matchList = match;
+                                }
+                            }
+                            if (CurrentCountry.fixtureList != null)
+                            {
+                                if ((CurrentCountry.fixtureList.home_name == match.home_name) ||
+                                (CurrentCountry.fixtureList.away_name == match.away_name))
+                                {
+                                    CurrentCountry.matchList = match;
+                                    CurrentCountry.fixtureList = null;
+                                }
+                            }
+                        }
                         SelectedCountry = CurrentCountry;
+                        if (InvokedByDateSelection) return;
                         IsProcessing = true;
                         Messenger.Default.Send(SelectedCountry);
                     }
@@ -531,13 +556,6 @@ namespace FootballApp.ViewModels
             {
                 errorHandler.CheckErrorMessage(ex);
             }
-            //finally
-            //{
-            //    if (InvokedByDateSelection)
-            //    {
-            //        Messenger.Default.Send("loaded");
-            //    }
-            //}
         }
 
         /// <summary>

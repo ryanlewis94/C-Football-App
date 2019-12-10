@@ -332,6 +332,8 @@ namespace FootballApp.ViewModels
                     NoMatchSelected = false;
                     HomeEventsList?.Clear();
                     AwayEventsList?.Clear();
+                    var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
+                    CurrentCountry = null;
                     if (country.matchList != null)
                     {
                         CurrentCountry = country;
@@ -348,41 +350,31 @@ namespace FootballApp.ViewModels
                             FullTime = true;
                             TimeUpdated = "";
                         }
-                        Head2Head = await repository.LoadTeamsH2H(country.matchList.home_id, country.matchList.away_id);
-                        if (Head2Head != null)
+
+                        if (countryBefore == null)
                         {
-                            CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
-                            CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
-                            NoMatchHistory = true;
+                            LoadForm(country.matchList.home_id, country.matchList.away_id);
+                            LoadInGame(country.matchList.id);
                         }
                         else
                         {
-                            HomeForm = new List<Form>();
-                            AwayForm = new List<Form>();
-                            HomeMatches = new List<LastMatch>();
-                            AwayMatches = new List<LastMatch>();
-                            NoMatchHistory = false;
-                        }
-
-                        try
-                        {
-                            Stats = await repository.LoadStats(country.matchList.id);
-                        }
-                        catch (Exception ex)
-                        {
-                            Stats = new Data();
-
-                            if (!ex.Message.Contains("Cannot deserialize the current JSON array", StringComparison.OrdinalIgnoreCase))
+                            if (CurrentCountry.matchList?.id != countryBefore.matchList?.id)
                             {
-                                errorHandler.CheckErrorMessage(ex);
+                                LoadForm(country.matchList.home_id, country.matchList.away_id);
+                                LoadInGame(country.matchList.id);
                             }
-                        }
-                        finally
-                        {
-                            SortStats(Stats);
-                        }
-
-                        SortEvents(await repository.LoadEvents(country.matchList.id));
+                            else
+                            {
+                                if (!FullTime)
+                                {
+                                    LoadInGame(country.matchList.id);
+                                }
+                                else
+                                {
+                                    Messenger.Default.Send("loaded");
+                                }
+                            }
+                        } 
                     }
                     else if (country.fixtureList != null)
                     {
@@ -396,32 +388,24 @@ namespace FootballApp.ViewModels
                         {
                             FixtureKickOffTime = FixtureKickOffTime.AddDays(1);
                         }
-
                         LoadCountdown();
 
-                        Head2Head = await repository.LoadTeamsH2H(country.fixtureList.home_id, country.fixtureList.away_id);
-                        if (Head2Head != null)
+                        if (countryBefore == null)
                         {
-                            CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
-                            CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
-                            NoMatchHistory = true;
+                            LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
+                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
                         }
                         else
                         {
-                            HomeForm = new List<Form>();
-                            AwayForm = new List<Form>();
-                            HomeMatches = new List<LastMatch>();
-                            AwayMatches = new List<LastMatch>();
-                            NoMatchHistory = false;
-                        }
-
-                        try
-                        {
-                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
-                        }
-                        catch (Exception ex)
-                        {
-                            errorHandler.CheckErrorMessage(ex);
+                            if (CurrentCountry.fixtureList?.id != countryBefore.fixtureList?.id)
+                            {
+                                LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
+                                GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
+                            }
+                            else
+                            {
+                                Messenger.Default.Send("loaded");
+                            }
                         }
                     }
                 }
@@ -434,6 +418,48 @@ namespace FootballApp.ViewModels
             {
                 Messenger.Default.Send("matchOpened");
             }
+        }
+
+        private async void LoadForm(string home_id, string away_id)
+        {
+            Head2Head = await repository.LoadTeamsH2H(home_id, away_id);
+            if (Head2Head != null)
+            {
+                CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
+                CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
+                NoMatchHistory = true;
+            }
+            else
+            {
+                HomeForm = new List<Form>();
+                AwayForm = new List<Form>();
+                HomeMatches = new List<LastMatch>();
+                AwayMatches = new List<LastMatch>();
+                NoMatchHistory = false;
+            }
+        }
+
+        private async void LoadInGame(string id)
+        {
+            try
+            {
+                Stats = await repository.LoadStats(id);
+            }
+            catch (Exception ex)
+            {
+                Stats = new Data();
+
+                if (!ex.Message.Contains("Cannot deserialize the current JSON array", StringComparison.OrdinalIgnoreCase))
+                {
+                    errorHandler.CheckErrorMessage(ex);
+                }
+            }
+            finally
+            {
+                SortStats(Stats);
+            }
+
+            SortEvents(await repository.LoadEvents(id));
         }
 
         /// <summary>
