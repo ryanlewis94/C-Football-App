@@ -12,7 +12,6 @@ namespace FootballApp.Api
     {
         Task<List<Country>> LoadCountry();
         Task<List<Country>> LoadFederation();
-        Task<List<League>> LoadLeague();
         Task<List<Competition>> LoadCompetition();
         Task<List<Match>> LoadLive();
         Task<List<Match>> LoadPast(DateTime? date, int pageNo);

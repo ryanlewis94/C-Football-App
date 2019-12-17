@@ -53,26 +53,6 @@ namespace FootballApp.Api
             }
         }
 
-        public async Task<List<League>> LoadLeague()
-        {
-            string url = $"https://livescore-api.com/api-client/leagues/list.json?key={Api.Key}&secret={Api.Secret}";
-
-            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    Model league = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
-
-                    return league?.data?.league;
-                }
-                else
-                {
-                    throw new Exception(response.StatusCode.ToString());
-                }
-            }
-        }
         public async Task<List<Competition>> LoadCompetition()
         {
             string url = $"https://livescore-api.com/api-client/competitions/list.json?key={Api.Key}&secret={Api.Secret}";

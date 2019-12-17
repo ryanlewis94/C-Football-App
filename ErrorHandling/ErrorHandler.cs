@@ -10,13 +10,16 @@ namespace FootballApp.ErrorHandling
     {
         public MetroWindow metroWindow = (MetroWindow)Application.Current.MainWindow;
 
+        /// <summary>
+        /// Deals with all the exceptions that have been thrown and provides a user friendly error message
+        /// </summary>
+        /// <param name="exception"></param>
         public async void CheckErrorMessage(Exception exception)
         {
-            bool TooManyRequests = true;
+            bool unloaded = true;
             switch (exception.Message)
             {
                 case "BadRequest":
-                    //MessageBox.Show($"Error 400 {exception.Message}: Something was wrong with the request");
                     await metroWindow.ShowMessageAsync($"Error 400 { exception.Message}", "Something was wrong with the request");
                     break;
                 case "Unauthorized":
@@ -36,6 +39,7 @@ namespace FootballApp.ErrorHandling
                     break;
                 case "A task was canceled.":
                     await metroWindow.ShowMessageAsync($"Error", "Connection Timed Out");
+                    unloaded = false;
                     break;
                 case "An error occurred while sending the request.":
                     await metroWindow.ShowMessageAsync($"Error", "No Internet Connection");
@@ -46,14 +50,13 @@ namespace FootballApp.ErrorHandling
                     break;
                 case "TooManyRequests":
                     await metroWindow.ShowMessageAsync($"Too Many Requests", "You have sent too many requests in a short period of time, wait several seconds until you can use the application again.");
-                    TooManyRequests = false;
+                    unloaded = false;
                     break;
                 default:
                     await metroWindow.ShowMessageAsync($"Error: {exception.Message}", exception.ToString());
-                    //onsole.WriteLine(exception.Message);
                     break;
             }
-            if (TooManyRequests) Messenger.Default.Send("loaded");
+            if (unloaded) Messenger.Default.Send("loaded");
         }
     }
 }

@@ -41,14 +41,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _originalList, value); }
         }
 
-        private List<Country> _searchCountryList;
-
-        public List<Country> SearchCountryList
-        {
-            get { return _searchCountryList; }
-            set { SetProperty(ref _searchCountryList, value); }
-        }
-
         private List<Country> _countryList;
 
         public List<Country> CountryList
@@ -99,13 +91,6 @@ namespace FootballApp.ViewModels
         {
             get { return _fixtureList; }
             set { SetProperty(ref _fixtureList, value); }
-        }
-
-        private List<Fixture> _fixturePageList;
-        public List<Fixture> FixturePageList
-        {
-            get { return _fixturePageList; }
-            set { SetProperty(ref _fixturePageList, value); }
         }
 
         /// <summary>
@@ -266,7 +251,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// checks if match is still processing
+        /// checks if match is still processing or if there has been too many requests
         /// </summary>
         /// <param name="obj"></param>
         private void FinishedProcessing(string obj)
@@ -309,8 +294,10 @@ namespace FootballApp.ViewModels
         private void MatchTimer_Tick(object sender, EventArgs e)
         {
             Messenger.Default.Send("unloaded");
+            //reset the request counter
             Messenger.Default.Send("0");
             IsTooMany = false;
+
             InvokedByDateSelection = false;
             CheckDate();
         }
@@ -393,7 +380,7 @@ namespace FootballApp.ViewModels
                 IsProcessing = true;
                 //Load the fixtures from multiple pages
                 int i = 0;
-                FixturePageList = new List<Fixture>();
+                var FixturePageList = new List<Fixture>();
                 do
                 {
                     i = i + 1;
@@ -454,6 +441,7 @@ namespace FootballApp.ViewModels
                 {
                     foreach (Competition competition in CompetitionList)
                     {
+                        //if the competiton is in a country
                         if (competition.countries.Count != 0)
                         {
                             if (competition.countries[0].id == country.id)
@@ -461,7 +449,8 @@ namespace FootballApp.ViewModels
                                 CheckForFixturesAndMatches(country, competition, null);
                             }
                         }
-                        else// if (competition.federations.Count != 0)
+                        //if the competition is in a federation
+                        else
                         {
                             foreach (Country federation in FederationList)
                             {
@@ -476,8 +465,6 @@ namespace FootballApp.ViewModels
                 }
                 //removes any duplicates 
                 SortCountryList = SortCountryList.GroupBy(f => f.index).Select(c => c.First()).ToList();
-                //order alphabetically by country name 
-                //SortCountryList = SortCountryList.OrderBy(c => c.name).ToList();
                 OriginalList = SortCountryList;
                 MainList = SortCountryList;
 
@@ -502,11 +489,13 @@ namespace FootballApp.ViewModels
                 //When recreating the list check if the user had selected a match and keep it selected
                 if (CurrentCountry != null)
                 {
+                    //stores the previously selected country in memory
                     var countryBefore = CurrentCountry;
                     foreach (Country country in OriginalList)
                     {
                         if (CurrentCountry.matchList != null && country.matchList != null)
                         {
+                            //if a match was selected
                             if (CurrentCountry.matchList.id == country.matchList.id)
                             {
                                 SelectedCountry = country;
@@ -519,6 +508,7 @@ namespace FootballApp.ViewModels
                         }
                         if (CurrentCountry.fixtureList != null && country.fixtureList != null)
                         {
+                            //if a fixture was selected
                             if (CurrentCountry.fixtureList.id == country.fixtureList.id)
                             {
                                 SelectedCountry = country;
@@ -529,9 +519,9 @@ namespace FootballApp.ViewModels
                                 break;
                             }
                         }
-                        //Checks if the fixture has kicked off, and select it if it is
                         if (CurrentCountry.fixtureList != null && country.matchList != null)
                         {
+                            //Checks if the fixture has kicked off, and select the live match if it has
                             if ((CurrentCountry.fixtureList.home_name == country.matchList.home_name) && 
                                 (CurrentCountry.fixtureList.away_name == country.matchList.away_name))
                             {
@@ -544,6 +534,8 @@ namespace FootballApp.ViewModels
                             }
                         }
                     }
+                    //if the current country is the same as before so it doesn't get found in the list,
+                    //meaning the date has been changed and therefore not updating the current country.
                     if(CurrentCountry == countryBefore)
                     {
                         var matchList = await repository.LoadLive();
@@ -552,6 +544,7 @@ namespace FootballApp.ViewModels
                         {
                             if (match.score != "? - ?")
                             {
+                                //if the current country was a match then update the match details
                                 if (CurrentCountry.matchList != null)
                                 {
                                     if (match.id == CurrentCountry.matchList.id)
@@ -559,8 +552,10 @@ namespace FootballApp.ViewModels
                                         CurrentCountry.matchList = match;
                                     }
                                 }
+                                //if the current country was a fixture
                                 if (CurrentCountry.fixtureList != null)
                                 {
+                                    //if the fixture has already kicked off update the match details
                                     if ((CurrentCountry.fixtureList.home_name == match.home_name) &&
                                     (CurrentCountry.fixtureList.away_name == match.away_name))
                                     {
@@ -588,7 +583,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// sorts the matches and fixtures into the countries 
+        /// sorts the matches and fixtures into the countries and competitions that they are from 
         /// </summary>
         /// <param name="country"></param>
         /// <param name="competition"></param>
@@ -601,8 +596,10 @@ namespace FootballApp.ViewModels
                 {
                     if (match.competition_id == competition.id.ToString())
                     {
+                        //if the match is updated properly
                         if (!match.score.Contains("?"))
                         {
+                            //get rid of any errors in the team names
                             match.home_name = match.home_name.Replace("amp;", "");
                             match.away_name = match.away_name.Replace("amp;", "");
 
@@ -629,8 +626,10 @@ namespace FootballApp.ViewModels
                     if (fixture.competition_id == competition.id.ToString())
                     {
                         string[] splitTime = fixture.time.Split(':');
+                        //change time to correct time zome
                         //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
 
+                        //format the fixture kick off time
                         if (splitTime[0].Length < 2)
                         {
                             splitTime[0] = $"0{splitTime[0]}";
@@ -685,6 +684,7 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void SelectMatch(object obj)
         {
+            //if something is still loading or the user has sent too many requests, don't allow to select a match
             if (IsProcessing) return;
             if (IsTooMany)
             {
@@ -697,6 +697,7 @@ namespace FootballApp.ViewModels
                 {
                     if (SelectedCountry.matchList != null || SelectedCountry.fixtureList != null)
                     {
+                        //if the selected country is different to the country already open then start loading the country info
                         if (SelectedCountry != CurrentCountry)
                         {
                             IsProcessing = true;
@@ -727,6 +728,7 @@ namespace FootballApp.ViewModels
             SelectedCountry = null;
         }
 
+        //the user can select from the list as long as there is items in the list
         private bool CanSelectMatch(object obj)
         {
             return MainList.Count != 0;
@@ -737,7 +739,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// sorts the list by the users search (includes abreviations of club names)
+        /// sorts the list by the users search
         /// </summary>
         /// <param name="searchText"></param>
         private void Search(string searchText)
@@ -746,16 +748,19 @@ namespace FootballApp.ViewModels
             {
                 if (searchText != null)
                 {
-                    SearchCountryList = new List<Country>();
+                    var SearchCountryList = new List<Country>();
                     System.Text.RegularExpressions.Regex initials = new System.Text.RegularExpressions.Regex(@"(\b[a-zA-Z])[a-zA-Z]* ?");
 
                     foreach (Country country in OriginalList)
                     {
+                        //if is a match
                         if (country.matchList?.id != null)
                         {
+                            //using the regex create abreviations for the team names e.g. 'Paris Saint Germain' = 'PSG'
                             string hometeam = initials.Replace(country.matchList.home_name, "$1");
                             string awayteam = initials.Replace(country.matchList.away_name, "$1");
 
+                            //checks if the country, competition, team names or abreviations of team names contain the users search
                             if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                             country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                             country.matchList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
@@ -766,11 +771,14 @@ namespace FootballApp.ViewModels
                                 SearchCountryList.Add(country);
                             }
                         }
+                        //if is a fixture
                         if (country.fixtureList?.id != null)
                         {
+                            //using the regex create abreviations for the team names e.g. 'Paris Saint Germain' = 'PSG'
                             string hometeam = initials.Replace(country.fixtureList.home_name, "$1");
                             string awayteam = initials.Replace(country.fixtureList.away_name, "$1");
 
+                            //checks if the country, competition, team names or abreviations of team names contain the users search
                             if (country.name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                             country.leagueName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                             country.fixtureList.home_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||

@@ -46,6 +46,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _matchData, value); }
         }
 
+        /// <summary>
+        /// keeps track of how many api requests the user has sent
+        /// </summary>
         private int _requestCount = 0;
 
         public int RequestCount
@@ -96,6 +99,7 @@ namespace FootballApp.ViewModels
                 case "leagueUnavailable":
                     LeagueSelectedBool = false;
                     break;
+                    //updates the request count, sends message if too many requests have been received
                 case "1":
                     RequestCount++;
                     if (RequestCount > 30)
@@ -103,6 +107,7 @@ namespace FootballApp.ViewModels
                         Messenger.Default.Send("TooManyRequests");
                     }
                     break;
+                    //resets the request count every 60 seconds
                 case "0":
                     RequestCount = 0;
                     break;

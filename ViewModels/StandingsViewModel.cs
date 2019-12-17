@@ -43,17 +43,20 @@ namespace FootballApp.ViewModels
             {
                 if (country != null)
                 {
+                    //if there was previously a country selected keep it in memory to compare against the newly selected country
                     var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
                     if (!string.IsNullOrEmpty(country.competition_id))
                     {
                         CurrentCountry = country;
 
+                        //if first time selecting a country load the league standings
                         if (countryBefore == null)
                         {
                             SortStandings(country);
                         }
                         else
                         {
+                            //if the new country is different from the last load the league standings
                             if (CurrentCountry.matchList != null)
                             {
                                 if (CurrentCountry.matchList?.id != countryBefore.matchList?.id)
@@ -74,51 +77,67 @@ namespace FootballApp.ViewModels
             }
             catch (Exception ex)
             {
-                if (ex.Message != "BadRequest")
-                {
-                    errorHandler.CheckErrorMessage(ex);
-                }
-                else
-                {
-                    Messenger.Default.Send("leagueUnavailable");
-                }
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
+        /// <summary>
+        /// Load the league standings
+        /// </summary>
+        /// <param name="country"></param>
         private async void SortStandings(Country country)
         {
-            StandingsList = await repository.LoadStandings(country.competition_id);
-            if (StandingsList != null)
+            try
             {
-                string leagueCheck = "";
-                bool groupedLeague = false;
-                foreach (Table team in StandingsList)
+                StandingsList = await repository.LoadStandings(country.competition_id);
+
+                if (StandingsList != null)
                 {
-                    if (string.IsNullOrWhiteSpace(leagueCheck))
+                    string leagueCheck = "";
+                    bool groupedLeague = false;
+                    foreach (Table team in StandingsList)
                     {
-                        leagueCheck = team.league_id;
+                        if (string.IsNullOrWhiteSpace(leagueCheck))
+                        {
+                            leagueCheck = team.league_id;
+                        }
+
+                        //if teams are all from the same league 
+                        if (leagueCheck == team.league_id)
+                        {
+                            groupedLeague = false;
+                        }
+                        //if there are teams from different leagues e.g. group stage of a cup
+                        else
+                        {
+                            groupedLeague = true;
+                            break;
+                        }
                     }
 
-                    if (leagueCheck == team.league_id)
+                    //if standings for a cup group then sort and group them by their group
+                    StandingsList = (groupedLeague) ?
+                    StandingsList.Where(t => t.league_id == country.league_id).ToList() :
+                    StandingsList;
+
+                    HighlightCurrentTeams(country);
+
+                    //display standings tab if league standings are available anf hide if not
+                    if (StandingsList.Count != 0)
                     {
-                        groupedLeague = false;
+                        Messenger.Default.Send("leagueAvailable");
                     }
                     else
                     {
-                        groupedLeague = true;
-                        break;
+                        Messenger.Default.Send("leagueUnavailable");
                     }
                 }
-
-                StandingsList = (groupedLeague) ?
-                StandingsList.Where(t => t.league_id == country.league_id).ToList() :
-                StandingsList;
-
-                HighlightCurrentTeams(country);
-
-                if (StandingsList.Count != 0)
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message != "BadRequest")
                 {
-                    Messenger.Default.Send("leagueAvailable");
+                    errorHandler.CheckErrorMessage(ex);
                 }
                 else
                 {
@@ -139,16 +158,22 @@ namespace FootballApp.ViewModels
                 {
                     foreach (Table table in StandingsList)
                     {
+                        //get rid of any errors in the team name
                         table.name = table.name.Replace("amp;", "");
+
+                        //if fixture is selected
                         if (country.fixtureList != null)
                         {
+                            //highlight the team in the standings if found
                             if (table.name == country.fixtureList.home_name || table.name == country.fixtureList.away_name)
                             {
                                 table.State = true;
                             }
                         }
+                        //if match is selected
                         else if (country.matchList != null)
                         {
+                            //highlight the team in the standings if found
                             if (table.name == country.matchList.home_name || table.name == country.matchList.away_name)
                             {
                                 table.State = true;

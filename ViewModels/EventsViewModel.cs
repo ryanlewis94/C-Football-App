@@ -28,6 +28,9 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _head2Head, value); }
         }
 
+        /// <summary>
+        /// Lists for storing the live events for the home and away team
+        /// </summary>
         private List<Event> _homeEventsList;
 
         public List<Event> HomeEventsList
@@ -180,20 +183,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayForm, value); }
         }
 
-        private List<Form> _homeFormList;
-        public List<Form> HomeFormList
-        {
-            get { return _homeFormList; }
-            set { SetProperty(ref _homeFormList, value); }
-        }
-
-        private List<Form> _awayFormList;
-        public List<Form> AwayFormList
-        {
-            get { return _awayFormList; }
-            set { SetProperty(ref _awayFormList, value); }
-        }
-
         /// <summary>
         /// Lists for storing the last 6 matches of the home and away team
         /// </summary>
@@ -209,20 +198,6 @@ namespace FootballApp.ViewModels
         {
             get { return _awayMatches; }
             set { SetProperty(ref _awayMatches, value); }
-        }
-
-        private List<LastMatch> _homeMatchList;
-        public List<LastMatch> HomeMatchList
-        {
-            get { return _homeMatchList; }
-            set { SetProperty(ref _homeMatchList, value); }
-        }
-
-        private List<LastMatch> _awayMatchList;
-        public List<LastMatch> AwayMatchList
-        {
-            get { return _awayMatchList; }
-            set { SetProperty(ref _awayMatchList, value); }
         }
 
         /// <summary>
@@ -295,11 +270,6 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadEvents();
-            LoadTimers();
-        }
-
-        private void LoadTimers()
-        {
             CountdownTimer = new DispatcherTimer();
         }
 
@@ -325,15 +295,13 @@ namespace FootballApp.ViewModels
             {
                 if (country != null)
                 {
-                    HomeFormList = new List<Form>();
-                    AwayFormList = new List<Form>();
-                    HomeMatchList = new List<LastMatch>();
-                    AwayMatchList = new List<LastMatch>();
                     NoMatchSelected = false;
                     HomeEventsList?.Clear();
                     AwayEventsList?.Clear();
+                    //if there was previously a country selected keep it in memory to compare against the newly selected country
                     var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
                     CurrentCountry = null;
+                    //if a match was selected
                     if (country.matchList != null)
                     {
                         CurrentCountry = country;
@@ -341,6 +309,7 @@ namespace FootballApp.ViewModels
                         MatchSelected = true;
                         FixtureSelected = false;
 
+                        //if the match is still live
                         if (country.matchList.time != "FT" && country.matchList.time != "AET")
                         {
                             FullTime = false;
@@ -351,6 +320,7 @@ namespace FootballApp.ViewModels
                             TimeUpdated = "";
                         }
 
+                        //if first time selecting load all the data about the teams and the game
                         if (countryBefore == null)
                         {
                             LoadForm(country.matchList.home_id, country.matchList.away_id);
@@ -358,6 +328,7 @@ namespace FootballApp.ViewModels
                         }
                         else
                         {
+                            //if the country being sent is a new country load all the info on the teams
                             if (CurrentCountry.matchList?.id != countryBefore.matchList?.id)
                             {
                                 LoadForm(country.matchList.home_id, country.matchList.away_id);
@@ -365,6 +336,7 @@ namespace FootballApp.ViewModels
                             }
                             else
                             {
+                                //if the match is still live load the live events and stats
                                 if (!FullTime)
                                 {
                                     LoadInGame(country.matchList.id);
@@ -376,6 +348,7 @@ namespace FootballApp.ViewModels
                             }
                         } 
                     }
+                    //if a fixture was selected
                     else if (country.fixtureList != null)
                     {
                         CurrentCountry = country;
@@ -390,6 +363,7 @@ namespace FootballApp.ViewModels
                         }
                         LoadCountdown();
 
+                        //if first time selecting load all the data about the teams and the game
                         if (countryBefore == null)
                         {
                             LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
@@ -397,6 +371,7 @@ namespace FootballApp.ViewModels
                         }
                         else
                         {
+                            //if the country being sent is a new country load all the info on the teams
                             if (CurrentCountry.fixtureList?.id != countryBefore.fixtureList?.id)
                             {
                                 LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
@@ -420,6 +395,11 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// loads all the head to head data ready for sorting
+        /// </summary>
+        /// <param name="home_id"></param>
+        /// <param name="away_id"></param>
         private async void LoadForm(string home_id, string away_id)
         {
             try
@@ -446,6 +426,10 @@ namespace FootballApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// loads all the stats and events ready for sorting
+        /// </summary>
+        /// <param name="id"></param>
         private async void LoadInGame(string id)
         {
             try
@@ -487,6 +471,7 @@ namespace FootballApp.ViewModels
 
                         foreach (Event @event in eventsList)
                         {
+                            //format the player name so the first name is displayed before the last name
                             int idx = @event.player.LastIndexOf(" ");
                             string playerToAdd;
                             if (idx != -1)
@@ -564,6 +549,7 @@ namespace FootballApp.ViewModels
                     NoEvents = true;
                 }
 
+                //if game is still live show the time that it got updated
                 TimeUpdated = (!FullTime) ?
                     $"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}" :
                     "";
@@ -648,14 +634,17 @@ namespace FootballApp.ViewModels
                     }
                     matches = homeMatches + awayMatches;
 
+                    //simple calculation for getting match odds based off past results
                     HomeOdds = (100 / (100 * ((homeWins + awayLosses) / matches))).ToString("#.##");
                     AwayOdds = (100 / (100 * ((awayWins + homeLosses) / matches))).ToString("#.##");
                     DrawOdds = (100 / (100 * ((homeDraws + awayDraws) / matches))).ToString("#.##");
 
+                    //if any odds return e.g. '.89' make it '0.89'
                     HomeOdds = (HomeOdds[0].ToString() == ".") ? $"0{HomeOdds}" : HomeOdds;
                     AwayOdds = (AwayOdds[0].ToString() == ".") ? $"0{AwayOdds}" : AwayOdds;
                     DrawOdds = (DrawOdds[0].ToString() == ".") ? $"0{DrawOdds}" : DrawOdds;
 
+                    //if odds are not '∞' and it equals e.g. '4' make it '4.0'
                     if (HomeOdds != "∞")
                     {
                         HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
@@ -701,6 +690,9 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                var HomeFormList = new List<Form>();
+                var AwayFormList = new List<Form>();
+
                 foreach (string form in overall_form1)
                 {
                     var formColour = new SolidColorBrush(Colors.AliceBlue);
@@ -763,6 +755,8 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                var HomeMatchList = new List<LastMatch>();
+                var AwayMatchList = new List<LastMatch>();
                 foreach (LastMatch match in lastMatches1)
                 {
                     var matchColour = new SolidColorBrush(Colors.AliceBlue);
@@ -1097,7 +1091,9 @@ namespace FootballApp.ViewModels
 
         private void addStats(SeriesCollection collection, string stat)
         {
+            //adds the home stat
             collection[0].Values.Insert(0, double.Parse(stat.Split(':')[0]));
+            //adds the away stat
             collection[1].Values.Insert(0, double.Parse(stat.Split(':')[1]));
         }
 
