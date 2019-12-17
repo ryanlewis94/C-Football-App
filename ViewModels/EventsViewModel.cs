@@ -422,20 +422,27 @@ namespace FootballApp.ViewModels
 
         private async void LoadForm(string home_id, string away_id)
         {
-            Head2Head = await repository.LoadTeamsH2H(home_id, away_id);
-            if (Head2Head != null)
+            try
             {
-                CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
-                CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
-                NoMatchHistory = true;
+                Head2Head = await repository.LoadTeamsH2H(home_id, away_id);
+                if (Head2Head != null)
+                {
+                    CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
+                    CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
+                    NoMatchHistory = true;
+                }
+                else
+                {
+                    HomeForm = new List<Form>();
+                    AwayForm = new List<Form>();
+                    HomeMatches = new List<LastMatch>();
+                    AwayMatches = new List<LastMatch>();
+                    NoMatchHistory = false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                HomeForm = new List<Form>();
-                AwayForm = new List<Form>();
-                HomeMatches = new List<LastMatch>();
-                AwayMatches = new List<LastMatch>();
-                NoMatchHistory = false;
+                errorHandler.CheckErrorMessage(ex);
             }
         }
 
@@ -458,8 +465,8 @@ namespace FootballApp.ViewModels
             {
                 SortStats(Stats);
             }
-
-            SortEvents(await repository.LoadEvents(id));
+            try { SortEvents(await repository.LoadEvents(id)); }
+            catch (Exception ex) { errorHandler.CheckErrorMessage(ex); }
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ namespace FootballApp.ErrorHandling
 
         public async void CheckErrorMessage(Exception exception)
         {
+            bool TooManyRequests = true;
             switch (exception.Message)
             {
                 case "BadRequest":
@@ -43,12 +44,16 @@ namespace FootballApp.ErrorHandling
                     await metroWindow.ShowMessageAsync($"Error 429 Too Many Requests", "You have sent too many requests, come back later and try again. The app will now close");
                     Application.Current.Shutdown();
                     break;
+                case "TooManyRequests":
+                    await metroWindow.ShowMessageAsync($"Too Many Requests", "You have sent too many requests in a short period of time, wait several seconds until you can use the application again.");
+                    TooManyRequests = false;
+                    break;
                 default:
                     await metroWindow.ShowMessageAsync($"Error: {exception.Message}", exception.ToString());
                     //onsole.WriteLine(exception.Message);
                     break;
             }
-            Messenger.Default.Send("loaded");
+            if (TooManyRequests) Messenger.Default.Send("loaded");
         }
     }
 }

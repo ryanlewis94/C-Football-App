@@ -131,8 +131,13 @@ namespace FootballApp.ViewModels
             get { return _dateSelected; }
             set
             {
+                if (IsProcessing) return;
+                if (IsTooMany)
+                {
+                    errorHandler.CheckErrorMessage(new Exception("TooManyRequests"));
+                    return;
+                }
                 SetProperty(ref _dateSelected, value);
-                IsProcessing = true;
                 InvokedByDateSelection = true;
                 GetFixtures();
                 Messenger.Default.Send("unloaded");
@@ -188,6 +193,19 @@ namespace FootballApp.ViewModels
             set
             {
                 SetProperty(ref _isProcessing, value);
+            }
+        }
+
+        /// <summary>
+        /// checks if too many requests
+        /// </summary>
+        private bool _isTooMany = false;
+        public bool IsTooMany
+        {
+            get { return _isTooMany; }
+            set
+            {
+                SetProperty(ref _isTooMany, value);
             }
         }
 
@@ -253,7 +271,13 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void FinishedProcessing(string obj)
         {
-            if (obj == "loaded") IsProcessing = false;
+            
+            if (obj == "loaded")
+            {
+                IsProcessing = false;
+                return;
+            }
+            if (obj == "TooManyRequests") IsTooMany = true;
         }
 
         /// <summary>
@@ -285,6 +309,8 @@ namespace FootballApp.ViewModels
         private void MatchTimer_Tick(object sender, EventArgs e)
         {
             Messenger.Default.Send("unloaded");
+            Messenger.Default.Send("0");
+            IsTooMany = false;
             InvokedByDateSelection = false;
             CheckDate();
         }
@@ -307,6 +333,7 @@ namespace FootballApp.ViewModels
         private void FixtureTimer_Tick(object sender, EventArgs e)
         {
             Messenger.Default.Send("unloaded");
+            IsTooMany = false;
             InvokedByDateSelection = false;
             InvokedByFixtureTimer = true;
             GetFixtures();
@@ -338,11 +365,11 @@ namespace FootballApp.ViewModels
         private async void CheckDate()
         {
             try
-            { 
-                string[] dateNow = DateTime.Now.ToString().Split(' ');
-                string currentDate = $"{dateNow[0]} 00:00:00";
+            {
+                IsProcessing = true;
+                var todaysDate = DateTime.Parse(DateTime.Now.ToString().Split(' ')[0]);
 
-                MatchList = (DateSelected.ToString() == currentDate) ? 
+                MatchList = (DateSelected == todaysDate) ? 
                     await repository.LoadLive() : 
                     new List<Match>();
                 MatchList = (PastMatchList?.Count != 0) ?
@@ -363,13 +390,13 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                IsProcessing = true;
                 //Load the fixtures from multiple pages
                 int i = 0;
                 FixturePageList = new List<Fixture>();
                 do
                 {
                     i = i + 1;
-
                     FixtureList = await repository.LoadFixture(DateSelected, i);
                     FixturePageList = FixturePageList.Concat(FixtureList).ToList();
 
@@ -382,7 +409,6 @@ namespace FootballApp.ViewModels
                 do
                 {
                     i = i + 1;
-
                     PastMatchList = await repository.LoadPast(DateSelected, i);
                     prevMatches = prevMatches.Concat(PastMatchList).ToList();
 
@@ -660,6 +686,11 @@ namespace FootballApp.ViewModels
         private void SelectMatch(object obj)
         {
             if (IsProcessing) return;
+            if (IsTooMany)
+            {
+                errorHandler.CheckErrorMessage(new Exception("TooManyRequests"));
+                return;
+            }
             try
             {
                 if (SelectedCountry != null)

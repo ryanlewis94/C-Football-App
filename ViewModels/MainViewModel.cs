@@ -1,4 +1,6 @@
 ﻿using FootballApp.Utility;
+using System;
+using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
@@ -44,6 +46,14 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _matchData, value); }
         }
 
+        private int _requestCount = 0;
+
+        public int RequestCount
+        {
+            get { return _requestCount; }
+            set { SetProperty(ref _requestCount, value); }
+        }
+
         #endregion
 
         public MainViewModel()
@@ -85,6 +95,16 @@ namespace FootballApp.ViewModels
                     break;
                 case "leagueUnavailable":
                     LeagueSelectedBool = false;
+                    break;
+                case "1":
+                    RequestCount++;
+                    if (RequestCount > 30)
+                    {
+                        Messenger.Default.Send("TooManyRequests");
+                    }
+                    break;
+                case "0":
+                    RequestCount = 0;
                     break;
                 default:
                     break;

@@ -36,7 +36,7 @@
                                     <lvc:Axis ShowLabels="False"/>
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Labels="{Binding Labels}" 
+                                    <lvc:Axis Labels="{Binding Labels}"
                                               Foreground="Black" 
                                               MaxValue="{Binding MaxValue}"/>
                                 </lvc:CartesianChart.AxisY>

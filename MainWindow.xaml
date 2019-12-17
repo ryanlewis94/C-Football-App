@@ -26,20 +26,24 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"  MinWidth="600"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <!--Moveable Divider-->
         <sdk:GridSplitter Grid.Column="1" Width="4" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
 
+        <!--Country List-->
         <uc:CountryControl Grid.Column="0"/>
-
+        
+        <!--Tabbed Match View-->
         <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding TabIndex, Mode=TwoWay}" 
                                                    Grid.Column="2"
                                                    controls:TabControlHelper.IsUnderlined="True"
                                                    controls:TabControlHelper.Transition="Down"
                                                    Padding="0,50,0,0">
+            <!--Event Tab-->
             <TabItem Header="LiveScores"
                      Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:EventControl/>
             </TabItem>
-            
+            <!--League Table Tab-->
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>
@@ -51,7 +55,5 @@
               Visibility="{Binding LoadingData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
             <uc:LoadingOverlayView/>
         </Grid>
-        
-        
     </Grid>
 </controls:MetroWindow>
