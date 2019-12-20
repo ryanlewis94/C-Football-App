@@ -2,6 +2,9 @@
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -10,6 +13,62 @@ namespace FootballApp.Api
     public class Football : IFootball
     {
         private ConfigSettings Api = new ConfigSettings();
+
+        public List<LeagueLogo> LoadLeagueLogos()
+        {
+            var fileName = string.Format(@"..\..\Resources\league_list.xlsx");
+            var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand("select * from [Leagues$]", connection);
+                using (OleDbDataReader dr = command.ExecuteReader())
+                {
+                    var leagues = new List<LeagueLogo>();
+                    while (dr.Read())
+                    {
+                        var logoToAdd = new LeagueLogo
+                        {
+                            name = dr[1].ToString(),
+                            country_name = dr[3].ToString(),
+                            logo = dr[8].ToString(),
+                            flag = dr[9].ToString()
+                        };
+                        leagues.Add(logoToAdd);
+                    }
+                    return leagues;
+                }
+            }
+        }
+
+        public List<Logo> LoadLogos()
+        {
+            var fileName = string.Format(@"..\..\Resources\team_list.xlsx");
+            var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand("select * from [Teams$]", connection);
+                using (OleDbDataReader dr = command.ExecuteReader())
+                {
+                    var teams = new List<Logo>();
+                    while (dr.Read())
+                    {
+                        var logoToAdd = new Logo
+                        {
+                            team_name = dr[1].ToString(),
+                            logo = dr[3].ToString()
+                        };
+                        teams.Add(logoToAdd);
+                    }
+                    return teams;
+                }
+            }
+        }
+
+
 
         public async Task<List<Country>> LoadCountry()
         {
@@ -21,7 +80,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model country = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return country?.data?.country;
                 }
@@ -42,7 +101,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model federation = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return federation?.data?.federation;
                 }
@@ -63,7 +122,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model competition = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return competition?.data?.competition;
                 }
@@ -84,7 +143,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return match?.data?.match;
                 }
@@ -105,7 +164,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model table = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return table?.data?.table;
                 }
@@ -126,7 +185,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model @event = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return @event?.data?.@event;
                     
@@ -153,7 +212,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model fixture = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return fixture?.data?.fixtures;
                 }
@@ -178,7 +237,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return match?.data?.match;
                 }
@@ -202,7 +261,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model match = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return match?.data?.match;
                 }
@@ -223,7 +282,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model h2h = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return h2h?.data;
                 }
@@ -244,7 +303,7 @@ namespace FootballApp.Api
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
                     Model h2h = stream.ReadAndDeserializeFromJson<Model>();
-                    Messenger.Default.Send("1");
+                    Messenger.Default.Send("request");
 
                     return h2h?.data;
                 }

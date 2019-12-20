@@ -8,15 +8,20 @@
              d:DesignHeight="600" d:DesignWidth="400"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=StandingsViewModel}">
     <Grid>
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,-25,0,0">
-            <TextBlock Text="{Binding CurrentCountry.name}" FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding CurrentCountry.leagueName}" FontSize="24" FontWeight="SemiBold"/>
-        </StackPanel>
-        <!--League Table-->
-        <Border Background="LightGray" Padding="20" Margin="0,25,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Source="{Binding CurrentCountry.logo}"
+               Width="75"
+               HorizontalAlignment="Center"
+               Margin="0,-40,0,0"/>
+
+            <!--League Table-->
+        <Border Background="LightGray" 
+                Padding="20" 
+                Margin="0,15,0,0"
+                Grid.Row="1">
             <DataGrid ItemsSource="{Binding StandingsList}"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"
@@ -42,7 +47,18 @@
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="#" Binding="{Binding rank}"/>
-                    <DataGridTextColumn Header="team" Binding="{Binding name}"/>
+                    <DataGridTemplateColumn Header="team">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding logo}"
+                                           Width="35"/>
+                                    <TextBlock Text="{Binding name}" 
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="mp" Binding="{Binding matches}"/>
                     <DataGridTextColumn Header="w" Binding="{Binding won}"/>
                     <DataGridTextColumn Header="d" Binding="{Binding drawn}"/>

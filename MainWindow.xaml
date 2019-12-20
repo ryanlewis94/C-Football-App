@@ -2,7 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:uc="clr-namespace:FootballApp.Controls"
@@ -17,7 +16,31 @@
         TitleCaps="False"
         GlowBrush="{DynamicResource AccentColorBrush}"
         Icon="/Resources/football-2-48.ico">
-    <Grid>
+    <DockPanel>
+        <Border BorderBrush="Black" 
+                BorderThickness="1" 
+                DockPanel.Dock="Bottom">
+            <StatusBar>
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="8.5*"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Matches Loaded: "/>
+                        <TextBlock Text="{Binding MatchCount}"/>
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
+        </Border>
+
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -56,4 +79,5 @@
             <uc:LoadingOverlayView/>
         </Grid>
     </Grid>
+    </DockPanel>
 </controls:MetroWindow>

@@ -9,13 +9,6 @@
     <StackPanel DataContext="{Binding CurrentCountry}"
                 Margin="0,0,0,10"
                 Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,40">
-            <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
-        </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4*" />
@@ -25,9 +18,19 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Image Source="{Binding logo}" 
+                   Width="85"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.ColumnSpan="3"/>
+            <Image Source="{Binding matchList.home_logo}"
+                   Width="100"
+                   Margin="5"/>
             <Border BorderBrush="Black"
-                    BorderThickness="0,0,1,0">
+                    BorderThickness="0,0,1,0"
+                    Grid.Row="1">
                 <TextBlock Text="{Binding matchList.home_name}"
                            FontSize="24"
                            FontWeight="SemiBold"
@@ -35,8 +38,8 @@
                            TextAlignment="Center"
                            VerticalAlignment="Center"/>
             </Border>
-
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="1"
+                        Grid.Row="1">
                 <TextBlock Text="{Binding matchList.score}"
                            FontWeight="SemiBold" 
                            FontSize="24"
@@ -47,10 +50,14 @@
                            TextAlignment="Center"
                            Foreground="Red"/>
             </StackPanel>
-
+            <Image Source="{Binding matchList.away_logo}"
+                   Grid.Column="2"
+                   Width="100"
+                   Margin="5"/>
             <Border BorderBrush="Black"
                     BorderThickness="1,0,0,0"
-                    Grid.Column="2">
+                    Grid.Column="2"
+                    Grid.Row="1">
                 <TextBlock Text="{Binding matchList.away_name}"
                            FontSize="24"
                            FontWeight="SemiBold"
@@ -67,7 +74,7 @@
                        VerticalAlignment="Top"
                        FontSize="12"/>
             <!--Current Form-->
-            <StackPanel Grid.Row="1"
+            <StackPanel Grid.Row="2"
                         HorizontalAlignment="Stretch">
                 <ListBox IsHitTestVisible="False"
                          Margin="0,10"
@@ -98,7 +105,7 @@
                           BorderBrush="Gray" 
                           Margin="5,0,0,0"
                           IsExpanded="{Binding IsExpanded, ElementName=MatchAwayExpander}"
-                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                     <ListView ItemsSource="{Binding DataContext.HomeMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                               IsHitTestVisible="False"
                               BorderThickness="0">
@@ -139,7 +146,7 @@
                     </ListView>
                 </Expander>
             </StackPanel>
-            <StackPanel Grid.Row="1"
+            <StackPanel Grid.Row="2"
                         Grid.Column="2"
                         HorizontalAlignment="Stretch">
                 <ListBox Margin="0,10"
@@ -171,7 +178,7 @@
                           Background="WhiteSmoke" 
                           BorderBrush="Gray" 
                           Margin="0,0,5,0"
-                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                     <ListView ItemsSource="{Binding DataContext.AwayMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                               IsHitTestVisible="False"
                               BorderThickness="0">

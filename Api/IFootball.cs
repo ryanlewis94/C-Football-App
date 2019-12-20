@@ -1,6 +1,7 @@
 ﻿using FootballApp.Classes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -10,6 +11,8 @@ namespace FootballApp.Api
 {
     public interface IFootball
     {
+        List<LeagueLogo> LoadLeagueLogos();
+        List<Logo> LoadLogos();
         Task<List<Country>> LoadCountry();
         Task<List<Country>> LoadFederation();
         Task<List<Competition>> LoadCompetition();

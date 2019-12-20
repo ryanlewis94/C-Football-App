@@ -57,6 +57,17 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _requestCount, value); }
         }
 
+        /// <summary>
+        /// keeps track of how many matches are loaded
+        /// </summary>
+        private int _matchCount = 0;
+
+        public int MatchCount
+        {
+            get { return _matchCount; }
+            set { SetProperty(ref _matchCount, value); }
+        }
+
         #endregion
 
         public MainViewModel()
@@ -100,7 +111,7 @@ namespace FootballApp.ViewModels
                     LeagueSelectedBool = false;
                     break;
                     //updates the request count, sends message if too many requests have been received
-                case "1":
+                case "request":
                     RequestCount++;
                     if (RequestCount > 30)
                     {
@@ -108,10 +119,15 @@ namespace FootballApp.ViewModels
                     }
                     break;
                     //resets the request count every 60 seconds
-                case "0":
+                case "resetRequest":
                     RequestCount = 0;
                     break;
                 default:
+                    int i = 0;
+                    if (int.TryParse(dataLoaded, out i))
+                    {
+                        MatchCount = i;
+                    }
                     break;
             }
         }

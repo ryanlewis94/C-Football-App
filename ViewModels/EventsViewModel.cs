@@ -296,8 +296,6 @@ namespace FootballApp.ViewModels
                 if (country != null)
                 {
                     NoMatchSelected = false;
-                    HomeEventsList?.Clear();
-                    AwayEventsList?.Clear();
                     //if there was previously a country selected keep it in memory to compare against the newly selected country
                     var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
                     CurrentCountry = null;
@@ -409,7 +407,6 @@ namespace FootballApp.ViewModels
                 {
                     CheckForm(Head2Head.team1.overall_form, Head2Head.team2.overall_form);
                     CheckLastSix(Head2Head.team1_last_6, Head2Head.team2_last_6, Head2Head.team1.name, Head2Head.team2.name);
-                    NoMatchHistory = true;
                 }
                 else
                 {
@@ -757,95 +754,113 @@ namespace FootballApp.ViewModels
             {
                 var HomeMatchList = new List<LastMatch>();
                 var AwayMatchList = new List<LastMatch>();
-                foreach (LastMatch match in lastMatches1)
+
+                if (lastMatches1.Count != 0)
                 {
-                    var matchColour = new SolidColorBrush(Colors.AliceBlue);
-
-                    if (match.score != "? - ?")
+                    foreach (LastMatch match in lastMatches1)
                     {
-                        var homeGoals = int.Parse(match.score.Split('-')[0]);
-                        var awayGoals = int.Parse(match.score.Split('-')[1]);
+                        var matchColour = new SolidColorBrush(Colors.AliceBlue);
 
-                        if (match.home_name == homeName)
+                        if (match.score != "? - ?")
                         {
-                            if (homeGoals > awayGoals)
+                            var homeGoals = int.Parse(match.score.Split('-')[0]);
+                            var awayGoals = int.Parse(match.score.Split('-')[1]);
+
+                            if (match.home_name == homeName)
                             {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                                if (homeGoals > awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                                }
+                                else if (homeGoals < awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                                }
                             }
-                            else if (homeGoals < awayGoals)
+                            else if (match.away_name == homeName)
                             {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                                if (homeGoals > awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                                }
+                                else if (homeGoals < awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                                }
                             }
                         }
-                        else if (match.away_name == homeName)
+
+                        HomeMatchList.Add(new LastMatch
                         {
-                            if (homeGoals > awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                            }
-                            else if (homeGoals < awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                            }
-                        }
+                            id = match.id,
+                            date = match.date,
+                            home_name = match.home_name,
+                            away_name = match.away_name,
+                            score = match.score,
+                            scheduled = match.scheduled,
+                            color = matchColour
+                        });
                     }
-
-                    HomeMatchList.Add(new LastMatch
+                    NoMatchHistory = true;
+                }
+                else
+                {
+                    NoMatchHistory = false;
+                }
+                
+                if (lastMatches2.Count != 0)
+                {
+                    foreach (LastMatch match in lastMatches2)
                     {
-                        id = match.id,
-                        date = match.date,
-                        home_name = match.home_name,
-                        away_name = match.away_name,
-                        score = match.score,
-                        scheduled = match.scheduled,
-                        color = matchColour
-                    });
+                        var matchColour = new SolidColorBrush(Colors.AliceBlue);
+
+                        if (match.score != "? - ?")
+                        {
+                            var homeGoals = int.Parse(match.score.Split('-')[0]);
+                            var awayGoals = int.Parse(match.score.Split('-')[1]);
+
+                            if (match.home_name == awayName)
+                            {
+                                if (homeGoals > awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                                }
+                                else if (homeGoals < awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                                }
+                            }
+                            else if (match.away_name == awayName)
+                            {
+                                if (homeGoals > awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
+                                }
+                                else if (homeGoals < awayGoals)
+                                {
+                                    matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
+                                }
+                            }
+                        }
+
+                        AwayMatchList.Add(new LastMatch
+                        {
+                            id = match.id,
+                            date = match.date,
+                            home_name = match.home_name,
+                            away_name = match.away_name,
+                            score = match.score,
+                            scheduled = match.scheduled,
+                            color = matchColour
+                        });
+                    }
+                    NoMatchHistory = true;
+                }
+                else
+                {
+                    NoMatchHistory = false;
                 }
 
-                foreach (LastMatch match in lastMatches2)
-                {
-                    var matchColour = new SolidColorBrush(Colors.AliceBlue);
-
-                    if (match.score != "? - ?")
-                    {
-                        var homeGoals = int.Parse(match.score.Split('-')[0]);
-                        var awayGoals = int.Parse(match.score.Split('-')[1]);
-
-                        if (match.home_name == awayName)
-                        {
-                            if (homeGoals > awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                            }
-                            else if (homeGoals < awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                            }
-                        }
-                        else if (match.away_name == awayName)
-                        {
-                            if (homeGoals > awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 255, 0, 0));
-                            }
-                            else if (homeGoals < awayGoals)
-                            {
-                                matchColour = new SolidColorBrush(Color.FromArgb(85, 0, 205, 0));
-                            }
-                        }
-                    }
-
-                    AwayMatchList.Add(new LastMatch
-                    {
-                        id = match.id,
-                        date = match.date,
-                        home_name = match.home_name,
-                        away_name = match.away_name,
-                        score = match.score,
-                        scheduled = match.scheduled,
-                        color = matchColour
-                    });
-                }
                 HomeMatches = HomeMatchList;
                 AwayMatches = AwayMatchList;
             }

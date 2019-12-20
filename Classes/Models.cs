@@ -7,6 +7,21 @@ using System.Windows.Media;
 
 namespace FootballApp.Classes
 {
+
+    public class Logo
+    {
+        public string team_name { get; set; }
+        public string logo { get; set; }
+    }
+
+    public class LeagueLogo
+    {
+        public string name { get; set; }
+        public string country_name { get; set; }
+        public string logo { get; set; }
+        public string flag { get; set; }
+    }
+
     public class Country
     {
         public string index { get; set; }
@@ -17,7 +32,7 @@ namespace FootballApp.Classes
         public string leagueName { get; set; }
         public Match matchList { get; set; }
         public Fixture fixtureList { get; set; }
-        public string flag { get; set; }
+        public string logo { get; set; }
     }
     public class League
     {
@@ -58,6 +73,8 @@ namespace FootballApp.Classes
         public string events { get; set; }
         public string league_name { get; set; }
         public string competition_name { get; set; }
+        public string home_logo { get; set; }
+        public string away_logo { get; set; }
     }
 
     public class Table
@@ -77,6 +94,7 @@ namespace FootballApp.Classes
         public string team_id { get; set; }
         public string competition_id { get; set; }
         public bool State { get; set; }
+        public string logo { get; set; }
     }
 
     public class Event
@@ -101,6 +119,8 @@ namespace FootballApp.Classes
         public string away_name { get; set; }
         public string league_id { get; set; }
         public string competition_id { get; set; }
+        public string home_logo { get; set; }
+        public string away_logo { get; set; }
     }
 
     public class Team

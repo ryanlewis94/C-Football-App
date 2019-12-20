@@ -23,6 +23,25 @@ namespace FootballApp.ViewModels
         #region Properties
 
         /// <summary>
+        /// Lists for storing links to all the logos
+        /// </summary>
+        private List<Logo> _logoList;
+
+        public List<Logo> LogoList
+        {
+            get { return _logoList; }
+            set { SetProperty(ref _logoList, value); }
+        }
+
+        private List<LeagueLogo> _leagueLogoList;
+
+        public List<LeagueLogo> LeagueLogoList
+        {
+            get { return _leagueLogoList; }
+            set { SetProperty(ref _leagueLogoList, value); }
+        }
+
+        /// <summary>
         /// Lists for displaying Countries and sorting them when user searches
         /// </summary>
         private List<Country> _mainList;
@@ -30,7 +49,14 @@ namespace FootballApp.ViewModels
         public List<Country> MainList
         {
             get { return _mainList; }
-            set { SetProperty(ref _mainList, value); }
+            set 
+            { 
+                SetProperty(ref _mainList, value);
+                if (_mainList != null)
+                {
+                    Messenger.Default.Send(_mainList.Count.ToString());
+                }
+            }
         }
 
         private List<Country> _originalList;
@@ -257,11 +283,8 @@ namespace FootballApp.ViewModels
         private void FinishedProcessing(string obj)
         {
             
-            if (obj == "loaded")
-            {
-                IsProcessing = false;
-                return;
-            }
+            if (obj == "loaded") IsProcessing = false;
+            if (obj == "unloaded") IsProcessing = true;
             if (obj == "TooManyRequests") IsTooMany = true;
         }
 
@@ -293,11 +316,11 @@ namespace FootballApp.ViewModels
 
         private void MatchTimer_Tick(object sender, EventArgs e)
         {
+            if (IsProcessing) return;
             Messenger.Default.Send("unloaded");
             //reset the request counter
-            Messenger.Default.Send("0");
+            Messenger.Default.Send("resetRequest");
             IsTooMany = false;
-
             InvokedByDateSelection = false;
             CheckDate();
         }
@@ -312,13 +335,14 @@ namespace FootballApp.ViewModels
                 FixtureTimer.Stop();
             }
             FixtureTimer = new DispatcherTimer();
-            FixtureTimer.Interval = TimeSpan.FromSeconds(300);
+            FixtureTimer.Interval = TimeSpan.FromSeconds(210);
             FixtureTimer.Tick += FixtureTimer_Tick;
             FixtureTimer.Start();
         }
 
         private void FixtureTimer_Tick(object sender, EventArgs e)
         {
+            if (IsProcessing) return;
             Messenger.Default.Send("unloaded");
             IsTooMany = false;
             InvokedByDateSelection = false;
@@ -333,6 +357,8 @@ namespace FootballApp.ViewModels
         {
             try
             {
+                LogoList = repository.LoadLogos();
+                LeagueLogoList = repository.LoadLeagueLogos();
                 FederationList = await repository.LoadFederation();
                 CompetitionList = await repository.LoadCompetition();
                 CompetitionList = CompetitionList.OrderBy(c => c.id).ToList();
@@ -353,7 +379,6 @@ namespace FootballApp.ViewModels
         {
             try
             {
-                IsProcessing = true;
                 var todaysDate = DateTime.Parse(DateTime.Now.ToString().Split(' ')[0]);
 
                 MatchList = (DateSelected == todaysDate) ? 
@@ -377,30 +402,44 @@ namespace FootballApp.ViewModels
         {
             try
             {
-                IsProcessing = true;
-                //Load the fixtures from multiple pages
+                var todaysDate = DateTime.Parse(DateTime.Now.ToString().Split(' ')[0]);
                 int i = 0;
-                var FixturePageList = new List<Fixture>();
-                do
+                //Load the fixtures from multiple pages if the date selected is today or a future date
+                if (DateSelected >= todaysDate)
                 {
-                    i = i + 1;
-                    FixtureList = await repository.LoadFixture(DateSelected, i);
-                    FixturePageList = FixturePageList.Concat(FixtureList).ToList();
+                    var FixturePageList = new List<Fixture>();
+                    do
+                    {
+                        i = i + 1;
+                        FixtureList = await repository.LoadFixture(DateSelected, i);
+                        FixturePageList = FixturePageList.Concat(FixtureList).ToList();
 
-                } while (FixtureList.Count == 30);
-                FixtureList = FixturePageList;
-
-                //Load the past matches from multiple pages
-                i = 0;
-                var prevMatches = new List<Match>();
-                do
+                    } while (FixtureList.Count == 30);
+                    FixtureList = FixturePageList;
+                }
+                else
                 {
-                    i = i + 1;
-                    PastMatchList = await repository.LoadPast(DateSelected, i);
-                    prevMatches = prevMatches.Concat(PastMatchList).ToList();
+                    FixtureList = new List<Fixture>();
+                }
 
-                } while (PastMatchList.Count == 30);
-                PastMatchList = prevMatches;
+                //Load the past matches from multiple pages if the date selected is today or a day in the past
+                if (DateSelected <= todaysDate)
+                {
+                    i = 0;
+                    var prevMatches = new List<Match>();
+                    do
+                    {
+                        i = i + 1;
+                        PastMatchList = await repository.LoadPast(DateSelected, i);
+                        prevMatches = prevMatches.Concat(PastMatchList).ToList();
+
+                    } while (PastMatchList.Count == 30);
+                    PastMatchList = prevMatches;
+                }
+                else
+                {
+                    PastMatchList = new List<Match>();
+                }
 
                 //if countries haven't been loaded before
                 if (!CountriesLoaded)
@@ -477,7 +516,7 @@ namespace FootballApp.ViewModels
             }
             finally
             {
-                if (InvokedByDateSelection || SelectedCountry == null)
+                if (InvokedByDateSelection || CurrentCountry == null)
                 {
                     Messenger.Default.Send("loaded");
                 }
@@ -485,7 +524,6 @@ namespace FootballApp.ViewModels
 
             try
             {
-                if (IsProcessing) return;
                 //When recreating the list check if the user had selected a match and keep it selected
                 if (CurrentCountry != null)
                 {
@@ -501,7 +539,6 @@ namespace FootballApp.ViewModels
                                 SelectedCountry = country;
                                 CurrentCountry = country;
                                 if (InvokedByDateSelection) return;
-                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
@@ -514,7 +551,6 @@ namespace FootballApp.ViewModels
                                 SelectedCountry = country;
                                 CurrentCountry = country;
                                 if (InvokedByDateSelection) return;
-                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
@@ -528,7 +564,6 @@ namespace FootballApp.ViewModels
                                 SelectedCountry = country;
                                 CurrentCountry = country;
                                 if (InvokedByDateSelection) return;
-                                IsProcessing = true;
                                 Messenger.Default.Send(SelectedCountry);
                                 break;
                             }
@@ -567,7 +602,6 @@ namespace FootballApp.ViewModels
                         }
                         SelectedCountry = CurrentCountry;
                         if (InvokedByDateSelection) return;
-                        IsProcessing = true;
                         Messenger.Default.Send(SelectedCountry);
                     }
                 }
@@ -591,17 +625,46 @@ namespace FootballApp.ViewModels
         private void CheckForFixturesAndMatches(Country country, Competition competition, Country federation)
         {
             try
-            {
+            { 
+                var countryName = (country != null) ? country.name : federation.name;
+                var leagueLogo = $"{countryName} - {competition.name}";
+                foreach (LeagueLogo logo in LeagueLogoList)
+                {
+                    if (countryName.ToLower() == logo.country_name.ToLower() &&
+                        competition.name.ToLower() == logo.name.ToLower())
+                    {
+                        leagueLogo = logo.logo;
+                    }
+                }
                 foreach (Match match in MatchList)
                 {
                     if (match.competition_id == competition.id.ToString())
                     {
+
                         //if the match is updated properly
                         if (!match.score.Contains("?"))
                         {
                             //get rid of any errors in the team names
                             match.home_name = match.home_name.Replace("amp;", "");
                             match.away_name = match.away_name.Replace("amp;", "");
+
+                            foreach (var logo in LogoList)
+                            {
+                                if (match.home_name.ToLower() == logo.team_name.ToLower() ||
+                                    match.home_name.Contains(logo.team_name) ||
+                                    $"FC {match.home_name}".Contains(logo.team_name) ||
+                                    $"{match.home_name} FC".Contains(logo.team_name))
+                                {
+                                    match.home_logo = logo.logo;
+                                }
+                                if (match.away_name.ToLower() == logo.team_name.ToLower() ||
+                                    match.away_name.Contains(logo.team_name) ||
+                                    $"FC {match.away_name}".Contains(logo.team_name) ||
+                                    $"{match.away_name} FC".Contains(logo.team_name))
+                                {
+                                    match.away_logo = logo.logo;
+                                }
+                            }
 
                             var countryToAdd = new Country
                             {
@@ -613,8 +676,7 @@ namespace FootballApp.ViewModels
                                 leagueName = competition.name,
                                 matchList = match,
                                 fixtureList = null,
-                                flag = (competition.countries.Count != 0) ? 
-                                    competition.countries[0].flag : null
+                                logo = leagueLogo
                             };
 
                             SortCountryList.Add(countryToAdd);
@@ -625,6 +687,27 @@ namespace FootballApp.ViewModels
                 {
                     if (fixture.competition_id == competition.id.ToString())
                     {
+                        string homeLogo = "";
+                        string awayLogo = "";
+
+                        foreach (var logo in LogoList)
+                        {
+                            if (fixture.home_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
+                                fixture.home_name.Replace("amp;", "").Contains(logo.team_name) ||
+                                $"FC {fixture.home_name.Replace("amp;", "")}".Contains(logo.team_name) ||
+                                $"{fixture.home_name.Replace("amp;", "")} FC".Contains(logo.team_name))
+                            {
+                                homeLogo = logo.logo;
+                            }
+                            if (fixture.away_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
+                                fixture.away_name.Replace("amp;", "").Contains(logo.team_name) ||
+                                $"FC {fixture.away_name.Replace("amp;", "")}".Contains(logo.team_name) ||
+                                $"{fixture.away_name.Replace("amp;", "")} FC".Contains(logo.team_name))
+                            {
+                                awayLogo = logo.logo;
+                            }
+                        }
+
                         string[] splitTime = fixture.time.Split(':');
                         //change time to correct time zome
                         //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
@@ -650,7 +733,9 @@ namespace FootballApp.ViewModels
                             home_name = fixture.home_name.Replace("amp;", ""),
                             away_name = fixture.away_name.Replace("amp;", ""),
                             league_id = fixture.league_id,
-                            competition_id = fixture.competition_id
+                            competition_id = fixture.competition_id,
+                            home_logo = homeLogo,
+                            away_logo = awayLogo
                         };
 
                         var countryToAdd = new Country
@@ -663,8 +748,7 @@ namespace FootballApp.ViewModels
                             leagueName = competition.name,
                             matchList = null,
                             fixtureList = fixtureToAdd,
-                            flag = (competition.countries.Count != 0) ?
-                                competition.countries[0].flag : null
+                            logo = leagueLogo
                         };
 
                         SortCountryList.Add(countryToAdd);
@@ -700,7 +784,6 @@ namespace FootballApp.ViewModels
                         //if the selected country is different to the country already open then start loading the country info
                         if (SelectedCountry != CurrentCountry)
                         {
-                            IsProcessing = true;
                             InvokedByDateSelection = false;
                             Messenger.Default.Send("unloaded");
                             Messenger.Default.Send(SelectedCountry);

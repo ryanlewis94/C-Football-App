@@ -14,19 +14,19 @@
         <KeyBinding Command="{Binding MatchSelectedCommand}" 
 		            Key="Return" />
     </UserControl.InputBindings>
-    
+
     <!--Grouped Collection-->
     <UserControl.Resources>
         <CollectionViewSource x:Key="GroupedLeagues"
                               IsLiveGroupingRequested="True"
                               Source="{Binding MainList}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="name" />
+                <PropertyGroupDescription PropertyName="name"/>
                 <PropertyGroupDescription PropertyName="leagueName" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"></RowDefinition>
@@ -63,7 +63,7 @@
                 </DatePicker.Resources>
             </DatePicker>
         </Grid>
-        
+
         <!--Grouped List-->
         <ListView DataContext="{StaticResource GroupedLeagues}" 
                   ItemsSource="{Binding}"

@@ -113,6 +113,21 @@ namespace FootballApp.ViewModels
                             groupedLeague = true;
                             break;
                         }
+                        //load the team logos
+                        foreach (Logo logo in repository.LoadLogos())
+                        {
+                            if (team.name.ToLower() == logo.team_name.ToLower())
+                            {
+                                team.logo = logo.logo;
+                                break;
+                            }
+                            if (team.name.Contains(logo.team_name) ||
+                                $"FC {team.name}".Contains(logo.team_name) ||
+                                $"{team.name} FC".Contains(logo.team_name))
+                            {
+                                team.logo = logo.logo;
+                            }
+                        }
                     }
 
                     //if standings for a cup group then sort and group them by their group

@@ -9,13 +9,6 @@
     <StackPanel DataContext="{Binding CurrentCountry}"
                 Margin="0,0,0,10"
                 Visibility="{Binding DataContext.FixtureSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,40">
-            <TextBlock Text="{Binding name}" FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text=" - " FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding leagueName}" FontSize="24" FontWeight="SemiBold"/>
-        </StackPanel>
         <Grid Margin="0,0,0,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3.75*" />
@@ -25,9 +18,19 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Image Grid.ColumnSpan="3" 
+                   Source="{Binding logo}"
+                   Width="85"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+            <Image Source="{Binding fixtureList.home_logo}"
+                   Width="100"
+                   Margin="5"/>
             <Border BorderBrush="Black"
-                    BorderThickness="0,0,1,0">
+                    BorderThickness="0,0,1,0"
+                    Grid.Row="1">
                 <TextBlock Text="{Binding fixtureList.home_name}"
                            FontSize="24"
                            FontWeight="SemiBold"
@@ -40,10 +43,16 @@
                        FontWeight="Bold"
                        FontSize="16"
                        TextAlignment="Center"
-                       VerticalAlignment="Center"/>
+                       VerticalAlignment="Center"
+                       Grid.Row="1"/>
+            <Image Source="{Binding fixtureList.away_logo}"
+                   Grid.Column="2"
+                   Width="100"
+                   Margin="5"/>
             <Border BorderBrush="Black"
                     BorderThickness="1,0,0,0"
-                    Grid.Column="2">
+                    Grid.Column="2"
+                    Grid.Row="1">
                 <TextBlock Text="{Binding fixtureList.away_name}"
                            FontSize="24"
                            FontWeight="SemiBold"
@@ -52,7 +61,7 @@
                            VerticalAlignment="Center"/>
             </Border>
             <!--Current Form-->
-            <StackPanel Grid.Row="1"
+            <StackPanel Grid.Row="2"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Stretch">
                 <ListBox IsHitTestVisible="False"
@@ -84,7 +93,7 @@
                           BorderBrush="Gray" 
                           Margin="5,0,5,0"
                           IsExpanded="{Binding IsExpanded, ElementName=FixtureAwayExpander}"
-                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                     <ListView ItemsSource="{Binding DataContext.HomeMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                               IsHitTestVisible="False"
                               BorderThickness="0">
@@ -126,7 +135,7 @@
                 </Expander>
             </StackPanel>
 
-            <StackPanel Grid.Row="1"
+            <StackPanel Grid.Row="2"
                         Grid.Column="2"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Stretch">
@@ -159,7 +168,7 @@
                           Background="WhiteSmoke" 
                           BorderBrush="Gray" 
                           Margin="5,0,5,0"
-                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          Visibility="{Binding DataContext.NoMatchHistory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                     <ListView ItemsSource="{Binding DataContext.AwayMatches, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                               IsHitTestVisible="False"
                               BorderThickness="0">
@@ -211,7 +220,7 @@
                     Padding="10"
                     Margin="0,25,0,0"
                     Grid.Column="1"
-                    Grid.Row="1">
+                    Grid.Row="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

@@ -169,6 +169,7 @@
       <DependentUpon>WelcomeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorHandling\ErrorHandler.cs" />
+    <Compile Include="Utility\PercentageConverter.cs" />
     <Compile Include="Utility\StringCaseIgnore.cs" />
     <Compile Include="Commands\CustomCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
@@ -254,6 +255,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\team_list.xlsx" />
     <Resource Include="Resources\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
   <ItemGroup>
