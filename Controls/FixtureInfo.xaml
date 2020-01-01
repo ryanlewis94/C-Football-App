@@ -22,7 +22,7 @@
             </Grid.RowDefinitions>
             <Image Grid.ColumnSpan="3" 
                    Source="{Binding logo}"
-                   Width="85"
+                   Height="90"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
             <Image Source="{Binding fixtureList.home_logo}"

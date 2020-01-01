@@ -1,0 +1,758 @@
+﻿[
+	{
+		"name": " Super Lig",
+		"country_name": "Turkey",
+		"logo": "https://media.api-football.com/leagues/114.png",
+		"flag": "https://media.api-football.com/flags/tr.svg"
+	},
+	{
+		"name": "1a Divisió",
+		"country_name": "Andorra",
+		"logo": "https://media.api-football.com/leagues/444.png",
+		"flag": "https://media.api-football.com/flags/ad.svg"
+	},
+	{
+		"name": "1st Division",
+		"country_name": "Albania",
+		"logo": "https://media.api-football.com/leagues/443.png",
+		"flag": "https://media.api-football.com/flags/al.svg"
+	},
+	{
+		"name": "2e Klasse",
+		"country_name": "Belgium",
+		"logo": "https://media.api-football.com/leagues/173.jpg",
+		"flag": "https://media.api-football.com/flags/be.svg"
+	},
+	{
+		"name": "2nd Bundesliga",
+		"country_name": "Germany",
+		"logo": "https://media.api-football.com/leagues/9.jpg",
+		"flag": "https://media.api-football.com/flags/de.svg"
+	},
+	{
+		"name": "A PFG",
+		"country_name": "Bulgaria",
+		"logo": "https://media.api-football.com/leagues/85.jpg",
+		"flag": "https://media.api-football.com/flags/bg.svg"
+	},
+	{
+		"name": "Africa Cup of Nations",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/194.png",
+		"flag": ""
+	},
+	{
+		"name": "A-League",
+		"country_name": "Australia",
+		"logo": "https://media.api-football.com/leagues/105.png",
+		"flag": "https://media.api-football.com/flags/au.svg"
+	},
+	{
+		"name": "Allsvenskan",
+		"country_name": "Sweden",
+		"logo": "https://media.api-football.com/leagues/291.gif",
+		"flag": "https://media.api-football.com/flags/se.svg"
+	},
+	{
+		"name": "Arabian Gulf League",
+		"country_name": "United-Arab-Emirates",
+		"logo": "https://media.api-football.com/leagues/404.png",
+		"flag": "https://media.api-football.com/flags/ae.svg"
+	},
+	{
+		"name": "Ascenso MX",
+		"country_name": "Mexico",
+		"logo": "https://media.api-football.com/leagues/300.png",
+		"flag": "https://media.api-football.com/flags/mx.svg"
+	},
+	{
+		"name": "Asian Cup",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/195.png",
+		"flag": ""
+	},
+	{
+		"name": "B PFG",
+		"country_name": "Bulgaria",
+		"logo": "https://media.api-football.com/leagues/179.jpeg",
+		"flag": "https://media.api-football.com/flags/bg.svg"
+	},
+	{
+		"name": "Botola Pro",
+		"country_name": "Morocco",
+		"logo": "https://media.api-football.com/leagues/115.png",
+		"flag": "https://media.api-football.com/flags/ma.svg"
+	},
+	{
+		"name": "Brasileiro Women",
+		"country_name": "Brazil",
+		"logo": "https://media.api-football.com/leagues/219.png",
+		"flag": "https://media.api-football.com/flags/br.svg"
+	},
+	{
+		"name": "Bundesliga",
+		"country_name": "Germany",
+		"logo": "https://media.api-football.com/leagues/8.png",
+		"flag": "https://media.api-football.com/flags/de.svg"
+	},
+	{
+		"name": "CAF Champions League",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/936.png",
+		"flag": ""
+	},
+	{
+		"name": "Canadian Championship",
+		"country_name": "Canada",
+		"logo": "https://media.api-football.com/leagues/359.png",
+		"flag": "https://media.api-football.com/flags/ca.svg"
+	},
+	{
+		"name": "Canadian Soccer League",
+		"country_name": "Canada",
+		"logo": "https://media.api-football.com/leagues/460.png",
+		"flag": "https://media.api-football.com/flags/ca.svg"
+	},
+	{
+		"name": "Challenge League",
+		"country_name": "Switzerland",
+		"logo": "https://media.api-football.com/leagues/279.png",
+		"flag": "https://media.api-football.com/flags/ch.svg"
+	},
+	{
+		"name": "Champions League",
+		"country_name": "Europe",
+		"logo": "https://media.api-football.com/leagues/132.png",
+		"flag": ""
+	},
+	{
+		"name": "Championship",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/3.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Championship",
+		"country_name": "Scotland",
+		"logo": "https://media.api-football.com/leagues/170.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "CONMEBOL Libertadores",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/937.png",
+		"flag": ""
+	},
+	{
+		"name": "CONMEBOL Sudamericana",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/935.png",
+		"flag": ""
+	},
+	{
+		"name": "Copa America",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/311.png",
+		"flag": ""
+	},
+	{
+		"name": "Copa Argentina",
+		"country_name": "Argentina",
+		"logo": "https://media.api-football.com/leagues/321.svg",
+		"flag": "https://media.api-football.com/flags/ar.svg"
+	},
+	{
+		"name": "Copa Do Brasil",
+		"country_name": "Brazil",
+		"logo": "https://media.api-football.com/leagues/282.png",
+		"flag": "https://media.api-football.com/flags/br.svg"
+	},
+	{
+		"name": "Coppa Italia",
+		"country_name": "Italy",
+		"logo": "https://media.api-football.com/leagues/198.png",
+		"flag": "https://media.api-football.com/flags/it.svg"
+	},
+	{
+		"name": "DFB Pokal",
+		"country_name": "Germany",
+		"logo": "https://media.api-football.com/leagues/204.png",
+		"flag": "https://media.api-football.com/flags/de.svg"
+	},
+	{
+		"name": "Division 1",
+		"country_name": "Wales",
+		"logo": "https://media.api-football.com/leagues/280.JPG",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Division 1",
+		"country_name": "Iceland",
+		"logo": "https://media.api-football.com/leagues/459.jpg",
+		"flag": "https://media.api-football.com/flags/is.svg"
+	},
+	{
+		"name": "Druga HNL",
+		"country_name": "Croatia",
+		"logo": "https://media.api-football.com/leagues/191.png",
+		"flag": "https://media.api-football.com/flags/hr.svg"
+	},
+	{
+		"name": "Eerste Divisie",
+		"country_name": "Netherlands",
+		"logo": "https://media.api-football.com/leagues/21.png",
+		"flag": "https://media.api-football.com/flags/nl.svg"
+	},
+	{
+		"name": "Ekstraklasa",
+		"country_name": "Poland",
+		"logo": "https://media.api-football.com/leagues/16.png",
+		"flag": "https://media.api-football.com/flags/pl.svg"
+	},
+	{
+		"name": "Eliteserien",
+		"country_name": "Norway",
+		"logo": "https://media.api-football.com/leagues/287.png",
+		"flag": "https://media.api-football.com/flags/no.svg"
+	},
+	{
+		"name": "Eredivisie",
+		"country_name": "Netherlands",
+		"logo": "https://media.api-football.com/leagues/10.png",
+		"flag": "https://media.api-football.com/flags/nl.svg"
+	},
+	{
+		"name": "Eredivisie Women",
+		"country_name": "Netherlands",
+		"logo": "https://media.api-football.com/leagues/234.png",
+		"flag": "https://media.api-football.com/flags/nl.svg"
+	},
+	{
+		"name": "Erste Liga",
+		"country_name": "Austria",
+		"logo": "https://media.api-football.com/leagues/176.png",
+		"flag": "https://media.api-football.com/flags/at.svg"
+	},
+	{
+		"name": "Euro Championship",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/403.png",
+		"flag": ""
+	},
+	{
+		"name": "Europa League",
+		"country_name": "Europe",
+		"logo": "https://media.api-football.com/leagues/137.png",
+		"flag": ""
+	},
+	{
+		"name": "FA WSL",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/225.jpg",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Feminine Division 1",
+		"country_name": "France",
+		"logo": "https://media.api-football.com/leagues/207.png",
+		"flag": "https://media.api-football.com/flags/fr.svg"
+	},
+	{
+		"name": "Football League",
+		"country_name": "Greece",
+		"logo": "https://media.api-football.com/leagues/264.png",
+		"flag": "https://media.api-football.com/flags/gr.svg"
+	},
+	{
+		"name": "Football National League",
+		"country_name": "Russia",
+		"logo": "https://media.api-football.com/leagues/249.png",
+		"flag": "https://media.api-football.com/flags/ru.svg"
+	},
+	{
+		"name": "J. League Div.1",
+		"country_name": "Japan",
+		"logo": "https://media.api-football.com/leagues/283.png",
+		"flag": "https://media.api-football.com/flags/jp.svg"
+	},
+	{
+		"name": "J. League Div.2",
+		"country_name": "Japan",
+		"logo": "https://media.api-football.com/leagues/284.png",
+		"flag": "https://media.api-football.com/flags/jp.svg"
+	},
+	{
+		"name": "Jupiler Pro League",
+		"country_name": "Belgium",
+		"logo": "https://media.api-football.com/leagues/34.png",
+		"flag": "https://media.api-football.com/flags/be.svg"
+	},
+	{
+		"name": "K-League Challenge",
+		"country_name": "South-Korea",
+		"logo": "https://media.api-football.com/leagues/388.png",
+		"flag": "https://media.api-football.com/flags/kr.svg"
+	},
+	{
+		"name": "K-League Classic",
+		"country_name": "South-Korea",
+		"logo": "https://media.api-football.com/leagues/384.png",
+		"flag": "https://media.api-football.com/flags/kr.svg"
+	},
+	{
+		"name": "KNVB Beker",
+		"country_name": "Netherlands",
+		"logo": "https://media.api-football.com/leagues/153.jpg",
+		"flag": "https://media.api-football.com/flags/nl.svg"
+	},
+	{
+		"name": "League 1",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/164.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "League One",
+		"country_name": "China",
+		"logo": "https://media.api-football.com/leagues/360.jpg",
+		"flag": "https://media.api-football.com/flags/cn.svg"
+	},
+	{
+		"name": "League 2",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/167.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Liga 3",
+		"country_name": "Germany",
+		"logo": "https://media.api-football.com/leagues/159.png",
+		"flag": "https://media.api-football.com/flags/de.svg"
+	},
+	{
+		"name": "Liga De Ascenso",
+		"country_name": "Costa-Rica",
+		"logo": "https://media.api-football.com/leagues/255.png",
+		"flag": "https://media.api-football.com/flags/cr.svg"
+	},
+	{
+		"name": "Liga de Honra",
+		"country_name": "Portugal",
+		"logo": "https://media.api-football.com/leagues/12.jpeg",
+		"flag": "https://media.api-football.com/flags/pt.svg"
+	},
+	{
+		"name": "Liga MX",
+		"country_name": "Mexico",
+		"logo": "https://media.api-football.com/leagues/297.png",
+		"flag": "https://media.api-football.com/flags/mx.svg"
+	},
+	{
+		"name": "Liga Nacional de Fútbol",
+		"country_name": "Honduras",
+		"logo": "https://media.api-football.com/leagues/129.png",
+		"flag": "https://media.api-football.com/flags/hn.svg"
+	},
+	{
+		"name": "Ligue 1",
+		"country_name": "France",
+		"logo": "https://media.api-football.com/leagues/4.svg",
+		"flag": "https://media.api-football.com/flags/fr.svg"
+	},
+	{
+		"name": "Ligue 1",
+		"country_name": "Algeria",
+		"logo": "https://media.api-football.com/leagues/99.png",
+		"flag": "https://media.api-football.com/flags/dz.svg"
+	},
+	{
+		"name": "Ligue 2",
+		"country_name": "France",
+		"logo": "https://media.api-football.com/leagues/5.png",
+		"flag": "https://media.api-football.com/flags/fr.svg"
+	},
+	{
+		"name": "Ligue 2",
+		"country_name": "Algeria",
+		"logo": "https://media.api-football.com/leagues/102.png",
+		"flag": "https://media.api-football.com/flags/dz.svg"
+	},
+	{
+		"name": "Ligue Professionnelle 1",
+		"country_name": "Tunisia",
+		"logo": "https://media.api-football.com/leagues/116.png",
+		"flag": "https://media.api-football.com/flags/tn.svg"
+	},
+	{
+		"name": "Major League Soccer",
+		"country_name": "USA",
+		"logo": "https://media.api-football.com/leagues/294.png",
+		"flag": "https://media.api-football.com/flags/us.svg"
+	},
+	{
+		"name": "National",
+		"country_name": "France",
+		"logo": "https://media.api-football.com/leagues/156.png",
+		"flag": "https://media.api-football.com/flags/fr.svg"
+	},
+	{
+		"name": "National Division",
+		"country_name": "Luxembourg",
+		"logo": "https://media.api-football.com/leagues/254.jpg",
+		"flag": "https://media.api-football.com/flags/lu.svg"
+	},
+	{
+		"name": "National League",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/222.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "National Premier Leagues",
+		"country_name": "Australia",
+		"logo": "https://media.api-football.com/leagues/289.png",
+		"flag": "https://media.api-football.com/flags/au.svg"
+	},
+	{
+		"name": "NWSL Women",
+		"country_name": "USA",
+		"logo": "https://media.api-football.com/leagues/432.png",
+		"flag": "https://media.api-football.com/flags/us.svg"
+	},
+	{
+		"name": "OBOS-ligaen",
+		"country_name": "Norway",
+		"logo": "https://media.api-football.com/leagues/288.jpg",
+		"flag": "https://media.api-football.com/flags/no.svg"
+	},
+	{
+		"name": "Pacific Coast Soccer League",
+		"country_name": "Canada",
+		"logo": "https://media.api-football.com/leagues/466.png",
+		"flag": "https://media.api-football.com/flags/ca.svg"
+	},
+	{
+		"name": "Persha Liga",
+		"country_name": "Ukraine",
+		"logo": "https://media.api-football.com/leagues/470.gif",
+		"flag": "https://media.api-football.com/flags/ua.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "Wales",
+		"logo": "https://media.api-football.com/leagues/17.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Premier",
+		"country_name": "Iceland",
+		"logo": "https://media.api-football.com/leagues/362.gif",
+		"flag": "https://media.api-football.com/flags/is.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "England",
+		"logo": "https://media.api-football.com/leagues/2.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "Egypt",
+		"logo": "https://media.api-football.com/leagues/126.png",
+		"flag": "https://media.api-football.com/flags/eg.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "Russia",
+		"logo": "https://media.api-football.com/leagues/135.png",
+		"flag": "https://media.api-football.com/flags/ru.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "Kenya",
+		"logo": "https://media.api-football.com/leagues/328.png",
+		"flag": "https://media.api-football.com/flags/ke.svg"
+	},
+	{
+		"name": "Premier League",
+		"country_name": "Malaysia",
+		"logo": "https://media.api-football.com/leagues/337.png",
+		"flag": "https://media.api-football.com/flags/my.svg"
+	},
+	{
+		"name": "Premier Soccer League",
+		"country_name": "South-Africa",
+		"logo": "https://media.api-football.com/leagues/371.png",
+		"flag": "https://media.api-football.com/flags/za.svg"
+	},
+	{
+		"name": "Premiership",
+		"country_name": "Scotland",
+		"logo": "https://media.api-football.com/leagues/91.png",
+		"flag": "https://media.api-football.com/flags/gb.svg"
+	},
+	{
+		"name": "Primeira Liga",
+		"country_name": "Portugal",
+		"logo": "https://media.api-football.com/leagues/11.png",
+		"flag": "https://media.api-football.com/flags/pt.svg"
+	},
+	{
+		"name": "Primera A",
+		"country_name": "Colombia",
+		"logo": "https://media.api-football.com/leagues/285.png",
+		"flag": "https://media.api-football.com/flags/co.svg"
+	},
+	{
+		"name": "Primera B",
+		"country_name": "Colombia",
+		"logo": "https://media.api-football.com/leagues/293.png",
+		"flag": "https://media.api-football.com/flags/co.svg"
+	},
+	{
+		"name": "Primera B",
+		"country_name": "Chile",
+		"logo": "https://media.api-football.com/leagues/305.PNG",
+		"flag": "https://media.api-football.com/flags/cl.svg"
+	},
+	{
+		"name": "Primera B Nacional",
+		"country_name": "Argentina",
+		"logo": "https://media.api-football.com/leagues/96.png",
+		"flag": "https://media.api-football.com/flags/ar.svg"
+	},
+	{
+		"name": "Primera Division",
+		"country_name": "Costa-Rica",
+		"logo": "https://media.api-football.com/leagues/76.png",
+		"flag": "https://media.api-football.com/flags/cr.svg"
+	},
+	{
+		"name": "Primera Division",
+		"country_name": "Argentina",
+		"logo": "https://media.api-football.com/leagues/86.png",
+		"flag": "https://media.api-football.com/flags/ar.svg"
+	},
+	{
+		"name": "LaLiga Santander",
+		"country_name": "Spain",
+		"logo": "https://media.api-football.com/leagues/87.png",
+		"flag": "https://media.api-football.com/flags/es.svg"
+	},
+	{
+		"name": "Primera Division",
+		"country_name": "Chile",
+		"logo": "https://media.api-football.com/leagues/303.png",
+		"flag": "https://media.api-football.com/flags/cl.svg"
+	},
+	{
+		"name": "Primera Division - Apertura",
+		"country_name": "Paraguay",
+		"logo": "https://media.api-football.com/leagues/281.png",
+		"flag": "https://media.api-football.com/flags/py.svg"
+	},
+	{
+		"name": "Primera Division - Apertura",
+		"country_name": "Uruguay",
+		"logo": "",
+		"flag": "https://media.api-football.com/flags/uy.svg"
+	},
+	{
+		"name": "Primera Division Women",
+		"country_name": "Spain",
+		"logo": "https://media.api-football.com/leagues/237.png",
+		"flag": "https://media.api-football.com/flags/es.svg"
+	},
+	{
+		"name": "Prva HNL",
+		"country_name": "Croatia",
+		"logo": "https://media.api-football.com/leagues/120.png",
+		"flag": "https://media.api-football.com/flags/hr.svg"
+	},
+	{
+		"name": "Segunda Division",
+		"country_name": "Spain",
+		"logo": "https://media.api-football.com/leagues/88.jpg",
+		"flag": "https://media.api-football.com/flags/es.svg"
+	},
+	{
+		"name": "Segunda Division",
+		"country_name": "Paraguay",
+		"logo": "https://media.api-football.com/leagues/270.png",
+		"flag": "https://media.api-football.com/flags/py.svg"
+	},
+	{
+		"name": "Serie A",
+		"country_name": "Italy",
+		"logo": "https://media.api-football.com/leagues/94.png",
+		"flag": "https://media.api-football.com/flags/it.svg"
+	},
+	{
+		"name": "Serie A",
+		"country_name": "Ecuador",
+		"logo": "https://media.api-football.com/leagues/292.png",
+		"flag": "https://media.api-football.com/flags/ec.svg"
+	},
+	{
+		"name": "Serie A",
+		"country_name": "Brazil",
+		"logo": "https://media.api-football.com/leagues/357.png",
+		"flag": "https://media.api-football.com/flags/br.svg"
+	},
+	{
+		"name": "Serie A Women",
+		"country_name": "Italy",
+		"logo": "https://media.api-football.com/leagues/231.png",
+		"flag": "https://media.api-football.com/flags/it.svg"
+	},
+	{
+		"name": "Serie B",
+		"country_name": "Italy",
+		"logo": "https://media.api-football.com/leagues/95.jpg",
+		"flag": "https://media.api-football.com/flags/it.svg"
+	},
+	{
+		"name": "Serie B",
+		"country_name": "Ecuador",
+		"logo": "https://media.api-football.com/leagues/286.png",
+		"flag": "https://media.api-football.com/flags/ec.svg"
+	},
+	{
+		"name": "Serie B",
+		"country_name": "Brazil",
+		"logo": "https://media.api-football.com/leagues/358.PNG",
+		"flag": "https://media.api-football.com/flags/br.svg"
+	},
+	{
+		"name": "Serie C",
+		"country_name": "Italy",
+		"logo": "https://media.api-football.com/leagues/210.png",
+		"flag": "https://media.api-football.com/flags/it.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "Greece",
+		"logo": "https://media.api-football.com/leagues/108.png",
+		"flag": "https://media.api-football.com/flags/gr.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "Switzerland",
+		"logo": "https://media.api-football.com/leagues/119.png",
+		"flag": "https://media.api-football.com/flags/ch.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "China",
+		"logo": "https://media.api-football.com/leagues/296.jpg",
+		"flag": "https://media.api-football.com/flags/cn.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "Indonesia",
+		"logo": "https://media.api-football.com/leagues/326.png",
+		"flag": "https://media.api-football.com/flags/id.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "Kenya",
+		"logo": "https://media.api-football.com/leagues/332.jpg",
+		"flag": "https://media.api-football.com/flags/ke.svg"
+	},
+	{
+		"name": "Super League",
+		"country_name": "Malaysia",
+		"logo": "https://media.api-football.com/leagues/333.png",
+		"flag": "https://media.api-football.com/flags/my.svg"
+	},
+	{
+		"name": "Super League Women",
+		"country_name": "Belgium",
+		"logo": "https://media.api-football.com/leagues/216.png",
+		"flag": "https://media.api-football.com/flags/be.svg"
+	},
+	{
+		"name": "Superettan",
+		"country_name": "Sweden",
+		"logo": "https://media.api-football.com/leagues/290.png",
+		"flag": "https://media.api-football.com/flags/se.svg"
+	},
+	{
+		"name": "Superligaen",
+		"country_name": "Denmark",
+		"logo": "https://media.api-football.com/leagues/20.png",
+		"flag": "https://media.api-football.com/flags/dk.svg"
+	},
+	{
+		"name": "TFF 1. Lig",
+		"country_name": "Turkey",
+		"logo": "https://media.api-football.com/leagues/467.png",
+		"flag": "https://media.api-football.com/flags/tr.svg"
+	},
+	{
+		"name": "TFF 2. Lig",
+		"country_name": "Turkey",
+		"logo": "https://media.api-football.com/leagues/468.png",
+		"flag": "https://media.api-football.com/flags/tr.svg"
+	},
+	{
+		"name": "Tipp3 Bundesliga",
+		"country_name": "Austria",
+		"logo": "https://media.api-football.com/leagues/125.png",
+		"flag": "https://media.api-football.com/flags/at.svg"
+	},
+	{
+		"name": "UEFA Nations League",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/136.png",
+		"flag": ""
+	},
+	{
+		"name": "Veikkausliiga",
+		"country_name": "Finland",
+		"logo": "https://media.api-football.com/leagues/361.gif",
+		"flag": "https://media.api-football.com/flags/fi.svg"
+	},
+	{
+		"name": "Viasat Divisionen",
+		"country_name": "Denmark",
+		"logo": "https://media.api-football.com/leagues/258.png",
+		"flag": "https://media.api-football.com/flags/dk.svg"
+	},
+	{
+		"name": "Vyscha Liga",
+		"country_name": "Belarus",
+		"logo": "https://media.api-football.com/leagues/322.png",
+		"flag": "https://media.api-football.com/flags/by.svg"
+	},
+	{
+		"name": "W-League",
+		"country_name": "Australia",
+		"logo": "https://media.api-football.com/leagues/243.png",
+		"flag": "https://media.api-football.com/flags/au.svg"
+	},
+	{
+		"name": "Women Bundesliga",
+		"country_name": "Germany",
+		"logo": "https://media.api-football.com/leagues/228.png",
+		"flag": "https://media.api-football.com/flags/de.svg"
+	},
+	{
+		"name": "World Cup",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/1.png",
+		"flag": ""
+	},
+	{
+		"name": "World Cup Women",
+		"country_name": "World",
+		"logo": "https://media.api-football.com/leagues/213.png",
+		"flag": ""
+	},
+	{
+		"name": "Ykkonen",
+		"country_name": "Finland",
+		"logo": "https://media.api-football.com/leagues/295.png",
+		"flag": "https://media.api-football.com/flags/fi.svg"
+	}
+]

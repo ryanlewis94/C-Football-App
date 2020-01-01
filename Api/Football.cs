@@ -1,10 +1,9 @@
 ﻿using FootballApp.Classes;
 using FootballApp.Utility;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.OleDb;
-using System.Linq;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -16,56 +15,70 @@ namespace FootballApp.Api
 
         public List<LeagueLogo> LoadLeagueLogos()
         {
-            var fileName = string.Format(@"..\..\Resources\league_list.xlsx");
-            var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (StreamReader r = new StreamReader(@"..\..\Resources\league_list.json"))
             {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand("select * from [Leagues$]", connection);
-                using (OleDbDataReader dr = command.ExecuteReader())
-                {
-                    var leagues = new List<LeagueLogo>();
-                    while (dr.Read())
-                    {
-                        var logoToAdd = new LeagueLogo
-                        {
-                            name = dr[1].ToString(),
-                            country_name = dr[3].ToString(),
-                            logo = dr[8].ToString(),
-                            flag = dr[9].ToString()
-                        };
-                        leagues.Add(logoToAdd);
-                    }
-                    return leagues;
-                }
+                string json = r.ReadToEnd();
+                List<LeagueLogo> leagues = JsonConvert.DeserializeObject<List<LeagueLogo>>(json);
+                return leagues;
             }
+
+            //var fileName = string.Format(@"..\..\Resources\league_list.xlsx");
+            //var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
+
+            //using (OleDbConnection connection = new OleDbConnection(connectionString))
+            //{
+            //    connection.Open();
+            //    OleDbCommand command = new OleDbCommand("select * from [Leagues$]", connection);
+            //    using (OleDbDataReader dr = command.ExecuteReader())
+            //    {
+            //        var leagues = new List<LeagueLogo>();
+            //        while (dr.Read())
+            //        {
+            //            var logoToAdd = new LeagueLogo
+            //            {
+            //                name = dr[1].ToString(),
+            //                country_name = dr[3].ToString(),
+            //                logo = dr[8].ToString(),
+            //                flag = dr[9].ToString()
+            //            };
+            //            leagues.Add(logoToAdd);
+            //        }
+            //        return leagues;
+            //    }
+            //}
         }
 
         public List<Logo> LoadLogos()
         {
-            var fileName = string.Format(@"..\..\Resources\team_list.xlsx");
-            var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (StreamReader r = new StreamReader(@"..\..\Resources\team_list.json"))
             {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand("select * from [Teams$]", connection);
-                using (OleDbDataReader dr = command.ExecuteReader())
-                {
-                    var teams = new List<Logo>();
-                    while (dr.Read())
-                    {
-                        var logoToAdd = new Logo
-                        {
-                            team_name = dr[1].ToString(),
-                            logo = dr[3].ToString()
-                        };
-                        teams.Add(logoToAdd);
-                    }
-                    return teams;
-                }
+                string json = r.ReadToEnd();
+                List<Logo> teams = JsonConvert.DeserializeObject<List<Logo>>(json);
+                return teams;
             }
+
+            //var fileName = string.Format(@"..\..\Resources\team_list.xlsx");
+            //var connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
+
+            //using (OleDbConnection connection = new OleDbConnection(connectionString))
+            //{
+            //    connection.Open();
+            //    OleDbCommand command = new OleDbCommand("select * from [Teams$]", connection);
+            //    using (OleDbDataReader dr = command.ExecuteReader())
+            //    {
+            //        var teams = new List<Logo>();
+            //        while (dr.Read())
+            //        {
+            //            var logoToAdd = new Logo
+            //            {
+            //                team_name = dr[1].ToString(),
+            //                logo = dr[3].ToString()
+            //            };
+            //            teams.Add(logoToAdd);
+            //        }
+            //        return teams;
+            //    }
+            //}
         }
 
 

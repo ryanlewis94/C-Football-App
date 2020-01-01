@@ -303,7 +303,7 @@ namespace FootballApp.ViewModels
                     if (country.matchList != null)
                     {
                         CurrentCountry = country;
-                        
+
                         MatchSelected = true;
                         FixtureSelected = false;
 

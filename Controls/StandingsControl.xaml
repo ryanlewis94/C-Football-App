@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Image Source="{Binding CurrentCountry.logo}"
-               Width="75"
+               Height="100"
                HorizontalAlignment="Center"
                Margin="0,-40,0,0"/>
 
