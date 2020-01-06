@@ -103,16 +103,6 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// gets the time the game is updated
-        /// </summary>
-        private string _timeUpdated;
-        public string TimeUpdated
-        {
-            get { return _timeUpdated; }
-            set { SetProperty(ref _timeUpdated, value); }
-        }
-
-        /// <summary>
         /// checks if the game is at full time
         /// </summary>
         private bool _fullTime;
@@ -264,6 +254,23 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _noMatchHistory, value); }
         }
 
+        /// <summary>
+        /// bools for visibility of the leage name and logo
+        /// </summary>
+        private bool _leagueLogo;
+        public bool LeagueLogo
+        {
+            get { return _leagueLogo; }
+            set { SetProperty(ref _leagueLogo, value); }
+        }
+
+        private bool _leagueName;
+        public bool LeagueName
+        {
+            get { return _leagueName; }
+            set { SetProperty(ref _leagueName, value); }
+        }
+
         #endregion
 
         public EventsViewModel()
@@ -304,6 +311,17 @@ namespace FootballApp.ViewModels
                     {
                         CurrentCountry = country;
 
+                        if (CurrentCountry.logo.Contains("https"))
+                        {
+                            LeagueLogo = true;
+                            LeagueName = false;
+                        }
+                        else
+                        {
+                            LeagueLogo = false;
+                            LeagueName = true;
+                        }
+
                         MatchSelected = true;
                         FixtureSelected = false;
 
@@ -315,7 +333,6 @@ namespace FootballApp.ViewModels
                         else
                         {
                             FullTime = true;
-                            TimeUpdated = "";
                         }
 
                         //if first time selecting load all the data about the teams and the game
@@ -350,7 +367,18 @@ namespace FootballApp.ViewModels
                     else if (country.fixtureList != null)
                     {
                         CurrentCountry = country;
-                        
+
+                        if (CurrentCountry.logo.Contains("https"))
+                        {
+                            LeagueLogo = true;
+                            LeagueName = false;
+                        }
+                        else
+                        {
+                            LeagueLogo = false;
+                            LeagueName = true;
+                        }
+
                         MatchSelected = false;
                         FixtureSelected = true;
 
@@ -545,11 +573,6 @@ namespace FootballApp.ViewModels
                     AwayEventsList = new List<Event>();
                     NoEvents = true;
                 }
-
-                //if game is still live show the time that it got updated
-                TimeUpdated = (!FullTime) ?
-                    $"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}" :
-                    "";
             }
             catch (Exception ex)
             {
@@ -790,10 +813,13 @@ namespace FootballApp.ViewModels
                             }
                         }
 
+                        string[] date = match.date.Split('-');
+                        string matchDate = $"{date[2]}/{date[1]}/{date[0]}";
+
                         HomeMatchList.Add(new LastMatch
                         {
                             id = match.id,
-                            date = match.date,
+                            date = matchDate,
                             home_name = match.home_name,
                             away_name = match.away_name,
                             score = match.score,
@@ -843,10 +869,13 @@ namespace FootballApp.ViewModels
                             }
                         }
 
+                        string[] date = match.date.Split('-');
+                        string matchDate = $"{date[2]}/{date[1]}/{date[0]}";
+
                         AwayMatchList.Add(new LastMatch
                         {
                             id = match.id,
-                            date = match.date,
+                            date = matchDate,
                             home_name = match.home_name,
                             away_name = match.away_name,
                             score = match.score,

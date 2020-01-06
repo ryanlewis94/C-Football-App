@@ -18,7 +18,7 @@
         Icon="/Resources/football-2-48.ico">
     <DockPanel>
         <Border BorderBrush="Black" 
-                BorderThickness="1" 
+                BorderThickness="0,1,0,0" 
                 DockPanel.Dock="Bottom">
             <StatusBar>
                 <StatusBar.ItemsPanel>
@@ -26,16 +26,22 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.5*"/>
-                                <ColumnDefinition Width="8.5*"/>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="1.5*"/>
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="5,0,0,0">
                         <TextBlock Text="Matches Loaded: "/>
                         <TextBlock Text="{Binding MatchCount}"/>
                     </StackPanel>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="2"
+                               HorizontalContentAlignment="Right">
+                    <TextBlock Text="{Binding TimeUpdated}" Margin="0,0,5,0"/>
                 </StatusBarItem>
             </StatusBar>
         </Border>

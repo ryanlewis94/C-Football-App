@@ -258,7 +258,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\team_list.xlsx" />
+    <None Include="Resources\league_list.json" />
+    <None Include="Resources\team_list.json" />
     <Resource Include="Resources\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
   <ItemGroup>

@@ -24,7 +24,16 @@
                    Source="{Binding logo}"
                    Height="90"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Visibility="{Binding DataContext.LeagueLogo, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+            <TextBlock Text="{Binding logo}"
+                       Height="60"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Grid.ColumnSpan="3"
+                       Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
             <Image Source="{Binding fixtureList.home_logo}"
                    Width="100"
                    Margin="5"/>

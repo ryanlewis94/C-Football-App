@@ -39,7 +39,6 @@ namespace FootballApp.ErrorHandling
                     break;
                 case "A task was canceled.":
                     await metroWindow.ShowMessageAsync($"Error", "Connection Timed Out");
-                    unloaded = false;
                     break;
                 case "An error occurred while sending the request.":
                     await metroWindow.ShowMessageAsync($"Error", "No Internet Connection");

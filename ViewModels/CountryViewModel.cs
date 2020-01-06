@@ -282,7 +282,6 @@ namespace FootballApp.ViewModels
         /// <param name="obj"></param>
         private void FinishedProcessing(string obj)
         {
-            
             if (obj == "loaded") IsProcessing = false;
             if (obj == "unloaded") IsProcessing = true;
             if (obj == "TooManyRequests") IsTooMany = true;
@@ -520,6 +519,7 @@ namespace FootballApp.ViewModels
                 {
                     Messenger.Default.Send("loaded");
                 }
+                Messenger.Default.Send($"Last Updated: {DateTime.Now.ToString("HH:mm:ss")}");
             }
 
             try
@@ -750,7 +750,6 @@ namespace FootballApp.ViewModels
                             fixtureList = fixtureToAdd,
                             logo = leagueLogo
                         };
-
                         SortCountryList.Add(countryToAdd);
                     }
 

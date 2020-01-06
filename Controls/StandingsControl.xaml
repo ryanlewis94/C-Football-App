@@ -15,8 +15,16 @@
         <Image Source="{Binding CurrentCountry.logo}"
                Height="100"
                HorizontalAlignment="Center"
-               Margin="0,-40,0,0"/>
-
+               Margin="0,-40,0,0"
+               Visibility="{Binding DataContext.LeagueLogo, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+        <TextBlock Text="{Binding CurrentCountry.logo}"
+                   Height="60"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
             <!--League Table-->
         <Border Background="LightGray" 
                 Padding="20" 

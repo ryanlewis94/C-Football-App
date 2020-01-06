@@ -24,7 +24,16 @@
                    Height="90"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Grid.ColumnSpan="3"/>
+                   Grid.ColumnSpan="3"
+                   Visibility="{Binding DataContext.LeagueLogo, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+            <TextBlock Text="{Binding logo}"
+                       Height="60"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Grid.ColumnSpan="3"
+                       Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
             <Image Source="{Binding matchList.home_logo}"
                    Width="100"
                    Margin="5"/>
@@ -65,14 +74,6 @@
                            TextAlignment="Center"
                            VerticalAlignment="Center"/>
             </Border>
-            <!--Updating info-->
-            <TextBlock Text="{Binding DataContext.TimeUpdated, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                       Grid.Column="1"
-                       Grid.Row="2"
-                       TextAlignment="Center"
-                       Padding="0,10,0,0"
-                       VerticalAlignment="Top"
-                       FontSize="12"/>
             <!--Current Form-->
             <StackPanel Grid.Row="2"
                         HorizontalAlignment="Stretch">

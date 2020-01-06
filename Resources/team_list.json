@@ -17214,5 +17214,213 @@
 	{
 		"team_name": "Belgium",
 		"logo": "https://media.api-football.com/teams/1.png"
+	},
+	{
+		"team_name": "Morocco",
+		"logo": "https://media.api-football.com/teams/31.png"
+	},
+	{
+		"team_name": "RSB Berkane",
+		"logo": "https://media.api-football.com/teams/962.png"
+	},
+	{
+		"team_name": "Chabab RIF Hoceima",
+		"logo": "https://media.api-football.com/teams/963.png"
+	},
+	{
+		"team_name": "Difaa EL Jadida",
+		"logo": "https://media.api-football.com/teams/964.png"
+	},
+	{
+		"team_name": "MAT Tetouan",
+		"logo": "https://media.api-football.com/teams/965.png"
+	},
+	{
+		"team_name": "Racing de Casablanca",
+		"logo": "https://media.api-football.com/teams/966.png"
+	},
+	{
+		"team_name": "Rapide Club Oued ZEM",
+		"logo": "https://media.api-football.com/teams/967.png"
+	},
+	{
+		"team_name": "Wydad Casablanca",
+		"logo": "https://media.api-football.com/teams/968.png"
+	},
+	{
+		"team_name": "FAR Rabat",
+		"logo": "https://media.api-football.com/teams/969.png"
+	},
+	{
+		"team_name": "Chabab Atl. Khenifra",
+		"logo": "https://media.api-football.com/teams/970.png"
+	},
+	{
+		"team_name": "Kawkab Marrakech",
+		"logo": "https://media.api-football.com/teams/971.png"
+	},
+	{
+		"team_name": "OCK Khouribga",
+		"logo": "https://media.api-football.com/teams/972.png"
+	},
+	{
+		"team_name": "Hassania Agadir",
+		"logo": "https://media.api-football.com/teams/973.png"
+	},
+	{
+		"team_name": "Ittihad Tanger",
+		"logo": "https://media.api-football.com/teams/974.png"
+	},
+	{
+		"team_name": "Olympic Club de Safi",
+		"logo": "https://media.api-football.com/teams/975.png"
+	},
+	{
+		"team_name": "Raja Casablanca",
+		"logo": "https://media.api-football.com/teams/976.png"
+	},
+	{
+		"team_name": "FUS Rabat",
+		"logo": "https://media.api-football.com/teams/977.png"
+	},
+	{
+		"team_name": "Kasba Tadla",
+		"logo": "https://media.api-football.com/teams/978.png"
+	},
+	{
+		"team_name": "KAC Kenitra",
+		"logo": "https://media.api-football.com/teams/979.png"
+	},
+	{
+		"team_name": "Youssoufia Berrechid",
+		"logo": "https://media.api-football.com/teams/1074.png"
+	},
+	{
+		"team_name": "Mouloudia Club Of Oujda",
+		"logo": "https://media.api-football.com/teams/1075.png"
+	},
+	{
+		"team_name": "AS Salé",
+		"logo": "https://media.api-football.com/teams/3448.png"
+	},
+	{
+		"team_name": "CR Khemis Zemamra",
+		"logo": "https://media.api-football.com/teams/3449.png"
+	},
+	{
+		"team_name": "Chabab Ben Guerir",
+		"logo": "https://media.api-football.com/teams/3450.png"
+	},
+	{
+		"team_name": "El Massira",
+		"logo": "https://media.api-football.com/teams/3451.png"
+	},
+	{
+		"team_name": "Ittihad Khemisset",
+		"logo": "https://media.api-football.com/teams/3452.png"
+	},
+	{
+		"team_name": "Maghreb Fès",
+		"logo": "https://media.api-football.com/teams/3453.png"
+	},
+	{
+		"team_name": "Olympique Dcheïra",
+		"logo": "https://media.api-football.com/teams/3454.png"
+	},
+	{
+		"team_name": "Raja Beni Mellal",
+		"logo": "https://media.api-football.com/teams/3455.png"
+	},
+	{
+		"team_name": "Riadi Salmi",
+		"logo": "https://media.api-football.com/teams/3456.png"
+	},
+	{
+		"team_name": "Sidi Kacem",
+		"logo": "https://media.api-football.com/teams/3457.png"
+	},
+	{
+		"team_name": "Widad Témara",
+		"logo": "https://media.api-football.com/teams/3458.png"
+	},
+	{
+		"team_name": "Wydad Fès",
+		"logo": "https://media.api-football.com/teams/3459.png"
+	},
+	{
+		"team_name": "Chabab Mohammédia",
+		"logo": "https://media.api-football.com/teams/6387.png"
+	},
+	{
+		"team_name": "Tihad Casablanca",
+		"logo": "https://media.api-football.com/teams/6388.png"
+	},
+	{
+		"team_name": "Morocco A'",
+		"logo": "https://media.api-football.com/teams/9379.png"
+	},
+	{
+		"team_name": "Jamaica W",
+		"logo": "https://media.api-football.com/teams/1785.png"
+	},
+	{
+		"team_name": "Jamaica",
+		"logo": "https://media.api-football.com/teams/2385.png"
+	},
+	{
+		"team_name": "Arnett Gardens",
+		"logo": "https://media.api-football.com/teams/3436.png"
+	},
+	{
+		"team_name": "Cavalier",
+		"logo": "https://media.api-football.com/teams/3437.png"
+	},
+	{
+		"team_name": "Dunbeholden",
+		"logo": "https://media.api-football.com/teams/3438.png"
+	},
+	{
+		"team_name": "Harbour View",
+		"logo": "https://media.api-football.com/teams/3439.png"
+	},
+	{
+		"team_name": "Humble Lions",
+		"logo": "https://media.api-football.com/teams/3440.png"
+	},
+	{
+		"team_name": "Montego Bay United",
+		"logo": "https://media.api-football.com/teams/3441.png"
+	},
+	{
+		"team_name": "Mount Pleasant FC",
+		"logo": "https://media.api-football.com/teams/3442.png"
+	},
+	{
+		"team_name": "Portmore United",
+		"logo": "https://media.api-football.com/teams/3443.png"
+	},
+	{
+		"team_name": "Reno",
+		"logo": "https://media.api-football.com/teams/3444.png"
+	},
+	{
+		"team_name": "Tivoli Gardens",
+		"logo": "https://media.api-football.com/teams/3445.png"
+	},
+	{
+		"team_name": "Uwi FC",
+		"logo": "https://media.api-football.com/teams/3446.png"
+	},
+	{
+		"team_name": "Waterhouse",
+		"logo": "https://media.api-football.com/teams/3447.png"
+	},
+	{
+		"team_name": "Molynes United",
+		"logo": "https://media.api-football.com/teams/6407.png"
+	},
+	{
+		"team_name": "Vere United",
+		"logo": "https://media.api-football.com/teams/6408.png"
 	}
 ]

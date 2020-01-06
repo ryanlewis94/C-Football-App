@@ -68,6 +68,16 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _matchCount, value); }
         }
 
+        /// <summary>
+        /// gets the time the game is updated
+        /// </summary>
+        private string _timeUpdated;
+        public string TimeUpdated
+        {
+            get { return _timeUpdated; }
+            set { SetProperty(ref _timeUpdated, value); }
+        }
+
         #endregion
 
         public MainViewModel()
@@ -127,6 +137,10 @@ namespace FootballApp.ViewModels
                     if (int.TryParse(dataLoaded, out i))
                     {
                         MatchCount = i;
+                    }
+                    else
+                    {
+                        TimeUpdated = dataLoaded;
                     }
                     break;
             }

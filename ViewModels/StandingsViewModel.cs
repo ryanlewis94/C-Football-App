@@ -22,6 +22,23 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _standingsList, value); }
         }
 
+        /// <summary>
+        /// bools for visibility of the leage name and logo
+        /// </summary>
+        private bool _leagueLogo;
+        public bool LeagueLogo
+        {
+            get { return _leagueLogo; }
+            set { SetProperty(ref _leagueLogo, value); }
+        }
+
+        private bool _leagueName;
+        public bool LeagueName
+        {
+            get { return _leagueName; }
+            set { SetProperty(ref _leagueName, value); }
+        }
+
         public StandingsViewModel()
         {
             repository = new Football();
@@ -48,6 +65,17 @@ namespace FootballApp.ViewModels
                     if (!string.IsNullOrEmpty(country.competition_id))
                     {
                         CurrentCountry = country;
+
+                        if (CurrentCountry.logo.Contains("https"))
+                        {
+                            LeagueLogo = true;
+                            LeagueName = false;
+                        }
+                        else
+                        {
+                            LeagueLogo = false;
+                            LeagueName = true;
+                        }
 
                         //if first time selecting a country load the league standings
                         if (countryBefore == null)
