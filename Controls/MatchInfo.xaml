@@ -11,14 +11,14 @@
                 Visibility="{Binding DataContext.MatchSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Image Source="{Binding logo}" 
                    Height="90"
@@ -122,24 +122,30 @@
                                             <ColumnDefinition Width="2*"/>
                                             <ColumnDefinition Width="4*"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="{Binding home_name}"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"/>
+                                        <Grid MaxWidth="75"
+                                              Margin="5,0">
+                                            <TextBlock Text="{Binding home_name}"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="SemiBold"/>
+                                        </Grid>
                                         <StackPanel Grid.Column="1"
                                                     HorizontalAlignment="Center">
                                             <TextBlock Text="{Binding date}" TextAlignment="Center" FontSize="10"/>
                                             <TextBlock Text="{Binding score}" TextAlignment="Center" FontWeight="SemiBold"/>
                                             <TextBlock Text="{Binding scheduled}" TextAlignment="Center" FontSize="10"/>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding away_name}"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Grid.Column="2"/>
+                                        <Grid MaxWidth="75"
+                                              Margin="5,0"
+                                              Grid.Column="2">
+                                            <TextBlock Text="{Binding away_name}"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="SemiBold"/>
+                                        </Grid>
+                                        
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -195,24 +201,30 @@
                                             <ColumnDefinition Width="2*"/>
                                             <ColumnDefinition Width="4*"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="{Binding home_name}"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"/>
+                                        <Grid MaxWidth="75"
+                                              Margin="5,0">
+                                            <TextBlock Text="{Binding home_name}"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="SemiBold"/>
+                                        </Grid>
+                                        
                                         <StackPanel Grid.Column="1"
                                                     HorizontalAlignment="Center">
                                             <TextBlock Text="{Binding date}" TextAlignment="Center" FontSize="10"/>
                                             <TextBlock Text="{Binding score}" TextAlignment="Center" FontWeight="SemiBold"/>
                                             <TextBlock Text="{Binding scheduled}" TextAlignment="Center" FontSize="10"/>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding away_name}"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="SemiBold"
-                                                   Grid.Column="2"/>
+                                        <Grid MaxWidth="75"
+                                              Margin="5,0"
+                                              Grid.Column="2">
+                                            <TextBlock Text="{Binding away_name}"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="SemiBold"/>
+                                        </Grid>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

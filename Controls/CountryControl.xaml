@@ -139,16 +139,17 @@
                                                                         <ColumnDefinition Width="1*" />
                                                                         <ColumnDefinition Width="4.5*" />
                                                                     </Grid.ColumnDefinitions>
-                                                                    <TextBlock Text="{Binding matchList.home_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="0"
-                                                                               TextAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
-                                                                    <TextBlock Text="{Binding fixtureList.home_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="0"
-                                                                               TextAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
+                                                                    <Grid MaxWidth="200"
+                                                                          Margin="5,0">
+                                                                        <TextBlock Text="{Binding matchList.home_name}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextAlignment="Center" 
+                                                                                   TextWrapping="WrapWithOverflow"/>
+                                                                        <TextBlock Text="{Binding fixtureList.home_name}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextAlignment="Center" 
+                                                                                   TextWrapping="WrapWithOverflow"/>
+                                                                    </Grid>
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding matchList.score}"
                                                                                    FontWeight="SemiBold"
@@ -163,16 +164,18 @@
                                                                                    FontWeight="SemiBold"
                                                                                    TextAlignment="Center" />
                                                                     </StackPanel>
-                                                                    <TextBlock Text="{Binding matchList.away_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="2"
-                                                                               TextAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
-                                                                    <TextBlock Text="{Binding fixtureList.away_name}"
-                                                                               FontWeight="SemiBold"
-                                                                               Grid.Column="2"
-                                                                               TextAlignment="Center" 
-                                                                               TextWrapping="Wrap"/>
+                                                                    <Grid MaxWidth="200"
+                                                                          Margin="5,0"
+                                                                          Grid.Column="2">
+                                                                        <TextBlock Text="{Binding matchList.away_name}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextAlignment="Center" 
+                                                                                   TextWrapping="WrapWithOverflow"/>
+                                                                        <TextBlock Text="{Binding fixtureList.away_name}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextAlignment="Center" 
+                                                                                   TextWrapping="WrapWithOverflow"/>
+                                                                    </Grid>
                                                                 </Grid>
                                                             </Border>
                                                         </DataTemplate>

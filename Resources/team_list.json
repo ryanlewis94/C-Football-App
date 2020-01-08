@@ -2667,10 +2667,10 @@
 		"team_name": "Admira II",
 		"logo": "https://media.api-football.com/teams/8245.png"
 	},
-	{
-		"team_name": "United",
-		"logo": "https://media.api-football.com/teams/8241.png"
-	},
+	//{
+	//	"team_name": "United",
+	//	"logo": "https://media.api-football.com/teams/8241.png"
+	//},
 	{
 		"team_name": "Brazil Juniors",
 		"logo": "https://media.api-football.com/teams/8233.png"

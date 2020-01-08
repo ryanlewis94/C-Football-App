@@ -37,7 +37,7 @@
 	},
 	{
 		"name": "Africa Cup of Nations",
-		"country_name": "World",
+		"country_name": "CAF",
 		"logo": "https://media.api-football.com/leagues/194.png",
 		"flag": ""
 	},
@@ -67,7 +67,7 @@
 	},
 	{
 		"name": "Asian Cup",
-		"country_name": "World",
+		"country_name": "AFC",
 		"logo": "https://media.api-football.com/leagues/195.png",
 		"flag": ""
 	},
@@ -97,7 +97,7 @@
 	},
 	{
 		"name": "CAF Champions League",
-		"country_name": "World",
+		"country_name": "CAF",
 		"logo": "https://media.api-football.com/leagues/936.png",
 		"flag": ""
 	},
@@ -121,7 +121,7 @@
 	},
 	{
 		"name": "Champions League",
-		"country_name": "Europe",
+		"country_name": "UEFA",
 		"logo": "https://media.api-football.com/leagues/132.png",
 		"flag": ""
 	},
@@ -139,19 +139,19 @@
 	},
 	{
 		"name": "CONMEBOL Libertadores",
-		"country_name": "World",
+		"country_name": "CONMEBOL",
 		"logo": "https://media.api-football.com/leagues/937.png",
 		"flag": ""
 	},
 	{
 		"name": "CONMEBOL Sudamericana",
-		"country_name": "World",
+		"country_name": "CONMEBOL",
 		"logo": "https://media.api-football.com/leagues/935.png",
 		"flag": ""
 	},
 	{
 		"name": "Copa America",
-		"country_name": "World",
+		"country_name": "CONMEBOL",
 		"logo": "https://media.api-football.com/leagues/311.png",
 		"flag": ""
 	},
@@ -235,13 +235,13 @@
 	},
 	{
 		"name": "Euro Championship",
-		"country_name": "World",
+		"country_name": "UEFA",
 		"logo": "https://media.api-football.com/leagues/403.png",
 		"flag": ""
 	},
 	{
 		"name": "Europa League",
-		"country_name": "Europe",
+		"country_name": "UEFA",
 		"logo": "https://media.api-football.com/leagues/137.png",
 		"flag": ""
 	},
@@ -703,7 +703,7 @@
 	},
 	{
 		"name": "UEFA Nations League",
-		"country_name": "World",
+		"country_name": "UEFA",
 		"logo": "https://media.api-football.com/leagues/136.png",
 		"flag": ""
 	},
@@ -738,14 +738,14 @@
 		"flag": "https://media.api-football.com/flags/de.svg"
 	},
 	{
-		"name": "World Cup",
-		"country_name": "World",
+		"name": "FIFA World Cup",
+		"country_name": "FIFA",
 		"logo": "https://media.api-football.com/leagues/1.png",
 		"flag": ""
 	},
 	{
 		"name": "World Cup Women",
-		"country_name": "World",
+		"country_name": "FIFA",
 		"logo": "https://media.api-football.com/leagues/213.png",
 		"flag": ""
 	},
