@@ -270,7 +270,6 @@ namespace FootballApp.ViewModels
             get { return _leagueName; }
             set { SetProperty(ref _leagueName, value); }
         }
-
         #endregion
 
         public EventsViewModel()

@@ -357,6 +357,7 @@ namespace FootballApp.ViewModels
             try
             {
                 LogoList = repository.LoadLogos();
+                //LogoList = new List<Logo>();
                 LeagueLogoList = repository.LoadLeagueLogos();
                 FederationList = await repository.LoadFederation();
                 CompetitionList = await repository.LoadCompetition();
@@ -690,6 +691,7 @@ namespace FootballApp.ViewModels
                         string homeLogo = "";
                         string awayLogo = "";
 
+                        //looks for team logos
                         foreach (var logo in LogoList)
                         {
                             if (fixture.home_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
@@ -723,11 +725,59 @@ namespace FootballApp.ViewModels
                             splitTime[0] = "00";
                         }
 
+                        //checks the round of the fixture
+                        var round = "";
+                        switch (fixture.round)
+                        {
+                            case "RS":
+                                round = "";
+                                break;
+                            case "1R":
+                                round = "1st Round";
+                                break;
+                            case "2R":
+                                round = "2nd Round";
+                                break;
+                            case "3R":
+                                round = "3rd Round";
+                                break;
+                            case "4R":
+                                round = "4th Round";
+                                break;
+                            case "R32":
+                                round = "Round of 32";
+                                break;
+                            case "R16":
+                                round = "Round of 16";
+                                break;
+                            case "QF":
+                                round = "Quarterfinal";
+                                break;
+                            case "SF":
+                                round = "Semifinal";
+                                break;
+                            case "F":
+                                round = "Final";
+                                break;
+                            default:
+                                if (int.TryParse(fixture.round, out int n))
+                                {
+                                    round = $"MatchDay {n}";
+                                }
+                                else
+                                {
+                                    round = fixture.round;
+                                }
+                                
+                                break;
+                        }
+
                         var fixtureToAdd = new Fixture
                         {
                             id = fixture.id,
                             date = fixture.date,
                             time = $"{splitTime[0]}:{splitTime[1]}",
+                            round = round,
                             home_id = fixture.home_id,
                             away_id = fixture.away_id,
                             home_name = fixture.home_name.Replace("amp;", ""),

@@ -20,20 +20,25 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Image Grid.ColumnSpan="3" 
-                   Source="{Binding logo}"
-                   Height="90"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Visibility="{Binding DataContext.LeagueLogo, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
-            <TextBlock Text="{Binding logo}"
-                       Height="60"
-                       FontSize="26"
-                       FontWeight="Bold"
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Grid.ColumnSpan="3">
+                <Image Source="{Binding logo}"
+                       Height="90"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Grid.ColumnSpan="3"
-                       Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+                       Visibility="{Binding DataContext.LeagueLogo, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+                <TextBlock Text="{Binding logo}"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+                <TextBlock Text="{Binding fixtureList.round}"
+                           FontSize="14"
+                           Margin="10"
+                           FontWeight="SemiBold"
+                           TextAlignment="Center"/>
+            </StackPanel>
             <Image Source="{Binding fixtureList.home_logo}"
                    Width="100"
                    Margin="5"/>

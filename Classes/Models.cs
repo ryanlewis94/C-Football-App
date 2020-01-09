@@ -113,6 +113,7 @@ namespace FootballApp.Classes
         public string id { get; set; }
         public string date { get; set; }
         public string time { get; set; }
+        public string round { get; set; }
         public string home_id { get; set; }
         public string away_id { get; set; }
         public string home_name { get; set; }
