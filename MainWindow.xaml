@@ -12,7 +12,7 @@
         DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=MainViewModel}"
         WindowState="Maximized"
         WindowStyle="None"
-        Title="LiveScores" 
+        Title="LiveScores"
         TitleCaps="False"
         GlowBrush="{DynamicResource AccentColorBrush}"
         Icon="/Resources/football-2-48.ico">

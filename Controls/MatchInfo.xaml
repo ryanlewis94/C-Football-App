@@ -90,7 +90,8 @@
                         <DataTemplate>
                             <Border BorderBrush="Gray" 
                                     BorderThickness="1" 
-                                    CornerRadius="2">
+                                    CornerRadius="2"
+                                    Margin="0,1">
                                 <TextBlock Text="{Binding form}"
                                            FontWeight="Bold"
                                            TextAlignment="Center"
@@ -169,7 +170,8 @@
                         <DataTemplate>
                             <Border BorderBrush="Gray" 
                                     BorderThickness="1" 
-                                    CornerRadius="2">
+                                    CornerRadius="2"
+                                    Margin="0,1">
                                 <TextBlock Text="{Binding form}"
                                            FontWeight="Bold"
                                            TextAlignment="Center"

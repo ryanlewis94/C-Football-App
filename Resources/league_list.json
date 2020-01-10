@@ -356,7 +356,7 @@
 	{
 		"name": "Ligue 1",
 		"country_name": "France",
-		"logo": "https://media.api-football.com/leagues/4.svg",
+		"logo": "https://1000logos.net/wp-content/uploads/2018/10/French-Ligue-1-logo.png",
 		"flag": "https://media.api-football.com/flags/fr.svg"
 	},
 	{
@@ -551,13 +551,7 @@
 		"logo": "https://media.api-football.com/leagues/281.png",
 		"flag": "https://media.api-football.com/flags/py.svg"
 	},
-	{
-		"name": "Primera Division - Apertura",
-		"country_name": "Uruguay",
-		"logo": "",
-		"flag": "https://media.api-football.com/flags/uy.svg"
-	},
-	{
+  {
 		"name": "Primera Division Women",
 		"country_name": "Spain",
 		"logo": "https://media.api-football.com/leagues/237.png",

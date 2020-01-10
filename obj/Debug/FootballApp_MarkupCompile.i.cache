@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\
 FootballApp
 none
 false
 DEBUG;TRACE
-C:\Users\RY209294\source\repos\C-Football-App\App.xaml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\App.xaml
 9-581065254
 
-39-464119304
-1452127807431
+39-277355958
+1451824230556
 Controls\CountryControl.xaml;Controls\EventControl.xaml;Controls\FixtureInfo.xaml;Controls\LoadingOverlayView.xaml;Controls\MatchInfo.xaml;Controls\StandingsControl.xaml;Controls\WelcomeControl.xaml;MainWindow.xaml;Styles\ButtonStyle.xaml;
 
-False
+True
 

@@ -65,13 +65,6 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _fixtureSelected, value); }
         }
 
-        private bool _noMatchSelected = true;
-        public bool NoMatchSelected
-        {
-            get { return _noMatchSelected; }
-            set { SetProperty(ref _noMatchSelected, value); }
-        }
-
         /// <summary>
         /// when there are no events to show equal false
         /// </summary>
@@ -270,6 +263,7 @@ namespace FootballApp.ViewModels
             get { return _leagueName; }
             set { SetProperty(ref _leagueName, value); }
         }
+
         #endregion
 
         public EventsViewModel()
@@ -301,16 +295,13 @@ namespace FootballApp.ViewModels
             {
                 if (country != null)
                 {
-                    NoMatchSelected = false;
                     //if there was previously a country selected keep it in memory to compare against the newly selected country
                     var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
                     CurrentCountry = null;
                     //if a match was selected
                     if (country.matchList != null)
                     {
-                        CurrentCountry = country;
-
-                        if (CurrentCountry.logo.Contains("https"))
+                        if (country.logo.Contains("https"))
                         {
                             LeagueLogo = true;
                             LeagueName = false;
@@ -333,7 +324,7 @@ namespace FootballApp.ViewModels
                         {
                             FullTime = true;
                         }
-
+                        GetLogos(repository.LoadLogos(), "match", country);
                         //if first time selecting load all the data about the teams and the game
                         if (countryBefore == null)
                         {
@@ -343,7 +334,7 @@ namespace FootballApp.ViewModels
                         else
                         {
                             //if the country being sent is a new country load all the info on the teams
-                            if (CurrentCountry.matchList?.id != countryBefore.matchList?.id)
+                            if (country.matchList?.id != countryBefore.matchList?.id)
                             {
                                 LoadForm(country.matchList.home_id, country.matchList.away_id);
                                 LoadInGame(country.matchList.id);
@@ -360,14 +351,13 @@ namespace FootballApp.ViewModels
                                     Messenger.Default.Send("loaded");
                                 }
                             }
-                        } 
+                        }
+                        CurrentCountry = country;
                     }
                     //if a fixture was selected
                     else if (country.fixtureList != null)
                     {
-                        CurrentCountry = country;
-
-                        if (CurrentCountry.logo.Contains("https"))
+                        if (country.logo.Contains("https"))
                         {
                             LeagueLogo = true;
                             LeagueName = false;
@@ -387,26 +377,29 @@ namespace FootballApp.ViewModels
                             FixtureKickOffTime = FixtureKickOffTime.AddDays(1);
                         }
                         LoadCountdown();
-
+                        GetLogos(repository.LoadLogos(), "fixture", country);
                         //if first time selecting load all the data about the teams and the game
                         if (countryBefore == null)
                         {
                             LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
-                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
+                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id),
+                                await repository.LoadPastForTeam(country.fixtureList.away_id), country);
                         }
                         else
                         {
                             //if the country being sent is a new country load all the info on the teams
-                            if (CurrentCountry.fixtureList?.id != countryBefore.fixtureList?.id)
+                            if (country.fixtureList?.id != countryBefore.fixtureList?.id)
                             {
                                 LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
-                                GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id), await repository.LoadPastForTeam(country.fixtureList.away_id));
+                                GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id),
+                                    await repository.LoadPastForTeam(country.fixtureList.away_id), country);
                             }
                             else
                             {
                                 Messenger.Default.Send("loaded");
                             }
                         }
+                        CurrentCountry = country;
                     }
                 }
             }
@@ -588,7 +581,7 @@ namespace FootballApp.ViewModels
         /// </summary>
         /// <param name="homeList"></param>
         /// <param name="awayList"></param>
-        private void GetOdds(List<Match> homeList, List<Match> awayList)
+        private void GetOdds(List<Match> homeList, List<Match> awayList, Country country)
         {
             try
             {
@@ -608,7 +601,7 @@ namespace FootballApp.ViewModels
                 {
                     foreach (Match homeMatch in homeList)
                     {
-                        if (homeMatch.home_name == CurrentCountry.fixtureList.home_name)
+                        if (homeMatch.home_name == country.fixtureList.home_name)
                         {
                             var homeGoals = int.Parse(homeMatch.score.Split('-')[0]);
                             var awayGoals = int.Parse(homeMatch.score.Split('-')[1]);
@@ -631,7 +624,7 @@ namespace FootballApp.ViewModels
 
                     foreach (Match awayMatch in awayList)
                     {
-                        if (awayMatch.away_name == CurrentCountry.fixtureList.away_name)
+                        if (awayMatch.away_name == country.fixtureList.away_name)
                         {
                             var homeGoals = int.Parse(awayMatch.score.Split('-')[0]);
                             var awayGoals = int.Parse(awayMatch.score.Split('-')[1]);
@@ -1138,6 +1131,54 @@ namespace FootballApp.ViewModels
             collection[0].Values.Insert(0, double.Parse(stat.Split(':')[0]));
             //adds the away stat
             collection[1].Values.Insert(0, double.Parse(stat.Split(':')[1]));
+        }
+
+        private void GetLogos(List<Logo> Logos, string matchOrFixture, Country country)
+        {
+            
+
+            if (matchOrFixture == "match")
+            {
+                //looks for team logos
+                foreach (var logo in Logos)
+                {
+                    if (country.matchList.home_name.ToLower() == logo.team_name.ToLower() ||
+                        country.matchList.home_name.Contains(logo.team_name) ||
+                        $"FC {country.matchList.home_name}".Contains(logo.team_name) ||
+                        $"{country.matchList.home_name} FC".Contains(logo.team_name))
+                    {
+                        country.matchList.home_logo = logo.logo;
+                    }
+                    if (country.matchList.away_name.ToLower() == logo.team_name.ToLower() ||
+                        country.matchList.away_name.Contains(logo.team_name) ||
+                        $"FC {country.matchList.away_name}".Contains(logo.team_name) ||
+                        $"{country.matchList.away_name} FC".Contains(logo.team_name))
+                    {
+                        country.matchList.away_logo = logo.logo;
+                    }
+                }
+            }
+            else
+            {
+                //looks for team logos
+                foreach (var logo in repository.LoadLogos())
+                {
+                    if (country.fixtureList.home_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
+                        country.fixtureList.home_name.Replace("amp;", "").Contains(logo.team_name) ||
+                        $"FC {country.fixtureList.home_name.Replace("amp;", "")}".Contains(logo.team_name) ||
+                        $"{country.fixtureList.home_name.Replace("amp;", "")} FC".Contains(logo.team_name))
+                    {
+                        country.fixtureList.home_logo = logo.logo;
+                    }
+                    if (country.fixtureList.away_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
+                        country.fixtureList.away_name.Replace("amp;", "").Contains(logo.team_name) ||
+                        $"FC {country.fixtureList.away_name.Replace("amp;", "")}".Contains(logo.team_name) ||
+                        $"{country.fixtureList.away_name.Replace("amp;", "")} FC".Contains(logo.team_name))
+                    {
+                        country.fixtureList.away_logo = logo.logo;
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -25,14 +25,6 @@ namespace FootballApp.ViewModels
         /// <summary>
         /// Lists for storing links to all the logos
         /// </summary>
-        private List<Logo> _logoList;
-
-        public List<Logo> LogoList
-        {
-            get { return _logoList; }
-            set { SetProperty(ref _logoList, value); }
-        }
-
         private List<LeagueLogo> _leagueLogoList;
 
         public List<LeagueLogo> LeagueLogoList
@@ -356,8 +348,6 @@ namespace FootballApp.ViewModels
         {
             try
             {
-                LogoList = repository.LoadLogos();
-                //LogoList = new List<Logo>();
                 LeagueLogoList = repository.LoadLeagueLogos();
                 FederationList = await repository.LoadFederation();
                 CompetitionList = await repository.LoadCompetition();
@@ -626,7 +616,7 @@ namespace FootballApp.ViewModels
         private void CheckForFixturesAndMatches(Country country, Competition competition, Country federation)
         {
             try
-            { 
+            {
                 var countryName = (country != null) ? country.name : federation.name;
                 var leagueLogo = $"{countryName} - {competition.name}";
                 foreach (LeagueLogo logo in LeagueLogoList)
@@ -637,6 +627,7 @@ namespace FootballApp.ViewModels
                         leagueLogo = logo.logo;
                     }
                 }
+
                 foreach (Match match in MatchList)
                 {
                     if (match.competition_id == competition.id.ToString())
@@ -649,29 +640,11 @@ namespace FootballApp.ViewModels
                             match.home_name = match.home_name.Replace("amp;", "");
                             match.away_name = match.away_name.Replace("amp;", "");
 
-                            foreach (var logo in LogoList)
-                            {
-                                if (match.home_name.ToLower() == logo.team_name.ToLower() ||
-                                    match.home_name.Contains(logo.team_name) ||
-                                    $"FC {match.home_name}".Contains(logo.team_name) ||
-                                    $"{match.home_name} FC".Contains(logo.team_name))
-                                {
-                                    match.home_logo = logo.logo;
-                                }
-                                if (match.away_name.ToLower() == logo.team_name.ToLower() ||
-                                    match.away_name.Contains(logo.team_name) ||
-                                    $"FC {match.away_name}".Contains(logo.team_name) ||
-                                    $"{match.away_name} FC".Contains(logo.team_name))
-                                {
-                                    match.away_logo = logo.logo;
-                                }
-                            }
-
                             var countryToAdd = new Country
                             {
                                 index = match.id,
                                 id = (country != null) ? country.id : federation.id,
-                                league_id =match.league_id,
+                                league_id = match.league_id,
                                 competition_id = competition.id.ToString(),
                                 name = (country != null) ? country.name : federation.name,
                                 leagueName = competition.name,
@@ -684,32 +657,11 @@ namespace FootballApp.ViewModels
                         }
                     }
                 }
+
                 foreach (Fixture fixture in FixtureList)
                 {
                     if (fixture.competition_id == competition.id.ToString())
                     {
-                        string homeLogo = "";
-                        string awayLogo = "";
-
-                        //looks for team logos
-                        foreach (var logo in LogoList)
-                        {
-                            if (fixture.home_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
-                                fixture.home_name.Replace("amp;", "").Contains(logo.team_name) ||
-                                $"FC {fixture.home_name.Replace("amp;", "")}".Contains(logo.team_name) ||
-                                $"{fixture.home_name.Replace("amp;", "")} FC".Contains(logo.team_name))
-                            {
-                                homeLogo = logo.logo;
-                            }
-                            if (fixture.away_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
-                                fixture.away_name.Replace("amp;", "").Contains(logo.team_name) ||
-                                $"FC {fixture.away_name.Replace("amp;", "")}".Contains(logo.team_name) ||
-                                $"{fixture.away_name.Replace("amp;", "")} FC".Contains(logo.team_name))
-                            {
-                                awayLogo = logo.logo;
-                            }
-                        }
-
                         string[] splitTime = fixture.time.Split(':');
                         //change time to correct time zome
                         //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
@@ -768,7 +720,7 @@ namespace FootballApp.ViewModels
                                 {
                                     round = fixture.round;
                                 }
-                                
+
                                 break;
                         }
 
@@ -784,8 +736,8 @@ namespace FootballApp.ViewModels
                             away_name = fixture.away_name.Replace("amp;", ""),
                             league_id = fixture.league_id,
                             competition_id = fixture.competition_id,
-                            home_logo = homeLogo,
-                            away_logo = awayLogo
+                            home_logo = "",
+                            away_logo = ""
                         };
 
                         var countryToAdd = new Country
