@@ -65,6 +65,13 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _fixtureSelected, value); }
         }
 
+        private bool _noMatchSelected = true;
+        public bool NoMatchSelected
+        {
+            get { return _noMatchSelected; }
+            set { SetProperty(ref _noMatchSelected, value); }
+        }
+
         /// <summary>
         /// when there are no events to show equal false
         /// </summary>
@@ -295,6 +302,7 @@ namespace FootballApp.ViewModels
             {
                 if (country != null)
                 {
+                    NoMatchSelected = false;
                     //if there was previously a country selected keep it in memory to compare against the newly selected country
                     var countryBefore = (CurrentCountry != null) ? CurrentCountry : null;
                     CurrentCountry = null;
