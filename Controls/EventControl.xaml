@@ -4,27 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             xmlns:behaviors="clr-namespace:FootballApp.Classes"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:uc="clr-namespace:FootballApp.Controls"
              mc:Ignorable="d"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}">
-    <Grid Margin="0,-25,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <uc:MatchInfo/>
-        <uc:FixtureInfo Grid.RowSpan="2"/>
-        <Border BorderBrush="Black"
-                BorderThickness="0,2,0,0"
-                Grid.Row="1"
-                Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  Margin="0,-25,0,0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <uc:MatchInfo/>
+            <uc:FixtureInfo Grid.RowSpan="2"/>
+            <Border BorderBrush="Black"
+                    BorderThickness="0,2,0,0"
+                    Grid.Row="1"
+                    Visibility="{Binding MatchSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel>
-                    <i:Interaction.Behaviors>
-                        <behaviors:ScrollParentWhenAtMax />
-                    </i:Interaction.Behaviors>
                     <!--Stats-->
                     <Expander Header="Statistics"
                               Visibility="{Binding NoStats, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -128,8 +124,8 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-            </ScrollViewer>
-        </Border>
-        <uc:WelcomeControl Grid.RowSpan="2"/>
-    </Grid>
+            </Border>
+            <uc:WelcomeControl Grid.RowSpan="2"/>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
