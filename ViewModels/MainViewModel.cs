@@ -132,6 +132,8 @@ namespace FootballApp.ViewModels
                 case "resetRequest":
                     RequestCount = 0;
                     break;
+                case "TooManyRequests":
+                    break;
                 default:
                     int i = 0;
                     if (int.TryParse(dataLoaded, out i))
