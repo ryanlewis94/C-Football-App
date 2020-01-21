@@ -3,8 +3,10 @@ using FootballApp.Classes;
 using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using FootballApp.Commands;
 using LiveCharts;
 using LiveCharts.Wpf;
 
@@ -13,6 +15,7 @@ namespace FootballApp.ViewModels
     public class EventsViewModel : ViewModelBase
     {
         private IFootball repository;
+        public ICommand TeamClickedCommand { get; set; }
 
         private DispatcherTimer CountdownTimer { get; set; }
 
@@ -277,7 +280,13 @@ namespace FootballApp.ViewModels
         {
             repository = new Football();
             LoadEvents();
+            TeamClickedCommand = new RelayCommand(TeamClicked);
             CountdownTimer = new DispatcherTimer();
+        }
+
+        private void TeamClicked(object teamId)
+        {
+            Messenger.Default.Send($"teamId={teamId}");
         }
 
         /// <summary>

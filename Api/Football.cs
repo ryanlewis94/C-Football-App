@@ -149,7 +149,7 @@ namespace FootballApp.Api
                 if (response.IsSuccessStatusCode)
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
-                    Model @event = stream.ReadAndDeserializeFromJson<Model>();
+                    Events @event = stream.ReadAndDeserializeFromJson<Events>();
                     Messenger.Default.Send("request");
 
                     return @event?.data?.@event;

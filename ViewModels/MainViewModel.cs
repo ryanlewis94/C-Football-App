@@ -1,6 +1,4 @@
 ﻿using FootballApp.Utility;
-using System;
-using System.Windows.Threading;
 
 namespace FootballApp.ViewModels
 {
@@ -139,6 +137,10 @@ namespace FootballApp.ViewModels
                     if (int.TryParse(dataLoaded, out i))
                     {
                         MatchCount = i;
+                    }
+                    else if (dataLoaded.Contains("teamId"))
+                    {
+                        break;
                     }
                     else
                     {

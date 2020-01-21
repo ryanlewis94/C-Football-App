@@ -146,6 +146,8 @@
     <Compile Include="Api\StreamExtensions.cs" />
     <Compile Include="Classes\ConfigSettings.cs" />
     <Compile Include="Classes\Data.cs" />
+    <Compile Include="Classes\EventData.cs" />
+    <Compile Include="Classes\Events.cs" />
     <Compile Include="Classes\Model.cs" />
     <Compile Include="Classes\Models.cs" />
     <Compile Include="Classes\behaviors\PersistGroupExpandedStateBehavior.cs" />

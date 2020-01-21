@@ -277,6 +277,11 @@ namespace FootballApp.ViewModels
             if (obj == "loaded") IsProcessing = false;
             if (obj == "unloaded") IsProcessing = true;
             if (obj == "TooManyRequests") IsTooMany = true;
+
+            if (obj.Contains("teamId"))
+            {
+                LoadTeamGames(obj.Split('=')[1]);
+            }
         }
 
         /// <summary>
@@ -455,6 +460,14 @@ namespace FootballApp.ViewModels
             {
                 errorHandler.CheckErrorMessage(ex);
             }
+        }
+
+        private void LoadTeamGames(string teamId)
+        {
+            //Load Team Fixtures
+            //Load Team Matches
+            //May have to create new list
+            Console.WriteLine(teamId);
         }
 
         /// <summary>

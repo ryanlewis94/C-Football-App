@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=EventsViewModel}"
              mc:Ignorable="d">
     <!--Fixture info-->
@@ -39,18 +40,54 @@
                            FontWeight="SemiBold"
                            TextAlignment="Center"/>
             </StackPanel>
-            <Image Source="{Binding fixtureList.home_logo}"
-                   Width="100"
-                   Margin="5"/>
-            <Border BorderBrush="Black"
-                    BorderThickness="0,0,1,0"
-                    Grid.Row="1">
+                <Image Source="{Binding fixtureList.home_logo}"
+                       Width="100"
+                       Margin="5"
+                       Cursor="Hand">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Opacity" Value="1"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TeamClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                                   CommandParameter="{Binding fixtureList.home_id}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+                <Border BorderBrush="Black"
+                        BorderThickness="0,0,1,0"
+                        Grid.Row="1">
                 <TextBlock Text="{Binding fixtureList.home_name}"
                            FontSize="24"
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center"
+                           Cursor="Hand">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.7"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TeamClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                                   CommandParameter="{Binding fixtureList.home_id}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
             </Border>
             <TextBlock Grid.Column="1" 
                        Text="{Binding fixtureList.time}" 
@@ -62,7 +99,25 @@
             <Image Source="{Binding fixtureList.away_logo}"
                    Grid.Column="2"
                    Width="100"
-                   Margin="5"/>
+                   Margin="5"
+                   Cursor="Hand">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Opacity" Value="1"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TeamClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                               CommandParameter="{Binding fixtureList.away_id}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Image>
             <Border BorderBrush="Black"
                     BorderThickness="1,0,0,0"
                     Grid.Column="2"
@@ -72,7 +127,25 @@
                            FontWeight="SemiBold"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center"
+                           Cursor="Hand">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.7"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TeamClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                                   CommandParameter="{Binding fixtureList.away_id}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
             </Border>
             <!--Current Form-->
             <StackPanel Grid.Row="2"

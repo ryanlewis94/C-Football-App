@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace FootballApp.Classes
 {
@@ -12,7 +8,6 @@ namespace FootballApp.Classes
         public List<League> league { get; set; }
         public List<Match> match { get; set; }
         public List<Table> table { get; set; }
-        public List<Event> @event { get; set; }
         public List<Fixture> fixtures { get; set; }
         public List<Competition> competition { get; set; }
         public List<Country> federation { get; set; }
