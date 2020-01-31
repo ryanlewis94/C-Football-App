@@ -163,13 +163,17 @@ namespace FootballApp.Api
         }
 
 
-        public async Task<List<Fixture>> LoadFixture(DateTime? date, int pageNo)
+        public async Task<List<Fixture>> LoadFixture(DateTime? date, string teamId, int pageNo)
         {
-            string[] currentDate = date.ToString().Split(' ');
-            string[] convertedDate = currentDate[0].Split('/');
-            string fixtureDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
+            var fixtureDate = "";
+            if (date != null)
+            {
+                string[] currentDate = date.ToString().Split(' ');
+                string[] convertedDate = currentDate[0].Split('/');
+                fixtureDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
+            }
 
-            string url = $"https://livescore-api.com/api-client/fixtures/matches.json?key={Api.Key}&secret={Api.Secret}&date={fixtureDate}&page={pageNo}";
+            string url = $"https://livescore-api.com/api-client/fixtures/matches.json?key={Api.Key}&secret={Api.Secret}&date={fixtureDate}&team={teamId}&page={pageNo}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -188,13 +192,17 @@ namespace FootballApp.Api
             }
         }
 
-        public async Task<List<Match>> LoadPast(DateTime? date, int pageNo)
+        public async Task<List<Match>> LoadPast(DateTime? date, string teamId, int pageNo)
         {
-            string[] currentDate = date.ToString().Split(' ');
-            string[] convertedDate = currentDate[0].Split('/');
-            string pastDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
+            var pastDate = "";
+            if (date != null)
+            {
+                string[] currentDate = date.ToString().Split(' ');
+                string[] convertedDate = currentDate[0].Split('/');
+                pastDate = $"{convertedDate[2]}-{convertedDate[1]}-{convertedDate[0]}";
+            }
 
-            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&from={pastDate}&to={pastDate}&page={pageNo}";
+            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&from={pastDate}&to={pastDate}&team={teamId}&page={pageNo}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {

@@ -8,11 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/goal.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/owngoal.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/penalty.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/red.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/yellow.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/events/yellowred.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/redcircle.jpg")]
 
 

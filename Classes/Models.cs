@@ -122,6 +122,7 @@ namespace FootballApp.Classes
         public string competition_id { get; set; }
         public string home_logo { get; set; }
         public string away_logo { get; set; }
+        public Competition competition { get; set; }
     }
 
     public class Team

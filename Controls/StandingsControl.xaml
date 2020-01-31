@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="400"
@@ -39,12 +40,20 @@
                       Padding="20"
                       AlternationCount="2"
                       MinColumnWidth="50"
-                      MinRowHeight="35">
+                      MinRowHeight="35"
+                      SelectionMode="Single"
+                      SelectedItem="{Binding SelectedTeam}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding TeamClickedCommand}"
+                                               CommandParameter="{Binding SelectedTeam.team_id}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Opacity" Value="1"/>
                         <Setter Property="Cursor" Value="Hand"/>
-                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <!--<Setter Property="IsHitTestVisible" Value="False"/>-->
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Opacity" Value="0.7"/>
@@ -83,6 +92,5 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
-        
     </Grid>
 </UserControl>

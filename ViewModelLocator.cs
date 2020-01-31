@@ -13,6 +13,7 @@ namespace FootballApp
         private static CountryViewModel countryViewModel = new CountryViewModel();
         private static StandingsViewModel standingsViewModel = new StandingsViewModel();
         private static EventsViewModel eventsViewModel = new EventsViewModel();
+        private static TeamViewModel teamViewModel = new TeamViewModel();
 
         public static MainViewModel MainViewModel
         {
@@ -43,6 +44,14 @@ namespace FootballApp
             get
             {
                 return eventsViewModel;
+            }
+        }
+
+        public static TeamViewModel TeamViewModel
+        {
+            get
+            {
+                return teamViewModel;
             }
         }
     }

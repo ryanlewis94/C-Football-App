@@ -253,3 +253,5 @@ C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\FootballApp.csproj.
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\FootballApp.exe
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\FootballApp.pdb
 C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\FootballApp.csprojAssemblyReference.cache
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\TeamControl.baml
+C:\Radis\Sandbox\RyanLewis\FootballApp\FootballApp\obj\Debug\Controls\TeamControl.g.cs

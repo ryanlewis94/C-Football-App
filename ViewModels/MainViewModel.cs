@@ -28,6 +28,14 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _leagueSelectedBool, value); }
         }
 
+        private bool _teamSelectedBool;
+
+        public bool TeamSelectedBool
+        {
+            get { return _teamSelectedBool; }
+            set { SetProperty(ref _teamSelectedBool, value); }
+        }
+
         private bool _loadingData = true;
 
         public bool LoadingData
@@ -74,6 +82,14 @@ namespace FootballApp.ViewModels
         {
             get { return _timeUpdated; }
             set { SetProperty(ref _timeUpdated, value); }
+        }
+
+        private string _teamName;
+
+        public string TeamName
+        {
+            get { return _teamName; }
+            set { SetProperty(ref _teamName, value); }
         }
 
         #endregion
@@ -138,9 +154,17 @@ namespace FootballApp.ViewModels
                     {
                         MatchCount = i;
                     }
-                    else if (dataLoaded.Contains("teamId"))
+                    else if (dataLoaded.Contains("teamId") ||
+                             dataLoaded.Contains("fixtureId") ||
+                             dataLoaded.Contains("matchId"))
                     {
                         break;
+                    }
+                    else if (dataLoaded.Contains("teamName"))
+                    {
+                        TeamName = dataLoaded.Split('=')[1];
+                        TeamSelectedBool = true;
+                        TabIndex = 2;
                     }
                     else
                     {

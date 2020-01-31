@@ -191,7 +191,7 @@
                 </GroupStyle>
             </ListView.GroupStyle>
         </ListView>
-        <!--When there are no events to display-->
+        <!--When there are no matches to display-->
         <StackPanel Grid.Row="1" 
                     Margin="0,50,0,0"
                     Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">

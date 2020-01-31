@@ -259,11 +259,11 @@ namespace FootballApp.ViewModels
             repository = new Football();
             LoadCommands();
             LoadTimers();
+            Messenger.Default.Register<string>(this, FinishedProcessing);
         }
 
         private void LoadCommands()
         {
-            Messenger.Default.Register<string>(this, FinishedProcessing);
             MatchSelectedCommand = new CustomCommand(SelectMatch, CanSelectMatch);
             MatchClickedCommand = new CustomCommand(MatchClicked, CanClickMatch);
         }
@@ -278,10 +278,8 @@ namespace FootballApp.ViewModels
             if (obj == "unloaded") IsProcessing = true;
             if (obj == "TooManyRequests") IsTooMany = true;
 
-            if (obj.Contains("teamId"))
-            {
-                LoadTeamGames(obj.Split('=')[1]);
-            }
+            //when game selected from team screen
+            if (obj.Contains("matchId") || obj.Contains("fixtureId")) CheckMatches(obj);
         }
 
         /// <summary>
@@ -368,7 +366,7 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// if the date selected is todays date then load the live matches and at to the matches already played
+        /// if the date selected is todays date then load the live matches and add to the matches already played
         /// </summary>
         private async void CheckDate()
         {
@@ -406,7 +404,7 @@ namespace FootballApp.ViewModels
                     do
                     {
                         i = i + 1;
-                        FixtureList = await repository.LoadFixture(DateSelected, i);
+                        FixtureList = await repository.LoadFixture(DateSelected, "", i);
                         FixturePageList = FixturePageList.Concat(FixtureList).ToList();
 
                     } while (FixtureList.Count == 30);
@@ -425,7 +423,7 @@ namespace FootballApp.ViewModels
                     do
                     {
                         i = i + 1;
-                        PastMatchList = await repository.LoadPast(DateSelected, i);
+                        PastMatchList = await repository.LoadPast(DateSelected, "", i);
                         prevMatches = prevMatches.Concat(PastMatchList).ToList();
 
                     } while (PastMatchList.Count == 30);
@@ -460,14 +458,6 @@ namespace FootballApp.ViewModels
             {
                 errorHandler.CheckErrorMessage(ex);
             }
-        }
-
-        private void LoadTeamGames(string teamId)
-        {
-            //Load Team Fixtures
-            //Load Team Matches
-            //May have to create new list
-            Console.WriteLine(teamId);
         }
 
         /// <summary>
@@ -631,12 +621,13 @@ namespace FootballApp.ViewModels
             try
             {
                 var countryName = (country != null) ? country.name : federation.name;
-                var leagueLogo = $"{countryName} - {competition.name}";
+                var leagueLogo = $"{countryName} - {competition.name}"; //the name displayed if a league logo cannot be found
                 foreach (LeagueLogo logo in LeagueLogoList)
                 {
                     if (countryName.ToLower() == logo.country_name.ToLower() &&
                         competition.name.ToLower() == logo.name.ToLower())
                     {
+                        //set league logo
                         leagueLogo = logo.logo;
                     }
                 }
@@ -815,7 +806,96 @@ namespace FootballApp.ViewModels
                 Messenger.Default.Send(0); //TabIndex
             }
         }
-        
+
+        /// <summary>
+        /// when a country is selected on the team view look for it in the current list
+        /// </summary>
+        /// <param name="id"></param>
+        private async void CheckMatches(string id)
+        {
+            try
+            {
+                SelectedCountry = null;
+                CurrentCountry = null;
+                //loop through the current list
+                foreach (Country country in MainList)
+                {
+                    if (id.Contains("matchId") && country.matchList != null)
+                    {
+                        if (id.Split('=')[1] == country.matchList.id)
+                        {
+                            //if the match is in the current list select it
+                            CurrentCountry = country;
+                            return;
+                        }
+                            
+                    }
+
+                    if (id.Contains("fixtureId") && country.fixtureList != null)
+                    {
+                        if (id.Split('=')[1] == country.fixtureList.id)
+                        {
+                            //if the fixture is in the current list select it
+                            CurrentCountry = country;
+                            return;
+                        }
+                    }
+                }
+                //if not in the current list (different date) loop through the live matches
+                foreach (Match match in await repository.LoadLive())
+                {
+                    if (id.Contains("matchId"))
+                    {
+                        //match found in the list then create a country with the match to keep it up to date
+                        if (id.Split('=')[1] == match.id)
+                        {
+                            CurrentCountry = new Country()
+                            {
+                                index = "",
+                                id = "",
+                                league_id = "",
+                                competition_id = match.competition_id,
+                                name = "",
+                                leagueName = match.competition_name,
+                                matchList = match,
+                                fixtureList = null,
+                                logo = match.competition_name
+                            };
+                            return;
+                        }
+                    }
+                    if (id.Contains("fixtureId"))
+                    {
+                        if (match.score != "? - ?")
+                        {
+                            //match found with fixture id then create a country with the match to keep it up to date
+                            if (id.Split('=')[1] == match.fixture_id)
+                            {
+                                CurrentCountry = new Country()
+                                {
+                                    index = "",
+                                    id = "",
+                                    league_id = "",
+                                    competition_id = match.competition_id,
+                                    name = "",
+                                    leagueName = match.competition_name,
+                                    matchList = match,
+                                    fixtureList = null,
+                                    logo = match.competition_name
+                                };
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorHandler.CheckErrorMessage(ex);
+            }
+            finally { SelectedCountry = CurrentCountry; }
+        }
+
         /// <summary>
         /// This is necessary to cut out multiple selection
         /// </summary>

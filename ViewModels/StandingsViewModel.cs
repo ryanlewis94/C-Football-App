@@ -4,12 +4,15 @@ using FootballApp.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
+using FootballApp.Commands;
 
 namespace FootballApp.ViewModels
 {
     public class StandingsViewModel : ViewModelBase
     {
         private IFootball repository;
+        public ICommand TeamClickedCommand { get; set; }
 
         /// <summary>
         /// stores the league standings
@@ -20,6 +23,14 @@ namespace FootballApp.ViewModels
         {
             get { return _standingsList; }
             set { SetProperty(ref _standingsList, value); }
+        }
+
+        private Table _selectedTeam;
+
+        public Table SelectedTeam
+        {
+            get { return _selectedTeam; }
+            set { SetProperty(ref _selectedTeam, value); }
         }
 
         /// <summary>
@@ -42,6 +53,7 @@ namespace FootballApp.ViewModels
         public StandingsViewModel()
         {
             repository = new Football();
+            TeamClickedCommand = new RelayCommand(TeamClicked);
             LoadStandings();
         }
 
@@ -228,6 +240,20 @@ namespace FootballApp.ViewModels
             catch (Exception ex)
             {
                 errorHandler.CheckErrorMessage(ex);
+            }
+        }
+
+        private void TeamClicked(object teamId)
+        {
+            foreach (Table team in StandingsList)
+            {
+                if (teamId.ToString() == team.team_id)
+                {
+                    Messenger.Default.Send($"teamName={team.name}");
+                    Messenger.Default.Send($"teamId={teamId}");
+                    SelectedTeam = null;
+                    break;
+                }
             }
         }
     }

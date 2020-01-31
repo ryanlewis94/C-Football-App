@@ -170,6 +170,9 @@
     <Compile Include="Controls\StandingsControl.xaml.cs">
       <DependentUpon>StandingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TeamControl.xaml.cs">
+      <DependentUpon>TeamControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WelcomeControl.xaml.cs">
       <DependentUpon>WelcomeControl.xaml</DependentUpon>
     </Compile>
@@ -188,6 +191,7 @@
     <Compile Include="ViewModels\EventsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\StandingsViewModel.cs" />
+    <Compile Include="ViewModels\TeamViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="Controls\CountryControl.xaml">
       <SubType>Designer</SubType>
@@ -210,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StandingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TeamControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -274,7 +282,9 @@
     <Resource Include="Resources\football-2-48.ico" />
     <Resource Include="Resources\football-2-48.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\redCircle.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\events\Goal.png" />
     <Resource Include="Resources\events\ownGoal.png" />

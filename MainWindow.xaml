@@ -68,7 +68,7 @@
                                                    controls:TabControlHelper.Transition="Down"
                                                    Padding="0,50,0,0">
             <!--Event Tab-->
-            <TabItem Header="LiveScores"
+            <TabItem Header="Match"
                      Visibility="{Binding MatchData, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:EventControl/>
             </TabItem>
@@ -76,6 +76,10 @@
             <TabItem Header="Standings"
                      Visibility="{Binding LeagueSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
                 <uc:StandingsControl/>
+            </TabItem>
+            <TabItem Header="{Binding TeamName}"
+                     Visibility="{Binding TeamSelectedBool, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+                <uc:TeamControl/>
             </TabItem>
         </controls:MetroAnimatedSingleRowTabControl>
         

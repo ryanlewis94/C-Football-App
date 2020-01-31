@@ -284,9 +284,19 @@ namespace FootballApp.ViewModels
             CountdownTimer = new DispatcherTimer();
         }
 
+        /// <summary>
+        /// when a team is selected send the team id and team name
+        /// </summary>
+        /// <param name="teamId"></param>
         private void TeamClicked(object teamId)
         {
             Messenger.Default.Send($"teamId={teamId}");
+            string teamName = "Team Name";
+            if (teamId.ToString() == CurrentCountry.matchList?.home_id) teamName = CurrentCountry.matchList.home_name;
+            if (teamId.ToString() == CurrentCountry.matchList?.away_id) teamName = CurrentCountry.matchList.away_name;
+            if (teamId.ToString() == CurrentCountry.fixtureList?.home_id) teamName = CurrentCountry.fixtureList.home_name;
+            if (teamId.ToString() == CurrentCountry.fixtureList?.away_id) teamName = CurrentCountry.fixtureList.away_name;
+            Messenger.Default.Send($"teamName={teamName}");
         }
 
         /// <summary>
@@ -1152,11 +1162,9 @@ namespace FootballApp.ViewModels
 
         private void GetLogos(List<Logo> Logos, string matchOrFixture, Country country)
         {
-            
-
             if (matchOrFixture == "match")
             {
-                //looks for team logos
+                //looks for team logos for matches
                 foreach (var logo in Logos)
                 {
                     if (country.matchList.home_name.ToLower() == logo.team_name.ToLower() ||
@@ -1177,8 +1185,8 @@ namespace FootballApp.ViewModels
             }
             else
             {
-                //looks for team logos
-                foreach (var logo in repository.LoadLogos())
+                //looks for team logos for fixtures
+                foreach (var logo in Logos)
                 {
                     if (country.fixtureList.home_name.Replace("amp;", "").ToLower() == logo.team_name.ToLower() ||
                         country.fixtureList.home_name.Replace("amp;", "").Contains(logo.team_name) ||
