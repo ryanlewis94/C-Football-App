@@ -268,7 +268,7 @@ namespace FootballApp.Api
 
         public async Task<Data> LoadStats(string matchId)
         {
-            string url = $"https://live-score-api.com/api-client/matches/stats.json?match_id={matchId}&key=J0C7r92vwFrHvG86&secret=mdxZfbxWVCgDpi28iEfJOiflYH3unbAK";
+            string url = $"https://live-score-api.com/api-client/matches/stats.json?match_id={matchId}&key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {

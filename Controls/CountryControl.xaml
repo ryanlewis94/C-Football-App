@@ -1,210 +1,210 @@
 ﻿<UserControl x:Class="FootballApp.Controls.CountryControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
-             xmlns:behaviors="clr-namespace:FootballApp.Classes"
-             mc:Ignorable="d"
-             DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
-    <!--added Enter key binding for selecting a match-->
-    <UserControl.InputBindings>
-        <KeyBinding Command="{Binding MatchSelectedCommand}" 
-		            Key="Return" />
-    </UserControl.InputBindings>
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+			 xmlns:System="clr-namespace:System;assembly=mscorlib"
+			 xmlns:behaviors="clr-namespace:FootballApp.Classes"
+			 mc:Ignorable="d"
+			 DataContext="{Binding Source={StaticResource mainViewModelLocator}, Path=CountryViewModel}">
+	<!--added Enter key binding for selecting a match-->
+	<UserControl.InputBindings>
+		<KeyBinding Command="{Binding MatchSelectedCommand}" 
+					Key="Return" />
+	</UserControl.InputBindings>
 
-    <!--Grouped Collection-->
-    <UserControl.Resources>
-        <CollectionViewSource x:Key="GroupedLeagues"
-                              IsLiveGroupingRequested="True"
-                              Source="{Binding MainList}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="name"/>
-                <PropertyGroupDescription PropertyName="leagueName" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-    </UserControl.Resources>
+	<!--Grouped Collection-->
+	<UserControl.Resources>
+		<CollectionViewSource x:Key="GroupedLeagues"
+							  IsLiveGroupingRequested="True"
+							  Source="{Binding MainList}">
+			<CollectionViewSource.GroupDescriptions>
+				<PropertyGroupDescription PropertyName="name"/>
+				<PropertyGroupDescription PropertyName="leagueName" />
+			</CollectionViewSource.GroupDescriptions>
+		</CollectionViewSource>
+	</UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"></RowDefinition>
-            <RowDefinition Height="9.5*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="125"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <!--Search Box-->
-            <TextBox VerticalAlignment="Center"
-                     Text="{Binding SearchText}"
-                     TextChanged="TextBox_TextChanged"
-                     MaxLength="100"
-                     FontSize="18"
-                     BorderThickness="0"
-                     controls:TextBoxHelper.Watermark="Search..."
-                     controls:TextBoxHelper.ClearTextButton="True">
-            </TextBox>
-            <!--Date Selector-->
-            <DatePicker x:Name="myDatePicker"
-                        SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
-                        HorizontalAlignment="Right" Grid.Column="1">
-                <DatePicker.Resources>
-                    <Style TargetType="DatePickerTextBox">
-                        <Setter Property="IsReadOnly"
-                                Value="True" />
-                        <Setter Property="VerticalAlignment"
-                                Value="Center" />
-                        <Setter Property="FontWeight"
-                                Value="Bold"/>
-                    </Style>
-                </DatePicker.Resources>
-            </DatePicker>
-        </Grid>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="0.5*"></RowDefinition>
+			<RowDefinition Height="9.5*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"></ColumnDefinition>
+				<ColumnDefinition Width="125"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<!--Search Box-->
+			<TextBox VerticalAlignment="Center"
+					 Text="{Binding SearchText}"
+					 TextChanged="TextBox_TextChanged"
+					 MaxLength="100"
+					 FontSize="18"
+					 BorderThickness="0"
+					 controls:TextBoxHelper.Watermark="Search..."
+					 controls:TextBoxHelper.ClearTextButton="True">
+			</TextBox>
+			<!--Date Selector-->
+			<DatePicker x:Name="myDatePicker"
+						SelectedDate="{Binding Path=DateSelected, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
+						HorizontalAlignment="Right" Grid.Column="1">
+				<DatePicker.Resources>
+					<Style TargetType="DatePickerTextBox">
+						<Setter Property="IsReadOnly"
+								Value="True" />
+						<Setter Property="VerticalAlignment"
+								Value="Center" />
+						<Setter Property="FontWeight"
+								Value="Bold"/>
+					</Style>
+				</DatePicker.Resources>
+			</DatePicker>
+		</Grid>
 
-        <!--Grouped List-->
-        <ListView DataContext="{StaticResource GroupedLeagues}" 
-                  ItemsSource="{Binding}"
-                  Grid.Row="1">
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander>
-                                            <i:Interaction.Behaviors>
-                                                <behaviors:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
-                                            </i:Interaction.Behaviors>
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" Foreground="White" FontSize="22"/>
-                                                    <TextBlock Text="{Binding ItemCount}" FontSize="14" Foreground="LightGray" FontWeight="Bold" FontStyle="Italic" Margin="10,0,0,0" VerticalAlignment="Bottom" />
-                                                    <TextBlock Text=" Match(es)" FontSize="14" Foreground="LightGray" FontStyle="Italic" VerticalAlignment="Bottom" />
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <Expander.Content>
-                                                <ItemsPresenter />
-                                            </Expander.Content>
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander IsExpanded="True">
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=Name}" 
-                                                               FontWeight="SemiBold" Foreground="White" 
-                                                               FontSize="16"/>
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <Expander.Content>
-                                                <!--Child List of Matches and Fixtures-->
-                                                <ListView ItemsSource="{Binding Items}"
-                                                          SelectionMode="Single"
-                                                          BorderThickness="0"
-                                                          SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
-                                                    <i:Interaction.Behaviors>
-                                                        <behaviors:ScrollParentWhenAtMax />
-                                                    </i:Interaction.Behaviors>
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                                                        </i:EventTrigger>
-                                                        <i:EventTrigger EventName="MouseDoubleClick">
-                                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                    <ListView.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <Border BorderBrush="Black"
-                                                                    BorderThickness="1.5"
-                                                                    CornerRadius="5"
-                                                                    Padding="0,10">
-                                                                <Grid>
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="4.5*" />
-                                                                        <ColumnDefinition Width="1*" />
-                                                                        <ColumnDefinition Width="4.5*" />
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <Grid MaxWidth="200"
-                                                                          Margin="5,0">
-                                                                        <TextBlock Text="{Binding matchList.home_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="WrapWithOverflow"/>
-                                                                        <TextBlock Text="{Binding fixtureList.home_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="WrapWithOverflow"/>
-                                                                    </Grid>
-                                                                    <StackPanel Grid.Column="1">
-                                                                        <TextBlock Text="{Binding matchList.score}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" />
-                                                                        <TextBlock Text="{Binding matchList.time}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center"
-                                                                                   Foreground="Red" />
-                                                                    </StackPanel>
-                                                                    <StackPanel Grid.Column="1">
-                                                                        <TextBlock Text="{Binding fixtureList.time}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" />
-                                                                    </StackPanel>
-                                                                    <Grid MaxWidth="200"
-                                                                          Margin="5,0"
-                                                                          Grid.Column="2">
-                                                                        <TextBlock Text="{Binding matchList.away_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="WrapWithOverflow"/>
-                                                                        <TextBlock Text="{Binding fixtureList.away_name}"
-                                                                                   FontWeight="SemiBold"
-                                                                                   TextAlignment="Center" 
-                                                                                   TextWrapping="WrapWithOverflow"/>
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Border>
-                                                        </DataTemplate>
-                                                    </ListView.ItemTemplate>
-                                                </ListView>
-                                            </Expander.Content>
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-        </ListView>
-        <!--When there are no matches to display-->
-        <StackPanel Grid.Row="1" 
-                    Margin="0,50,0,0"
-                    Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-            <TextBlock Text="No Results Found!"
-                       TextAlignment="Center"
-                       FontSize="32"
-                       Foreground="{DynamicResource AccentColorBrush2}"/>
-            <TextBlock Text="{Binding NoResults}"
-                       TextAlignment="Center"
-                       TextWrapping="Wrap"
-                       Margin="10"
-                       FontSize="18"
-                       Foreground="{DynamicResource AccentColorBrush2}"/>
-        </StackPanel>
-    </Grid>
+		<!--Grouped List-->
+		<ListView DataContext="{StaticResource GroupedLeagues}" 
+				  ItemsSource="{Binding}"
+				  Grid.Row="1">
+			<ListView.GroupStyle>
+				<GroupStyle>
+					<GroupStyle.ContainerStyle>
+						<Style TargetType="{x:Type GroupItem}">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type GroupItem}">
+										<Expander>
+											<i:Interaction.Behaviors>
+												<behaviors:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
+											</i:Interaction.Behaviors>
+											<Expander.Header>
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding Path=Name}" FontWeight="Bold" Foreground="White" FontSize="22"/>
+													<TextBlock Text="{Binding ItemCount}" FontSize="14" Foreground="LightGray" FontWeight="Bold" FontStyle="Italic" Margin="10,0,0,0" VerticalAlignment="Bottom" />
+													<TextBlock Text=" Match(es)" FontSize="14" Foreground="LightGray" FontStyle="Italic" VerticalAlignment="Bottom" />
+												</StackPanel>
+											</Expander.Header>
+											<Expander.Content>
+												<ItemsPresenter />
+											</Expander.Content>
+										</Expander>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</GroupStyle.ContainerStyle>
+				</GroupStyle>
+				<GroupStyle>
+					<GroupStyle.ContainerStyle>
+						<Style TargetType="{x:Type GroupItem}">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type GroupItem}">
+										<Expander IsExpanded="True">
+											<Expander.Header>
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding Path=Name}" 
+															   FontWeight="SemiBold" Foreground="White" 
+															   FontSize="16"/>
+												</StackPanel>
+											</Expander.Header>
+											<Expander.Content>
+												<!--Child List of Matches and Fixtures-->
+												<ListView ItemsSource="{Binding Items}"
+														  SelectionMode="Single"
+														  BorderThickness="0"
+														  SelectedItem="{Binding Path=DataContext.SelectedCountry, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay}">
+													<i:Interaction.Behaviors>
+														<behaviors:ScrollParentWhenAtMax />
+													</i:Interaction.Behaviors>
+													<i:Interaction.Triggers>
+														<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+															<i:InvokeCommandAction Command="{Binding Path=DataContext.MatchClickedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+														</i:EventTrigger>
+														<i:EventTrigger EventName="MouseDoubleClick">
+															<i:InvokeCommandAction Command="{Binding Path=DataContext.MatchSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+														</i:EventTrigger>
+													</i:Interaction.Triggers>
+													<ListView.ItemTemplate>
+														<DataTemplate>
+															<Border BorderBrush="Black"
+																	BorderThickness="1.5"
+																	CornerRadius="5"
+																	Padding="0,10">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="4.5*" />
+																		<ColumnDefinition Width="1*" />
+																		<ColumnDefinition Width="4.5*" />
+																	</Grid.ColumnDefinitions>
+																	<Grid MaxWidth="200"
+																		  Margin="5,0">
+																		<TextBlock Text="{Binding matchList.home_name}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" 
+																				   TextWrapping="WrapWithOverflow"/>
+																		<TextBlock Text="{Binding fixtureList.home_name}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" 
+																				   TextWrapping="WrapWithOverflow"/>
+																	</Grid>
+																	<StackPanel Grid.Column="1">
+																		<TextBlock Text="{Binding matchList.score}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" />
+																		<TextBlock Text="{Binding matchList.time}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center"
+																				   Foreground="Red" />
+																	</StackPanel>
+																	<StackPanel Grid.Column="1">
+																		<TextBlock Text="{Binding fixtureList.time}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" />
+																	</StackPanel>
+																	<Grid MaxWidth="200"
+																		  Margin="5,0"
+																		  Grid.Column="2">
+																		<TextBlock Text="{Binding matchList.away_name}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" 
+																				   TextWrapping="WrapWithOverflow"/>
+																		<TextBlock Text="{Binding fixtureList.away_name}"
+																				   FontWeight="SemiBold"
+																				   TextAlignment="Center" 
+																				   TextWrapping="WrapWithOverflow"/>
+																	</Grid>
+																</Grid>
+															</Border>
+														</DataTemplate>
+													</ListView.ItemTemplate>
+												</ListView>
+											</Expander.Content>
+										</Expander>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</GroupStyle.ContainerStyle>
+				</GroupStyle>
+			</ListView.GroupStyle>
+		</ListView>
+		<!--When there are no matches to display-->
+		<StackPanel Grid.Row="1" 
+					Margin="0,50,0,0"
+					Visibility="{Binding NoCountries, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
+			<TextBlock Text="No Results Found!"
+					   TextAlignment="Center"
+					   FontSize="32"
+					   Foreground="{DynamicResource AccentColorBrush2}"/>
+			<TextBlock Text="{Binding NoResults}"
+					   TextAlignment="Center"
+					   TextWrapping="Wrap"
+					   Margin="10"
+					   FontSize="18"
+					   Foreground="{DynamicResource AccentColorBrush2}"/>
+		</StackPanel>
+	</Grid>
 </UserControl>
