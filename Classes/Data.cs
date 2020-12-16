@@ -36,5 +36,7 @@ namespace FootballApp.Classes
         public string shots_blocked { get; set; }
         public string dangerous_attacks { get; set; }
         public string attacks { get; set; }
+
+        public Lineup lineup { get; set; }
     }
 }

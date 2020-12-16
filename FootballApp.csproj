@@ -144,6 +144,7 @@
     <Compile Include="Api\Football.cs" />
     <Compile Include="Api\IFootball.cs" />
     <Compile Include="Api\StreamExtensions.cs" />
+    <Compile Include="Classes\Betting.cs" />
     <Compile Include="Classes\ConfigSettings.cs" />
     <Compile Include="Classes\Data.cs" />
     <Compile Include="Classes\EventData.cs" />
@@ -178,6 +179,7 @@
     </Compile>
     <Compile Include="ErrorHandling\ErrorHandler.cs" />
     <Compile Include="Utility\PercentageConverter.cs" />
+    <Compile Include="Utility\PoissonDistribution.cs" />
     <Compile Include="Utility\StringCaseIgnore.cs" />
     <Compile Include="Commands\CustomCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />

@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using FootballApp.Commands;
 using LiveCharts;
 using LiveCharts.Wpf;
+using System.Linq;
 
 namespace FootballApp.ViewModels
 {
@@ -149,6 +150,34 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _awayOdds, value); }
         }
 
+        private string _homePercentage;
+        public string HomePercentage
+        {
+            get { return _homePercentage; }
+            set { SetProperty(ref _homePercentage, value); }
+        }
+
+        private string _drawPercentage;
+        public string DrawPercentage
+        {
+            get { return _drawPercentage; }
+            set { SetProperty(ref _drawPercentage, value); }
+        }
+
+        private string _awayPercentage;
+        public string AwayPercentage
+        {
+            get { return _awayPercentage; }
+            set { SetProperty(ref _awayPercentage, value); }
+        }
+
+        private List<ScoreOdds> _matchScoreList;
+        public List<ScoreOdds> MatchScoreList
+        {
+            get { return _matchScoreList; }
+            set { SetProperty(ref _matchScoreList, value); }
+        }
+
         /// <summary>
         /// if no odds available hide
         /// </summary>
@@ -272,6 +301,16 @@ namespace FootballApp.ViewModels
         {
             get { return _leagueName; }
             set { SetProperty(ref _leagueName, value); }
+        }
+
+        /// <summary>
+        /// List for storing the competition past 12 months of matches for betting calculations
+        /// </summary>
+        private List<Match> _competitionMatches;
+        public List<Match> CompetitionMatches
+        {
+            get { return _competitionMatches; }
+            set { SetProperty(ref _competitionMatches, value); }
         }
 
         #endregion
@@ -409,8 +448,18 @@ namespace FootballApp.ViewModels
                         if (countryBefore == null)
                         {
                             LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
-                            GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id),
-                                await repository.LoadPastForTeam(country.fixtureList.away_id), country);
+
+                            int i = 0;
+                            CompetitionMatches = new List<Match>();
+                            var SortCompetitionMatches = new List<Match>();
+                            do //load all matches from multiple pages
+                            {
+                                i = i + 1;
+                                SortCompetitionMatches = await repository.LoadPastForCompetition(country.competition_id, i);
+                                CompetitionMatches = CompetitionMatches.Concat(SortCompetitionMatches).ToList();
+
+                            } while (SortCompetitionMatches.Count == 30);
+                            GetOdds(country);
                         }
                         else
                         {
@@ -418,8 +467,21 @@ namespace FootballApp.ViewModels
                             if (country.fixtureList?.id != countryBefore.fixtureList?.id)
                             {
                                 LoadForm(country.fixtureList.home_id, country.fixtureList.away_id);
-                                GetOdds(await repository.LoadPastForTeam(country.fixtureList.home_id),
-                                    await repository.LoadPastForTeam(country.fixtureList.away_id), country);
+                                
+                                if (country.competition_id != countryBefore.competition_id)
+                                {
+                                    int i = 0;
+                                    CompetitionMatches = new List<Match>();
+                                    var SortCompetitionMatches = new List<Match>();
+                                    do //load all matches from multiple pages
+                                    {
+                                        i = i + 1;
+                                        SortCompetitionMatches = await repository.LoadPastForCompetition(country.competition_id, i);
+                                        CompetitionMatches = CompetitionMatches.Concat(SortCompetitionMatches).ToList();
+
+                                    } while (SortCompetitionMatches.Count == 30);
+                                }
+                                GetOdds(country);
                             }
                             else
                             {
@@ -604,101 +666,228 @@ namespace FootballApp.ViewModels
         }
 
         /// <summary>
-        /// Calculate the Odds from the past matches of the last 4 months
+        /// Calculate the Odds from the past matches of the last 12 months
         /// </summary>
         /// <param name="homeList"></param>
         /// <param name="awayList"></param>
-        private void GetOdds(List<Match> homeList, List<Match> awayList, Country country)
+        private async void GetOdds(Country country)
         {
+            var homeList = new List<Match>();
+            var awayList = new List<Match>();
+
+            int i = 0;
+            var HomeMatchPageList = new List<Match>();
+            var HomePrevMatches = new List<Match>();
+            do //load all matches from multiple pages
+            {
+                i = i + 1;
+                HomePrevMatches = await repository.LoadPastForTeam(country.fixtureList.home_id, i);
+                HomeMatchPageList = HomeMatchPageList.Concat(HomePrevMatches).ToList();
+
+            } while (HomePrevMatches.Count == 30);
+            homeList = HomeMatchPageList.Where(x => x.competition_id.Equals(country.competition_id)).ToList();
+
+            i = 0;
+            var AwayMatchPageList = new List<Match>();
+            var AwayPrevMatches = new List<Match>();
+            do //load all matches from multiple pages
+            {
+                i = i + 1;
+                AwayPrevMatches = await repository.LoadPastForTeam(country.fixtureList.away_id, i);
+                AwayMatchPageList = AwayMatchPageList.Concat(AwayPrevMatches).ToList();
+
+            } while (AwayPrevMatches.Count == 30);
+            awayList = AwayMatchPageList.Where(x => x.competition_id.Equals(country.competition_id)).ToList();
+            
+
             try
             {
-                float homeWins = 0;
-                float homeDraws = 0;
-                float homeLosses = 0;
-                float homeMatches = 0;
+                decimal competitionHomeGoalsPerMatch = 0;
+                decimal competitionAwayGoalsPerMatch = 0;
 
-                float awayWins = 0;
-                float awayDraws = 0;
-                float awayLosses = 0;
-                float awayMatches = 0;
+                decimal homeGoalsScoredPerMatch = 0;
+                decimal homeGoalsConcededPerMatch = 0;
 
-                float matches = 0;
+                decimal awayGoalsScoredPerMatch = 0;
+                decimal awayGoalsConcededPerMatch = 0;
 
                 if (homeList.Count != 0 || awayList.Count != 0)
                 {
-                    foreach (Match homeMatch in homeList)
-                    {
-                        if (homeMatch.home_name == country.fixtureList.home_name)
-                        {
-                            var homeGoals = int.Parse(homeMatch.score.Split('-')[0]);
-                            var awayGoals = int.Parse(homeMatch.score.Split('-')[1]);
+                    decimal MatchCount = 0;
 
-                            if (homeGoals > awayGoals)
-                            {
-                                homeWins += 1;
-                            }
-                            if (homeGoals < awayGoals)
-                            {
-                                homeLosses += 1;
-                            }
-                            if (homeGoals == awayGoals)
-                            {
-                                homeDraws += 1;
-                            }
-                            homeMatches += 1;
+                    decimal competitionHomeGoalsCount = 0;
+                    decimal competitionAwayGoalsCount = 0;
+                    foreach (Match match in CompetitionMatches)
+                    {
+                        MatchCount++;
+                        competitionHomeGoalsCount = competitionHomeGoalsCount + int.Parse(match.score.Split('-')[0]);
+                        competitionAwayGoalsCount = competitionAwayGoalsCount + int.Parse(match.score.Split('-')[1]);
+                    }
+                    competitionHomeGoalsPerMatch = competitionHomeGoalsCount / MatchCount;
+                    competitionAwayGoalsPerMatch = competitionAwayGoalsCount / MatchCount;
+
+                    MatchCount = 0;
+                    decimal HomeGoalsScoredCount = 0;
+                    decimal HomeGoalsConcededCount = 0;
+                    foreach (Match match in homeList)
+                    {
+                        if (match.home_id == country.fixtureList.home_id)
+                        {
+                            MatchCount++;
+                            HomeGoalsScoredCount = HomeGoalsScoredCount + int.Parse(match.score.Split('-')[0]);
+                            HomeGoalsConcededCount = HomeGoalsConcededCount + int.Parse(match.score.Split('-')[1]);
                         }
                     }
+                    homeGoalsScoredPerMatch = HomeGoalsScoredCount / MatchCount;
+                    homeGoalsConcededPerMatch = HomeGoalsConcededCount / MatchCount;
 
-                    foreach (Match awayMatch in awayList)
+                    MatchCount = 0;
+                    decimal AwayGoalsScoredCount = 0;
+                    decimal AwayGoalsConcededCount = 0;
+                    foreach (Match match in awayList)
                     {
-                        if (awayMatch.away_name == country.fixtureList.away_name)
+                        if (match.away_id == country.fixtureList.away_id)
                         {
-                            var homeGoals = int.Parse(awayMatch.score.Split('-')[0]);
-                            var awayGoals = int.Parse(awayMatch.score.Split('-')[1]);
-
-                            if (awayGoals > homeGoals)
-                            {
-                                awayWins += 1;
-                            }
-                            if (awayGoals < homeGoals)
-                            {
-                                awayLosses += 1;
-                            }
-                            if (awayGoals == homeGoals)
-                            {
-                                awayDraws += 1;
-                            }
-                            awayMatches += 1;
+                            MatchCount++;
+                            AwayGoalsScoredCount = AwayGoalsScoredCount + int.Parse(match.score.Split('-')[1]);
+                            AwayGoalsConcededCount = AwayGoalsConcededCount + int.Parse(match.score.Split('-')[0]);
                         }
                     }
-                    matches = homeMatches + awayMatches;
+                    awayGoalsScoredPerMatch = AwayGoalsScoredCount / MatchCount;
+                    awayGoalsConcededPerMatch = AwayGoalsConcededCount / MatchCount;
 
-                    //simple calculation for getting match odds based off past results
-                    HomeOdds = (100 / (100 * ((homeWins + awayLosses) / matches))).ToString("#.##");
-                    AwayOdds = (100 / (100 * ((awayWins + homeLosses) / matches))).ToString("#.##");
-                    DrawOdds = (100 / (100 * ((homeDraws + awayDraws) / matches))).ToString("#.##");
+                    decimal attackStrengthHomeTeam = homeGoalsScoredPerMatch / competitionHomeGoalsPerMatch;
+                    decimal attackStrengthAwayTeam = awayGoalsScoredPerMatch / competitionAwayGoalsPerMatch;
 
-                    //if any odds return e.g. '.89' make it '0.89'
-                    HomeOdds = (HomeOdds[0].ToString() == ".") ? $"0{HomeOdds}" : HomeOdds;
-                    AwayOdds = (AwayOdds[0].ToString() == ".") ? $"0{AwayOdds}" : AwayOdds;
-                    DrawOdds = (DrawOdds[0].ToString() == ".") ? $"0{DrawOdds}" : DrawOdds;
+                    decimal DefenceStrengthHomeTeam = homeGoalsConcededPerMatch / competitionAwayGoalsPerMatch;
+                    decimal DefenceStrengthAwayTeam = awayGoalsConcededPerMatch / competitionHomeGoalsPerMatch;
 
-                    //if odds are not '∞' and it equals e.g. '4' make it '4.0'
-                    if (HomeOdds != "∞")
+                    decimal homeScorePrediction = attackStrengthHomeTeam * DefenceStrengthAwayTeam * competitionHomeGoalsPerMatch;
+                    decimal awayScorePrediction = attackStrengthAwayTeam * DefenceStrengthHomeTeam * competitionAwayGoalsPerMatch;
+
+                    decimal Home0 = CummulitiveDistributionFunction(0, homeScorePrediction);
+                    decimal Home1 = CummulitiveDistributionFunction(1, homeScorePrediction);
+                    decimal Home2 = CummulitiveDistributionFunction(2, homeScorePrediction);
+                    decimal Home3 = CummulitiveDistributionFunction(3, homeScorePrediction);
+                    decimal Home4 = CummulitiveDistributionFunction(4, homeScorePrediction);
+                    decimal Home5 = CummulitiveDistributionFunction(5, homeScorePrediction);
+
+                    decimal Away0 = CummulitiveDistributionFunction(0, awayScorePrediction);
+                    decimal Away1 = CummulitiveDistributionFunction(1, awayScorePrediction);
+                    decimal Away2 = CummulitiveDistributionFunction(2, awayScorePrediction);
+                    decimal Away3 = CummulitiveDistributionFunction(3, awayScorePrediction);
+                    decimal Away4 = CummulitiveDistributionFunction(4, awayScorePrediction);
+                    decimal Away5 = CummulitiveDistributionFunction(5, awayScorePrediction);
+
+                    decimal home1v0 = Home1 * Away0;
+                    decimal home2v0 = Home2 * Away0;
+                    decimal home3v0 = Home3 * Away0;
+                    decimal home4v0 = Home4 * Away0;
+                    decimal home5v0 = Home5 * Away0;
+                    decimal home2v1 = Home2 * Away1;
+                    decimal home3v1 = Home3 * Away1;
+                    decimal home4v1 = Home4 * Away1;
+                    decimal home5v1 = Home5 * Away1;
+                    decimal home3v2 = Home3 * Away2;
+                    decimal home4v2 = Home4 * Away2;
+                    decimal home5v2 = Home5 * Away2;
+                    decimal home4v3 = Home4 * Away3;
+                    decimal home5v3 = Home5 * Away3;
+                    decimal home5v4 = Home5 * Away4;
+
+                    decimal HomeProbability = home1v0 + home2v0 + home3v0 + home4v0 + home5v0
+                        + home2v1 + home3v1 + home4v1 + home5v1
+                        + home3v2 + home4v2 + home5v2
+                        + home4v3 + home5v3
+                        + home5v4;
+                    decimal HomeWin = 1 / HomeProbability;
+
+                    decimal away1v0 = Away1 * Home0;
+                    decimal away2v0 = Away2 * Home0;
+                    decimal away3v0 = Away3 * Home0;
+                    decimal away4v0 = Away4 * Home0;
+                    decimal away5v0 = Away5 * Home0;
+                    decimal away2v1 = Away2 * Home1;
+                    decimal away3v1 = Away3 * Home1;
+                    decimal away4v1 = Away4 * Home1;
+                    decimal away5v1 = Away5 * Home1;
+                    decimal away3v2 = Away3 * Home2;
+                    decimal away4v2 = Away4 * Home2;
+                    decimal away5v2 = Away5 * Home2;
+                    decimal away4v3 = Away4 * Home3;
+                    decimal away5v3 = Away5 * Home3;
+                    decimal away5v4 = Away5 * Home4;
+
+                    decimal AwayProbability = away1v0 + away2v0 + away3v0 + away4v0 + away5v0
+                        + away2v1 + away3v1 + away4v1 + away5v1
+                        + away3v2 + away4v2 + away5v2
+                        + away4v3 + away5v3
+                        + away5v4;
+                    decimal AwayWin = 1 / AwayProbability;
+
+                    decimal draw0v0 = Home0 * Away0;
+                    decimal draw1v1 = Home1 * Away1;
+                    decimal draw2v2 = Home2 * Away2;
+                    decimal draw3v3 = Home3 * Away3;
+                    decimal draw4v4 = Home4 * Away4;
+                    decimal draw5v5 = Home5 * Away5;
+
+                    decimal DrawProbability = draw0v0 + draw1v1 + draw2v2 + draw3v3 + draw4v4 + draw5v5;
+                    decimal Draw = 1 / DrawProbability;
+
+                    HomeOdds = HomeWin.ToString("#.##");
+                    AwayOdds = AwayWin.ToString("#.##");
+                    DrawOdds = Draw.ToString("#.##");
+
+                    HomeProbability = decimal.Round((HomeProbability * 100), 1, MidpointRounding.AwayFromZero);
+                    AwayProbability = decimal.Round((AwayProbability * 100), 1, MidpointRounding.AwayFromZero);
+                    DrawProbability = decimal.Round((DrawProbability * 100), 1, MidpointRounding.AwayFromZero);
+
+                    HomePercentage = $"{decimal.Round(HomeProbability, 0, MidpointRounding.AwayFromZero).ToString()}%";
+                    AwayPercentage = $"{decimal.Round(AwayProbability, 0, MidpointRounding.AwayFromZero).ToString()}%";
+                    DrawPercentage = $"{decimal.Round(DrawProbability, 0, MidpointRounding.AwayFromZero).ToString()}%";
+
+                    MatchScoreList = new List<ScoreOdds>()
                     {
-                        HomeOdds = (!HomeOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{HomeOdds}.0" : HomeOdds;
-                    }
-                    if (DrawOdds != "∞")
-                    {
-                        DrawOdds = (!DrawOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{DrawOdds}.0" : DrawOdds;
-                    }
-                    if (AwayOdds != "∞")
-                    {
-                        AwayOdds = (!AwayOdds.Contains(".", StringComparison.OrdinalIgnoreCase)) ?
-                        $"{AwayOdds}.0" : AwayOdds;
-                    }
+                        new ScoreOdds() { score = "0 - 0", odds = decimal.Round((1 / draw0v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw0v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "0 - 1", odds = decimal.Round((1 / away1v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away1v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "0 - 2", odds = decimal.Round((1 / away2v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away2v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "0 - 3", odds = decimal.Round((1 / away3v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away3v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "0 - 4", odds = decimal.Round((1 / away4v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away4v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "0 - 5", odds = decimal.Round((1 / away5v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away5v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 0", odds = decimal.Round((1 / home1v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home1v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 1", odds = decimal.Round((1 / draw1v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw1v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 2", odds = decimal.Round((1 / away2v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away2v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 3", odds = decimal.Round((1 / away3v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away3v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 4", odds = decimal.Round((1 / away4v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away4v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "1 - 5", odds = decimal.Round((1 / away5v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away5v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 0", odds = decimal.Round((1 / home2v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home2v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 1", odds = decimal.Round((1 / home2v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home2v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 2", odds = decimal.Round((1 / draw2v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw2v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 3", odds = decimal.Round((1 / away3v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away3v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 4", odds = decimal.Round((1 / away4v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away4v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "2 - 5", odds = decimal.Round((1 / away5v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away5v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 0", odds = decimal.Round((1 / home3v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home3v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 1", odds = decimal.Round((1 / home3v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home3v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 2", odds = decimal.Round((1 / home3v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home3v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 3", odds = decimal.Round((1 / draw3v3), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw3v3), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 4", odds = decimal.Round((1 / away4v3), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away4v3), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "3 - 5", odds = decimal.Round((1 / away5v3), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away5v3), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 0", odds = decimal.Round((1 / home4v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home4v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 1", odds = decimal.Round((1 / home4v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home4v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 2", odds = decimal.Round((1 / home4v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home4v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 3", odds = decimal.Round((1 / home4v3), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home4v3), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 4", odds = decimal.Round((1 / draw4v4), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw4v4), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "4 - 5", odds = decimal.Round((1 / away5v4), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * away5v4), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 0", odds = decimal.Round((1 / home5v0), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home5v0), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 1", odds = decimal.Round((1 / home5v1), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home5v1), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 2", odds = decimal.Round((1 / home5v2), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home5v2), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 3", odds = decimal.Round((1 / home5v3), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home5v3), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 4", odds = decimal.Round((1 / home5v4), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * home5v4), 4, MidpointRounding.AwayFromZero) },
+                        new ScoreOdds() { score = "5 - 5", odds = decimal.Round((1 / draw5v5), 2, MidpointRounding.AwayFromZero), percentage = decimal.Round((100 * draw5v5), 4, MidpointRounding.AwayFromZero) }
+                    };
+
+                    //MatchScoreList = scoreList;
 
                     OddsAvailable = true;
                 }
@@ -718,6 +907,26 @@ namespace FootballApp.ViewModels
             {
                 Messenger.Default.Send("loaded");
             }
+        }
+
+        public decimal CummulitiveDistributionFunction(int k, decimal lambda)
+        {
+            double e = Math.Pow(Math.E, (double)-lambda);
+            double Lambda = Math.Pow((double)lambda, k);
+            decimal sum = (decimal)(e * Lambda) / Factorial(k);
+            return sum;
+        }
+
+        private int Factorial(int k)
+        {
+            int count = k;
+            int factorial = 1;
+            while (count >= 1)
+            {
+                factorial = factorial * count;
+                count--;
+            }
+            return factorial;
         }
 
         /// <summary>

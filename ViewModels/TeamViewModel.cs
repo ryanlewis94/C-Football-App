@@ -212,7 +212,7 @@ namespace FootballApp.ViewModels
                 do //load all matches from multiple pages
                 {
                     i = i + 1;
-                    prevMatches = await repository.LoadPast(null, teamId, i);
+                    prevMatches = await repository.LoadPastForTeam(teamId, i);
                     MatchPageList = MatchPageList.Concat(prevMatches).ToList();
 
                 } while (prevMatches.Count == 30);

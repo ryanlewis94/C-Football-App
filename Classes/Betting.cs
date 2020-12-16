@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FootballApp.Classes
 {
-    public class EventData
+    public class ScoreOdds
     {
-        public List<Event> @event { get; set; }
-
-        public List<Goalscorer> goalscorers { get; set; }
+        public string score { get; set; }
+        public decimal odds { get; set; }
+        public decimal percentage { get; set; }
     }
 }

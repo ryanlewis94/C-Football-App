@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:customControls="clr-namespace:FootballApp.Controls.buttons"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="400"
@@ -26,71 +27,127 @@
                    VerticalAlignment="Center"
                    Grid.ColumnSpan="3"
                    Visibility="{Binding DataContext.LeagueName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
-            <!--League Table-->
-        <Border Background="LightGray" 
+            <!--Tables-->
+        <Border Background="#EFEFEF" 
                 Padding="20" 
                 Margin="0,15,0,0"
                 Grid.Row="1">
-            <DataGrid ItemsSource="{Binding StandingsList}"
-                      IsReadOnly="True"
-                      AutoGenerateColumns="False"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Top"
-                      FontSize="18"
-                      Padding="20"
-                      AlternationCount="2"
-                      MinColumnWidth="50"
-                      MinRowHeight="35"
-                      SelectionMode="Single"
-                      SelectedItem="{Binding SelectedTeam}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding TeamClickedCommand}"
-                                               CommandParameter="{Binding SelectedTeam.team_id}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Setter Property="Opacity" Value="1"/>
-                        <Setter Property="Cursor" Value="Hand"/>
-                        <!--<Setter Property="IsHitTestVisible" Value="False"/>-->
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.7"/>
-                            </Trigger>
-                            <Trigger Property="AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="AliceBlue"/>
-                            </Trigger>
-                            <DataTrigger Binding="{Binding State}" Value="true">
-                                <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}"></Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="#" Binding="{Binding rank}"/>
-                    <DataGridTemplateColumn Header="team">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding logo}"
-                                           Width="35"/>
-                                    <TextBlock Text="{Binding name}" 
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="mp" Binding="{Binding matches}"/>
-                    <DataGridTextColumn Header="w" Binding="{Binding won}"/>
-                    <DataGridTextColumn Header="d" Binding="{Binding drawn}"/>
-                    <DataGridTextColumn Header="l" Binding="{Binding lost}"/>
-                    <DataGridTextColumn Header="gf" Binding="{Binding goals_scored}"/>
-                    <DataGridTextColumn Header="ga" Binding="{Binding goals_conceded}"/>
-                    <DataGridTextColumn Header="gd" Binding="{Binding goal_diff}"/>
-                    <DataGridTextColumn Header="p" Binding="{Binding points}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <controls:MetroAnimatedSingleRowTabControl controls:TabControlHelper.IsUnderlined="True"
+                                                       controls:TabControlHelper.Transition="Down"
+                                                       Background="#EFEFEF">
+                <!--league table Tab-->
+                <TabItem Header="League Table">
+                    <DataGrid ItemsSource="{Binding StandingsList}"
+                              IsReadOnly="True"
+                              AutoGenerateColumns="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Top"
+                              FontSize="18"
+                              Padding="20"
+                              AlternationCount="2"
+                              MinColumnWidth="50"
+                              MinRowHeight="35"
+                              SelectionMode="Single"
+                              SelectedItem="{Binding SelectedTeam}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding TeamClickedCommand}"
+                                                       CommandParameter="{Binding SelectedTeam.team_id}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <!--<Setter Property="IsHitTestVisible" Value="False"/>-->
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Opacity" Value="0.7"/>
+                                    </Trigger>
+                                    <Trigger Property="AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="AliceBlue"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding State}" Value="true">
+                                        <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding rank}"/>
+                            <DataGridTemplateColumn Header="team">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding logo}"
+                                                   Width="35"/>
+                                            <TextBlock Text="{Binding name}" 
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="mp" Binding="{Binding matches}"/>
+                            <DataGridTextColumn Header="w" Binding="{Binding won}"/>
+                            <DataGridTextColumn Header="d" Binding="{Binding drawn}"/>
+                            <DataGridTextColumn Header="l" Binding="{Binding lost}"/>
+                            <DataGridTextColumn Header="gf" Binding="{Binding goals_scored}"/>
+                            <DataGridTextColumn Header="ga" Binding="{Binding goals_conceded}"/>
+                            <DataGridTextColumn Header="gd" Binding="{Binding goal_diff}"/>
+                            <DataGridTextColumn Header="p" Binding="{Binding points}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                
+                <!--top goalscorers Tab-->
+                <TabItem Header="Top Goalscorer">
+                    <DataGrid ItemsSource="{Binding GoalscorerList}"
+                              IsReadOnly="True"
+                              AutoGenerateColumns="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Top"
+                              FontSize="18"
+                              Padding="20"
+                              AlternationCount="2"
+                              MinColumnWidth="50"
+                              MinRowHeight="35"
+                              CanUserSortColumns="False">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                                <Style.Triggers>
+                                    <Trigger Property="AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="AliceBlue"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding rank}"/>
+                            <DataGridTextColumn Header="player" Binding="{Binding name}"/>
+                            <DataGridTemplateColumn Header="team">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding logo}"
+                                                   Width="35"/>
+                                            <TextBlock Text="{Binding team.name}" 
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="goals" Binding="{Binding goals}"/>
+                            <DataGridTextColumn Header="assists" Binding="{Binding assists}"/>
+                            <DataGridTextColumn Header="played" Binding="{Binding played}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                
+            </controls:MetroAnimatedSingleRowTabControl>
+
+            
         </Border>
     </Grid>
 </UserControl>

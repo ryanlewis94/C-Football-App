@@ -25,6 +25,17 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _standingsList, value); }
         }
 
+        /// <summary>
+        /// stores the top goalscorer standings
+        /// </summary>
+        private List<Goalscorer> _goalscorerList;
+
+        public List<Goalscorer> GoalscorerList
+        {
+            get { return _goalscorerList; }
+            set { SetProperty(ref _goalscorerList, value); }
+        }
+
         private Table _selectedTeam;
 
         public Table SelectedTeam
@@ -185,6 +196,31 @@ namespace FootballApp.ViewModels
                     else
                     {
                         Messenger.Default.Send("leagueUnavailable");
+                    }
+                }
+
+                GoalscorerList = await repository.LoadTopGoalscorers(country.competition_id);
+                if (GoalscorerList != null)
+                {
+                    var i = 0;
+                    foreach (Goalscorer goalscorer in GoalscorerList)
+                    {
+                        i++;
+                        goalscorer.rank = i.ToString();
+                        foreach (Logo logo in repository.LoadLogos())
+                        {
+                            if (goalscorer.team.name.ToLower() == logo.team_name.ToLower())
+                            {
+                                goalscorer.logo = logo.logo;
+                                break;
+                            }
+                            if (goalscorer.team.name.Contains(logo.team_name) ||
+                                $"FC {goalscorer.team.name}".Contains(logo.team_name) ||
+                                $"{goalscorer.team.name} FC".Contains(logo.team_name))
+                            {
+                                goalscorer.logo = logo.logo;
+                            }
+                        }
                     }
                 }
             }

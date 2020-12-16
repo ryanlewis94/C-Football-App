@@ -137,7 +137,7 @@ namespace FootballApp.ViewModels
                     //updates the request count, sends message if too many requests have been received
                 case "request":
                     RequestCount++;
-                    if (RequestCount > 30)
+                    if (RequestCount > 300)
                     {
                         Messenger.Default.Send("TooManyRequests");
                     }

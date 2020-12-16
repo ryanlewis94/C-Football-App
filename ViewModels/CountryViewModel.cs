@@ -668,7 +668,7 @@ namespace FootballApp.ViewModels
                     {
                         string[] splitTime = fixture.time.Split(':');
                         //change time to correct time zome
-                        //splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
+                        splitTime[0] = (int.Parse(splitTime[0]) + 1).ToString();
 
                         //format the fixture kick off time
                         if (splitTime[0].Length < 2)

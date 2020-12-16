@@ -151,4 +151,47 @@ namespace FootballApp.Classes
         public string form { get; set; }
         public SolidColorBrush color { get; set; }
     }
+
+    public class Goalscorer
+    {
+        public string player_id { get; set; }
+        public string name { get; set; }
+        public string team_id { get; set; }
+        public string goals { get; set; }
+        public string assists { get; set; }
+        public string played { get; set; }
+        public string competition_id { get; set; }
+        public string season_id { get; set; }
+        public string edition_id { get; set; }
+        public Team team { get; set; }
+        public string logo { get; set; }
+        public string rank { get; set; }
+    }
+
+    public class Player
+    {
+        public string team_id { get; set; }
+        public string id { get; set; }
+        public string name { get; set; }
+        public string substitution { get; set; }
+        public string shirt_number { get; set; }
+    }
+
+    public class Home
+    {
+        public Team team { get; set; }
+        public List<Player> players { get; set; }
+    }
+
+    public class Away
+    {
+        public Team team { get; set; }
+        public List<Player> players { get; set; }
+    }
+
+    public class Lineup
+    {
+        public Home home { get; set; }
+        public Away away { get; set; }
+    }
 }

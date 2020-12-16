@@ -221,12 +221,36 @@ namespace FootballApp.Api
             }
         }
 
-        public async Task<List<Match>> LoadPastForTeam(string teamId)
+        public async Task<List<Match>> LoadPastForTeam(string teamId, int pageNo)
         {
-            string[] date = ((DateTime.Today.AddMonths(-4).ToString()).Split(' ')[0]).Split('/');
+            string[] date = ((DateTime.Today.AddYears(-1).ToString()).Split(' ')[0]).Split('/');
             string dateFrom = $"{date[2]}-{date[1]}-{date[0]}";
 
-            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&team={teamId}&from={dateFrom}";
+            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&team={teamId}&from={dateFrom}&page={pageNo}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    Model match = stream.ReadAndDeserializeFromJson<Model>();
+                    Messenger.Default.Send("request");
+
+                    return match?.data?.match;
+                }
+                else
+                {
+                    throw new Exception(response.StatusCode.ToString());
+                }
+            }
+        }
+
+        public async Task<List<Match>> LoadPastForCompetition(string competitionId, int pageNo)
+        {
+            string[] date = ((DateTime.Today.AddYears(-1).ToString()).Split(' ')[0]).Split('/');
+            string dateFrom = $"{date[2]}-{date[1]}-{date[0]}";
+
+            string url = $"http://livescore-api.com/api-client/scores/history.json?key={Api.Key}&secret={Api.Secret}&competition_id={competitionId}&from={dateFrom}&page={pageNo}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -247,7 +271,7 @@ namespace FootballApp.Api
 
         public async Task<Data> LoadTeamsH2H(string homeId, string awayId)
         {
-            string url = $"https://live-score-api.com/api-client/teams/head2head.json?team1_id={homeId}&team2_id={awayId}&key={Api.Key}&secret={Api.Secret}";
+            string url = $"https://livescore-api.com/api-client/teams/head2head.json?team1_id={homeId}&team2_id={awayId}&key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -268,7 +292,7 @@ namespace FootballApp.Api
 
         public async Task<Data> LoadStats(string matchId)
         {
-            string url = $"https://live-score-api.com/api-client/matches/stats.json?match_id={matchId}&key={Api.Key}&secret={Api.Secret}";
+            string url = $"https://livescore-api.com/api-client/matches/stats.json?match_id={matchId}&key={Api.Key}&secret={Api.Secret}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -279,6 +303,48 @@ namespace FootballApp.Api
                     Messenger.Default.Send("request");
 
                     return h2h?.data;
+                }
+                else
+                {
+                    throw new Exception(response.StatusCode.ToString());
+                }
+            }
+        }
+
+        public async Task<List<Goalscorer>> LoadTopGoalscorers(string competitionId)
+        {
+            string url = $"https://livescore-api.com/api-client/competitions/goalscorers.json?competition_id={competitionId}&key={Api.Key}&secret={Api.Secret}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    Events goalscorer = stream.ReadAndDeserializeFromJson<Events>();
+                    Messenger.Default.Send("request");
+
+                    return goalscorer?.data.goalscorers;
+                }
+                else
+                {
+                    throw new Exception(response.StatusCode.ToString());
+                }
+            }
+        }
+
+        public async Task<Lineup> LoadLineups(string matchId)
+        {
+            string url = $"https://livescore-api.com/api-client/matches/lineups.json?match_id={matchId}&key={Api.Key}&secret={Api.Secret}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    Model lineup = stream.ReadAndDeserializeFromJson<Model>();
+                    Messenger.Default.Send("request");
+
+                    return lineup?.data.lineup;
                 }
                 else
                 {

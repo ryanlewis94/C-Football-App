@@ -353,6 +353,9 @@
                                    TextAlignment="Center"
                                    FontWeight="SemiBold" 
                                    FontSize="14"/>
+                        <TextBlock Text="{Binding DataContext.HomePercentage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center" 
+                                   FontSize="12"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1"
                                 Grid.Row="2"
@@ -367,6 +370,9 @@
                                    TextAlignment="Center"
                                    FontWeight="SemiBold" 
                                    FontSize="14"/>
+                        <TextBlock Text="{Binding DataContext.DrawPercentage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center" 
+                                   FontSize="12"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2"
                                 Grid.Row="2"
@@ -381,10 +387,27 @@
                                    TextAlignment="Center"
                                    FontWeight="SemiBold" 
                                    FontSize="14"/>
+                        <TextBlock Text="{Binding DataContext.AwayPercentage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                   TextAlignment="Center" 
+                                   FontSize="12"/>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
+        <Expander Header="Score Predictions">
+            <DataGrid ItemsSource="{Binding DataContext.MatchScoreList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Top"
+                      GridLinesVisibility="Vertical">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Score" Binding="{Binding score}"/>
+                    <DataGridTextColumn Header="Odds" Binding="{Binding odds}"/>
+                    <DataGridTextColumn Header="Chance(%)" Binding="{Binding percentage}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Expander>
         <!--Countdown until Kick off-->
         <Border BorderBrush="Black" 
                 BorderThickness="0,2,0,0">
