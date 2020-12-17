@@ -32,11 +32,13 @@
                 Padding="20" 
                 Margin="0,15,0,0"
                 Grid.Row="1">
-            <controls:MetroAnimatedSingleRowTabControl controls:TabControlHelper.IsUnderlined="True"
+            <controls:MetroAnimatedSingleRowTabControl SelectedIndex="{Binding StandingsIndex, Mode=TwoWay}"
+                                                       controls:TabControlHelper.IsUnderlined="True"
                                                        controls:TabControlHelper.Transition="Down"
                                                        Background="#EFEFEF">
                 <!--league table Tab-->
-                <TabItem Header="League Table">
+                <TabItem Header="League Table"
+                         Visibility="{Binding StandingsVis, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <DataGrid ItemsSource="{Binding StandingsList}"
                               IsReadOnly="True"
                               AutoGenerateColumns="False"
@@ -100,7 +102,8 @@
                 </TabItem>
                 
                 <!--top goalscorers Tab-->
-                <TabItem Header="Top Goalscorer">
+                <TabItem Header="Top Goalscorer"
+                         Visibility="{Binding GoalscorersVis, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <DataGrid ItemsSource="{Binding GoalscorerList}"
                               IsReadOnly="True"
                               AutoGenerateColumns="False"

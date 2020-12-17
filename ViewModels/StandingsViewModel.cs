@@ -61,6 +61,33 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _leagueName, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool _standingsVis;
+        public bool StandingsVis
+        {
+            get { return _standingsVis; }
+            set { SetProperty(ref _standingsVis, value); }
+        }
+
+        private bool _goalscorersVis;
+        public bool GoalscorersVis
+        {
+            get { return _goalscorersVis; }
+            set { SetProperty(ref _goalscorersVis, value); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private int _standingsIndex;
+        public int StandingsIndex
+        {
+            get { return _standingsIndex; }
+            set { SetProperty(ref _standingsIndex, value); }
+        }
+
         public StandingsViewModel()
         {
             repository = new Football();
@@ -188,15 +215,7 @@ namespace FootballApp.ViewModels
 
                     HighlightCurrentTeams(country);
 
-                    //display standings tab if league standings are available anf hide if not
-                    if (StandingsList.Count != 0)
-                    {
-                        Messenger.Default.Send("leagueAvailable");
-                    }
-                    else
-                    {
-                        Messenger.Default.Send("leagueUnavailable");
-                    }
+                    StandingsVis = (StandingsList.Count != 0) ? true : false;
                 }
 
                 GoalscorerList = await repository.LoadTopGoalscorers(country.competition_id);
@@ -222,6 +241,17 @@ namespace FootballApp.ViewModels
                             }
                         }
                     }
+                    GoalscorersVis = (GoalscorerList.Count != 0) ? true : false;
+                }
+                //display standings tab if league standings are available and hide if not
+                if (StandingsList?.Count != 0 || GoalscorerList?.Count != 0)
+                {
+                    Messenger.Default.Send("leagueAvailable");
+                    StandingsIndex = (StandingsVis) ? 0 : 1;
+                }
+                else
+                {
+                    Messenger.Default.Send("leagueUnavailable");
                 }
             }
             catch (Exception ex)

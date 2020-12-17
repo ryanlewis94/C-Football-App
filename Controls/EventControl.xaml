@@ -39,90 +39,200 @@
                             </lvc:CartesianChart>
                         </Grid>
                     </Expander>
-                    <!--List of live events-->
-                    <Grid Margin="0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5*" />
-                            <ColumnDefinition Width="5*" />
-                        </Grid.ColumnDefinitions>
-                        <!--Home Events-->
-                        <ListView Grid.Column="0"
+                    <!--Team Lineups-->
+                    <Expander Header="Team Lineups"
+                              Visibility="{Binding LineupsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="5*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Label Grid.ColumnSpan="2"
+                                   Content="Starting Lineups"
+                                   HorizontalAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="Bold"/>
+                            <!--Home 11-->
+                            <ListView Grid.Column="0" Grid.Row="1"
+                                  ItemsSource="{Binding HomeEleven}"
+                                  IsHitTestVisible="False"
+                                  BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding shirt_number}"
+                                                       FontSize="15"
+                                                       FontWeight="Bold"
+                                                       Width="25"
+                                                       TextAlignment="Center"/>
+                                            <TextBlock Text="{Binding name}"
+                                                       FontSize="15"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <!--Away 11-->
+                            <ListView Grid.Column="1" Grid.Row="1"
+                                  ItemsSource="{Binding AwayEleven}"
+                                  IsHitTestVisible="False"
+                                  BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Right">
+                                            <TextBlock Text="{Binding name}"
+                                                       FontSize="15"/>
+                                            <TextBlock Text="{Binding shirt_number}"
+                                                       FontSize="15"
+                                                       FontWeight="Bold"
+                                                       Width="25"
+                                                       TextAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                            <Label Grid.ColumnSpan="2" Grid.Row="2"
+                                   Content="Substitutions"
+                                   HorizontalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="Bold"/>
+                            <!--Home Subs-->
+                            <ListView Grid.Column="0" Grid.Row="3"
+                                  ItemsSource="{Binding HomeBench}"
+                                  IsHitTestVisible="False"
+                                  BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding shirt_number}"
+                                                       FontSize="14"
+                                                       FontWeight="Bold"
+                                                       Width="25"
+                                                       TextAlignment="Center"/>
+                                            <TextBlock Text="{Binding name}"
+                                                       FontSize="14"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <!--Away Subs-->
+                            <ListView Grid.Column="1" Grid.Row="3"
+                                  ItemsSource="{Binding AwayBench}"
+                                  IsHitTestVisible="False"
+                                  BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Right">
+                                            <TextBlock Text="{Binding name}"
+                                                       FontSize="14"/>
+                                            <TextBlock Text="{Binding shirt_number}"
+                                                       FontSize="14"
+                                                       FontWeight="Bold"
+                                                       Width="25"
+                                                       TextAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Expander>
+                    <Expander Header="Match Events"
+                              IsExpanded="True">
+                        <!--List of live events-->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="5*" />
+                            </Grid.ColumnDefinitions>
+                            <!--Home Events-->
+                            <ListView Grid.Column="0"
                                   ItemsSource="{Binding HomeEventsList}"
                                   IsHitTestVisible="False"
                                   BorderThickness="0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="8*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel>
-                                            <Image Source="{Binding event}"
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="8*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <Image Source="{Binding event}"
                                                    Height="25"
                                                    Width="25"/>
-                                            <TextBlock Text="{Binding time}"
+                                                <TextBlock Text="{Binding time}"
                                                        TextAlignment="Center"
                                                        FontSize="16"/>
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding player}"
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding player}"
                                                    Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    TextAlignment="Center"
                                                    TextWrapping="Wrap"
                                                    FontSize="18"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
 
-                        <!--Away Events-->
-                        <ListView Grid.Column="2"
+                            <!--Away Events-->
+                            <ListView Grid.Column="1"
                                   ItemsSource="{Binding AwayEventsList}"
                                   IsHitTestVisible="False"
                                   BorderThickness="0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="8*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="1">
-                                            <Image Source="{Binding event}"
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="8*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="1">
+                                                <Image Source="{Binding event}"
                                                    Height="25"
                                                    Width="25"/>
-                                            <TextBlock Text="{Binding time}"
+                                                <TextBlock Text="{Binding time}"
                                                        TextAlignment="Center"
                                                        FontSize="16"/>
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding player}"
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding player}"
                                                    Grid.Column="0"
                                                    VerticalAlignment="Center"
                                                    TextAlignment="Center"
                                                    TextWrapping="Wrap"
                                                    FontSize="18"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
 
-                        <!--When there are no events to display-->
-                        <StackPanel Grid.ColumnSpan="3"
+                            <!--When there are no events to display-->
+                            <StackPanel Grid.ColumnSpan="2"
                                     Margin="0,10,0,0"
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Center"
                                     Visibility="{Binding NoEvents, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}">
-                            <TextBlock Text="Nothing has happened..."
+                                <TextBlock Text="Nothing has happened..."
                                        FontSize="32"
                                        Foreground="{DynamicResource AccentColorBrush2}"/>
-                            <TextBlock Text="&#xf1e3;"
+                                <TextBlock Text="&#xf1e3;"
                                        Margin="5"
                                        FontSize="32"
                                        Foreground="{DynamicResource AccentColorBrush2}"
                                        FontFamily="{DynamicResource FontAwesome}"/>
-                        </StackPanel>
-                    </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                    
                 </StackPanel>
             </Border>
             <uc:WelcomeControl Grid.RowSpan="2"/>

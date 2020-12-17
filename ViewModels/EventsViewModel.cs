@@ -313,6 +313,41 @@ namespace FootballApp.ViewModels
             set { SetProperty(ref _competitionMatches, value); }
         }
 
+        private List<Player> _homeEleven;
+        public List<Player> HomeEleven
+        {
+            get { return _homeEleven; }
+            set { SetProperty(ref _homeEleven, value); }
+        }
+
+        private List<Player> _homeBench;
+        public List<Player> HomeBench
+        {
+            get { return _homeBench; }
+            set { SetProperty(ref _homeBench, value); }
+        }
+
+        private List<Player> _awayEleven;
+        public List<Player> AwayEleven
+        {
+            get { return _awayEleven; }
+            set { SetProperty(ref _awayEleven, value); }
+        }
+
+        private List<Player> _awayBench;
+        public List<Player> AwayBench
+        {
+            get { return _awayBench; }
+            set { SetProperty(ref _awayBench, value); }
+        }
+
+        private bool _lineupsAvailable;
+        public bool LineupsAvailable
+        {
+            get { return _lineupsAvailable; }
+            set { SetProperty(ref _lineupsAvailable, value); }
+        }
+
         #endregion
 
         public EventsViewModel()
@@ -555,8 +590,63 @@ namespace FootballApp.ViewModels
             {
                 SortStats(Stats);
             }
-            try { SortEvents(await repository.LoadEvents(id)); }
-            catch (Exception ex) { errorHandler.CheckErrorMessage(ex); }
+
+            try 
+            {
+                SortLineups(await repository.LoadLineups(id));
+                SortEvents(await repository.LoadEvents(id)); 
+            }
+            catch (Exception ex) 
+            { 
+                errorHandler.CheckErrorMessage(ex); 
+            }
+        }
+
+        /// <summary>
+        /// puts the players into different lists depending on team and if they are a sub or not
+        /// </summary>
+        /// <param name="teamLineups"></param>
+        private void SortLineups(Lineup teamLineups)
+        {
+            HomeEleven = new List<Player>();
+            HomeBench = new List<Player>();
+            AwayEleven = new List<Player>();
+            AwayBench = new List<Player>();
+
+            var homeLineup = teamLineups.home.players;
+            var awayLineup = teamLineups.away.players;
+            if (homeLineup?.Count > 0 || awayLineup?.Count > 0)
+            {
+                LineupsAvailable = true;
+
+                foreach (Player homePlayer in homeLineup)
+                {
+                    if (homePlayer.substitution == "0")
+                    {
+                        HomeEleven.Add(homePlayer);
+                    }
+                    else
+                    {
+                        HomeBench.Add(homePlayer);
+                    }
+                }
+
+                foreach (Player awayPlayer in awayLineup)
+                {
+                    if (awayPlayer.substitution == "0")
+                    {
+                        AwayEleven.Add(awayPlayer);
+                    }
+                    else
+                    {
+                        AwayBench.Add(awayPlayer);
+                    }
+                }
+            }
+            else
+            {
+                LineupsAvailable = false;
+            }
         }
 
         /// <summary>
