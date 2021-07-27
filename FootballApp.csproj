@@ -295,5 +295,8 @@
     <Resource Include="Resources\events\Yellow.png" />
     <Resource Include="Resources\events\YellowRed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\events\sub.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

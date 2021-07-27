@@ -100,7 +100,7 @@
                             </ListView>
 
                             <Label Grid.ColumnSpan="2" Grid.Row="2"
-                                   Content="Substitutions"
+                                   Content="Substitutes"
                                    HorizontalAlignment="Center"
                                    FontSize="18"
                                    FontWeight="Bold"/>
@@ -162,10 +162,11 @@
                                     <DataTemplate>
                                         <Grid Margin="0,5">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="8*"/>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="1"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel>
+                                            <StackPanel Margin="15, 0">
                                                 <Image Source="{Binding event}"
                                                    Height="25"
                                                    Width="25"/>
@@ -173,12 +174,21 @@
                                                        TextAlignment="Center"
                                                        FontSize="16"/>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding player}"
-                                                   Grid.Column="1"
-                                                   VerticalAlignment="Center"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   FontSize="18"/>
+                                            <StackPanel Background="Black"
+                                                        Opacity="0.6"
+                                                        Grid.Column="1"
+                                                        Visibility="{Binding isEvent, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}" />
+                                            <StackPanel Grid.Column="2"
+                                                        Margin="15, 0">
+                                                <TextBlock Text="{Binding player}"
+                                                           TextWrapping="Wrap"
+                                                           FontSize="18"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding info}"
+                                                           TextWrapping="Wrap"
+                                                           FontSize="14"
+                                                           Opacity="0.6" />
+                                            </StackPanel>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -191,25 +201,38 @@
                                   BorderThickness="0">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="0,5">
+                                        <Grid Margin="0,5"
+                                              HorizontalAlignment="Right">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="8*"/>
-                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="1"/>
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="1">
-                                                <Image Source="{Binding event}"
-                                                   Height="25"
-                                                   Width="25"/>
-                                                <TextBlock Text="{Binding time}"
-                                                       TextAlignment="Center"
-                                                       FontSize="16"/>
+                                            <StackPanel Margin="15, 0">
+                                                <TextBlock Text="{Binding player}"
+                                                           TextWrapping="Wrap"
+                                                           HorizontalAlignment="Right"
+                                                           FontSize="18"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding info}"
+                                                           TextWrapping="Wrap"
+                                                           HorizontalAlignment="Right"
+                                                           FontSize="14"
+                                                           Opacity="0.6" />
                                             </StackPanel>
-                                            <TextBlock Text="{Binding player}"
-                                                   Grid.Column="0"
-                                                   VerticalAlignment="Center"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   FontSize="18"/>
+                                            <StackPanel Background="Black"
+                                                        Opacity="0.6"
+                                                        Grid.Column="1"
+                                                        Visibility="{Binding isEvent, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}" />
+                                            <StackPanel Grid.Column="2"
+                                                        Margin="15, 0">
+                                                <Image Source="{Binding event}"
+                                                       Height="25"
+                                                       Width="25" />
+                                                <TextBlock Text="{Binding time}"
+                                                           TextAlignment="Center"
+                                                           FontSize="16" />
+                                            </StackPanel>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

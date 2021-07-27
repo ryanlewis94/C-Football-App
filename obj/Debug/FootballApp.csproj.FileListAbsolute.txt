@@ -139,7 +139,6 @@ C:\Users\RY209294\source\repos\C-Football-App\bin\Debug\System.Net.Http.Formatti
 C:\Users\RY209294\source\repos\C-Football-App\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\RY209294\source\repos\C-Football-App\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\RY209294\source\repos\C-Football-App\bin\Debug\System.Threading.Tasks.Extensions.xml
-C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.csprojAssemblyReference.cache
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\Controls\FixtureInfo.baml
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\Controls\MatchInfo.baml
 C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\Controls\WelcomeControl.baml
@@ -342,3 +341,6 @@ C:\Users\Ryan\Desktop\Web\Repositories\C-Football-App\obj\Debug\FootballApp.cspr
 C:\Users\Ryan\Desktop\Web\Repositories\C-Football-App\obj\Debug\FootballApp.csproj.CopyComplete
 C:\Users\Ryan\Desktop\Web\Repositories\C-Football-App\obj\Debug\FootballApp.exe
 C:\Users\Ryan\Desktop\Web\Repositories\C-Football-App\obj\Debug\FootballApp.pdb
+C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\Controls\TeamControl.g.cs
+C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\Controls\TeamControl.baml
+C:\Users\RY209294\source\repos\C-Football-App\obj\Debug\FootballApp.csproj.CoreCompileInputs.cache

@@ -106,6 +106,8 @@ namespace FootballApp.Classes
         public string @event { get; set; }
         public int sort { get; set; }
         public string home_away { get; set; }
+        public string info { get; set; }
+        public bool isEvent { get; set; }
     }
 
     public class Fixture

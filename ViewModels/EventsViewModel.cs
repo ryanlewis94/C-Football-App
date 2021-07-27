@@ -658,7 +658,10 @@ namespace FootballApp.ViewModels
             {
                 var HomeList = new List<Event>();
                 var AwayList = new List<Event>();
-                var BlankEvent = new Event();
+                var BlankEvent = new Event()
+                {
+                    isEvent = false
+                };
 
                 if (eventsList != null)
                 {
@@ -667,17 +670,18 @@ namespace FootballApp.ViewModels
 
                         foreach (Event @event in eventsList)
                         {
+                            string playerToAdd = @event.player;
+                            string infoToAdd = @event.info;
                             //format the player name so the first name is displayed before the last name
-                            int idx = @event.player.LastIndexOf(" ");
-                            string playerToAdd;
-                            if (idx != -1)
-                            {
-                                playerToAdd = $"{@event.player.Substring(idx + 1)} {@event.player.Substring(0, idx)}";
-                            }
-                            else
-                            {
-                                playerToAdd = @event.player;
-                            }
+                            //int idx = @event.player.LastIndexOf(" ");
+                            //string playerToAdd = !(idx != -1)
+                            //    ? $"{@event.player.Substring(idx + 1)} {@event.player.Substring(0, idx)}"
+                            //    : @event.player;
+
+                            //idx = @event.info.LastIndexOf(" ");
+                            //string infoToAdd = (idx != -1)
+                            //    ? $"{@event.info.Substring(idx + 1)} {@event.info.Substring(0, idx)}"
+                            //    : @event.info;
 
                             string eventImage;
                             switch (@event.@event)
@@ -700,6 +704,11 @@ namespace FootballApp.ViewModels
                                 case "YELLOW_RED_CARD":
                                     eventImage = "/Resources/events/YellowRed.png";
                                     break;
+                                case "SUBSTITUTION":
+                                    eventImage = "/Resources/events/sub.png";
+                                    playerToAdd = "IN: " + playerToAdd;
+                                    infoToAdd = "OUT: " + infoToAdd;
+                                    break;
                                 default:
                                     eventImage = @event.@event;
                                     break;
@@ -713,7 +722,9 @@ namespace FootballApp.ViewModels
                                 time = @event.time,
                                 @event = eventImage,
                                 sort = @event.sort,
-                                home_away = @event.home_away
+                                home_away = @event.home_away,
+                                info = infoToAdd,
+                                isEvent = true
                             };
 
                             if (@event.home_away == "h")
